@@ -14,7 +14,6 @@ export const appLocale = "en_US";
 
 // blog
 export const blogTitle = "Blog";
-export const blogDescription =
-  "Latest news, insights, and tutorials from the ${brand.title}.${brand.domain} team.";
+export const blogDescription = `Latest news, insights, and tutorials from the ${brand.title}.${brand.domain} team.`;
 export const blogUrl = appUrl + "blog";
 export const defaultAuthor = "Editor Team";
