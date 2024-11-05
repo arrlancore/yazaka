@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Static Pages -->
+
+  <url>
+    <loc>https://brand.ai</loc>
+    <lastmod>2024-11-05T07:21:46.124Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://brand.ai/blog</loc>
+    <lastmod>2024-11-05T07:21:46.124Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Posts -->
+
+  <url>
+    <loc>https://brand.ai/blog/example-post-2</loc>
+    <lastmod>2024-11-05T07:21:46.123Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://brand.ai/blog/example-post-3</loc>
+    <lastmod>2024-11-05T07:21:46.124Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://brand.ai/blog/example-post-4</loc>
+    <lastmod>2024-11-05T07:21:46.124Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://brand.ai/blog/example-post</loc>
+    <lastmod>2024-11-05T07:21:46.124Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>

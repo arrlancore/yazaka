@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/static/
+
+# Block search results and filtering
+Disallow: */?s=
+Disallow: */?*
+
+# Allow media and assets
+Allow: /images/
+Allow: /assets/
+
+Sitemap: https://brand.ai/sitemap.xml
