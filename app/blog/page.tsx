@@ -71,12 +71,19 @@ export default async function BlogPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-grow">
-              <p className="text-muted-foreground text-sm mb-4">
-                {format(new Date(post.publishedAt), "dd-MM-yyyy", {
-                  locale: id,
-                })}{" "}
-                • {post.readingTime}
-              </p>
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-muted-foreground text-sm">
+                  by {post.author.name}
+                </p>
+
+                <p className="text-muted-foreground text-sm">
+                  {format(new Date(post.publishedAt), "dd-MM-yyyy", {
+                    locale: id,
+                  })}{" "}
+                  • {post.readingTime}
+                </p>
+              </div>
+
               <p className="text-muted-foreground">{post.summary}</p>
             </CardContent>
           </Card>
