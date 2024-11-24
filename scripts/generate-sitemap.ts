@@ -55,6 +55,28 @@ async function generateSitemap() {
       .filter((post) => !post.draft)
       .filter((post) => new Date(post.publishedAt) <= currentDate);
 
+    // Authors
+    const AUTHORS_PATH = path.join(process.cwd(), "content/authors");
+
+    const getAuthorFilePaths = (): string[] => {
+      try {
+        return readdirSync(AUTHORS_PATH).filter((path) => /\.mdx?$/.test(path));
+      } catch (error) {
+        console.error("Error reading authors directory:", error);
+        return [];
+      }
+    };
+
+    const authorFiles = getAuthorFilePaths();
+    const authors = authorFiles.map((fileName) => {
+      const filePath = path.join(AUTHORS_PATH, fileName);
+      const fileContents = readFileSync(filePath, "utf8");
+      const { data } = matter(fileContents);
+      return {
+        slug: fileName.replace(/\.mdx?$/, ""),
+        name: data.name,
+      };
+    });
     const sitemap = `
       <?xml version="1.0" encoding="UTF-8"?>
       <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -79,6 +101,20 @@ async function generateSitemap() {
             `;
           })
           .join("")}
+
+              <!-- Author Pages -->
+            ${authors
+              .map(
+                (author) => `
+        <url>
+          <loc>${domain}/authors/${author.slug}</loc>
+          <lastmod>${new Date().toISOString()}</lastmod>
+          <changefreq>monthly</changefreq>
+          <priority>0.5</priority>
+        </url>
+      `
+              )
+              .join("")}
 
         <!-- Blog Posts -->
         ${posts
@@ -108,7 +144,7 @@ async function generateSitemap() {
 
     console.log("✅ Sitemap generated successfully!");
     console.log(
-      `✅ Generated sitemap for ${pages.length} pages and ${posts.length} blog posts`
+      `✅ Generated sitemap for ${pages.length + authors.length} pages and ${posts.length} blog posts`
     );
   } catch (error) {
     console.error("Error generating sitemap:", error);
