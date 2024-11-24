@@ -43,7 +43,7 @@ export async function generateMetadata({
       ],
       locale: appLocale,
       type: "article",
-      authors: post.author,
+      authors: post.author.name,
       publishedTime: format(
         new Date(post.publishedAt),
         "yyyy-MM-dd'T'HH:mm:ssXXX"
