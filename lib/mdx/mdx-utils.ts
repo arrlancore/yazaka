@@ -34,6 +34,7 @@ export async function getAllPosts(): Promise<PostMeta[]> {
         name: defaultAuthorName,
         slug: "tim-redaksi",
         bio: null as any,
+        summary: "",
       };
     }
 
@@ -86,6 +87,7 @@ export async function getPostBySlug(slug: string): Promise<Post> {
       name: defaultAuthorName,
       slug: "tim-redaksi",
       bio: null as any,
+      summary: "",
     };
   }
 
