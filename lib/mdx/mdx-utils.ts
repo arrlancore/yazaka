@@ -4,6 +4,8 @@ import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import readingTime from "reading-time";
 import { Post, PostMeta } from "@/types/blog";
+import { ReactElement } from "react";
+import components from "./mdx-components";
 
 const POSTS_PATH = path.join(process.cwd(), "content/posts");
 
@@ -14,6 +16,8 @@ function getPostFilePaths(): string[] {
 }
 
 export async function getAllPosts(): Promise<PostMeta[]> {
+  const currentDate = new Date();
+
   const posts = getPostFilePaths()
     .map((filePath) => {
       const source = fs.readFileSync(path.join(POSTS_PATH, filePath), "utf8");
@@ -30,6 +34,7 @@ export async function getAllPosts(): Promise<PostMeta[]> {
       } as PostMeta;
     })
     .filter((post) => post.draft !== true)
+    .filter((post) => new Date(post.publishedAt) <= currentDate)
     .sort((a, b) => {
       return (
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
@@ -46,7 +51,7 @@ export async function getPostBySlug(slug: string): Promise<Post> {
   const { content, data } = matter(source);
   const mdxContent = await MDXRemote({
     source: content,
-    components: {},
+    components: components,
   });
 
   const randomImageUrl =
@@ -59,4 +64,16 @@ export async function getPostBySlug(slug: string): Promise<Post> {
     readingTime: readingTime(content).text,
     image: data.image || randomImageUrl,
   } as Post;
+}
+
+export async function convertMDToContent(
+  source: string,
+  components = {} as any
+): Promise<ReactElement> {
+  const mdxContent = await MDXRemote({
+    source,
+    components,
+  });
+
+  return mdxContent;
 }

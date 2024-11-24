@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 import { getAllPosts } from "@/lib/mdx/mdx-utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +50,9 @@ export default async function BlogPage() {
                   alt={post.title}
                   fill
                   className="object-cover"
+                  quality={75}
+                  sizes="(max-width: 300px) 100vw, 300px"
+                  loading="lazy"
                 />
               </div>
             )}
@@ -67,7 +72,10 @@ export default async function BlogPage() {
             </CardHeader>
             <CardContent className="flex-grow">
               <p className="text-muted-foreground text-sm mb-4">
-                {post.publishedAt} • {post.readingTime}
+                {format(new Date(post.publishedAt), "dd-MM-yyyy", {
+                  locale: id,
+                })}{" "}
+                • {post.readingTime}
               </p>
               <p className="text-muted-foreground">{post.summary}</p>
             </CardContent>

@@ -1,8 +1,9 @@
 // scripts/generate-sitemap.ts
-import { readdirSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
 import { writeFile } from "fs/promises";
 import path from "path";
 import prettier from "prettier";
+import matter from "gray-matter";
 
 const domain = "https://brand.ai";
 
@@ -19,6 +20,9 @@ async function generateSitemap() {
       "!app/**/loading.tsx",
       "!app/**/error.tsx",
       "!app/**/[slug]/page.tsx",
+      "!app/**/[id]/page.tsx",
+      "!app/editor/page.tsx",
+      "!app/**/post/route.ts",
     ]);
 
     const POSTS_PATH = path.join(process.cwd(), "content/posts");
@@ -33,13 +37,23 @@ async function generateSitemap() {
     };
 
     const postFiles = getPostFilePaths();
-
-    const posts = postFiles.map((fileName) => {
-      return {
-        slug: fileName.replace(/\.mdx?$/, ""),
-        publishedAt: new Date().toISOString(), // Use current date as fallback
-      };
-    });
+    const currentDate = new Date();
+    const posts = postFiles
+      .map((fileName) => {
+        const filePath = path.join(POSTS_PATH, fileName);
+        const fileContents = readFileSync(filePath, "utf8");
+        const { data } = matter(fileContents);
+        return {
+          slug: fileName.replace(/\.mdx?$/, ""),
+          publishedAt:
+            data.publishedAt.length === 10
+              ? data.publishedAt + "T07:00:00+07:00"
+              : data.publishedAt,
+          draft: data.draft || false,
+        };
+      })
+      .filter((post) => !post.draft)
+      .filter((post) => new Date(post.publishedAt) <= currentDate);
 
     const sitemap = `
       <?xml version="1.0" encoding="UTF-8"?>
