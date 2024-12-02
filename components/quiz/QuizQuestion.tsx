@@ -1,5 +1,5 @@
 // components/quiz/QuizQuestion.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Question } from "@/types/quiz";
 import { cn } from "@/lib/utils";
 
@@ -12,19 +12,30 @@ export function QuizQuestion({ question, onAnswer }: QuizQuestionProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [textAnswer, setTextAnswer] = useState("");
 
+  const handleOnAnswer = (answer: string) => {
+    onAnswer(answer);
+    setSelectedOption(null);
+    setTextAnswer("");
+  };
+
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option);
-    onAnswer(option);
   };
 
   const handleTextSubmit = () => {
     if (textAnswer.trim()) {
-      onAnswer(textAnswer.trim());
+      handleOnAnswer(textAnswer.trim());
+    }
+  };
+
+  const handleOptionSubmit = () => {
+    if (selectedOption) {
+      handleOnAnswer(selectedOption);
     }
   };
 
   return (
-    <div className="relative p-4 sm:p-6 md:p-10 rounded-xl sm:rounded-2xl bg-card border border-border shadow-neumorphic transition-all duration-300">
+    <div className="relative p-4 sm:p-6 md:p-10 rounded-xl sm:rounded-2xl bg-card border border-border shadow-neumorphic transition-all duration-300 no-select no-copy">
       {/* Question Label */}
       <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-gradient-to-r from-primary to-primary-light text-primary-foreground shadow-neon">
         QUESTION
@@ -78,6 +89,25 @@ export function QuizQuestion({ question, onAnswer }: QuizQuestionProps) {
               <span className="text-base sm:text-lg font-medium">{option}</span>
             </button>
           ))}
+
+          {selectedOption !== null && (
+            <>
+              <div className="h-2" />
+              <button
+                onClick={handleOptionSubmit}
+                className={cn(
+                  "w-full p-4 sm:p-6 rounded-lg",
+                  "bg-gradient-to-r from-primary to-primary-light",
+                  "text-primary-foreground font-bold tracking-wider",
+                  "shadow-neon transition-all duration-300",
+                  "hover:scale-[1.02] active:scale-[0.98]",
+                  "text-base sm:text-lg"
+                )}
+              >
+                Lanjutkan
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <div className="flex flex-col gap-4">
@@ -94,21 +124,23 @@ export function QuizQuestion({ question, onAnswer }: QuizQuestionProps) {
             )}
             placeholder="Type your answer here..."
           />
-          <button
-            onClick={handleTextSubmit}
-            disabled={!textAnswer.trim()}
-            className={cn(
-              "w-full p-4 sm:p-6 rounded-lg",
-              "bg-gradient-to-r from-primary to-primary-light",
-              "text-primary-foreground font-bold tracking-wider",
-              "shadow-neon transition-all duration-300",
-              "hover:scale-[1.02] active:scale-[0.98]",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
-              "text-base sm:text-lg"
-            )}
-          >
-            Submit Answer
-          </button>
+          {textAnswer && (
+            <button
+              onClick={handleTextSubmit}
+              disabled={!textAnswer.trim()}
+              className={cn(
+                "w-full p-4 sm:p-6 rounded-lg",
+                "bg-gradient-to-r from-primary to-primary-light",
+                "text-primary-foreground font-bold tracking-wider",
+                "shadow-neon transition-all duration-300",
+                "hover:scale-[1.02] active:scale-[0.98]",
+                "disabled:opacity-50 disabled:cursor-not-allowed",
+                "text-base sm:text-lg"
+              )}
+            >
+              Lanjutkan
+            </button>
+          )}
         </div>
       )}
     </div>

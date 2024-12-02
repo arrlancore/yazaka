@@ -1,8 +1,8 @@
-# Superkelas - MVP Documentation
+# Insperasi - MVP Documentation
 Platform pembantu guru dalam membuat dan menyampaikan pembelajaran yang lebih interaktif
 
 ## Overview
-Superkelas adalah platform yang membantu guru membuat modul ajar dan menyampaikannya dalam format yang lebih interaktif kepada siswa. Platform ini independen dari sistem sekolah, memungkinkan guru untuk berkreasi dan berinovasi dalam pembelajaran.
+Insperasi adalah platform yang membantu guru membuat modul ajar dan menyampaikannya dalam format yang lebih interaktif kepada siswa. Platform ini independen dari sistem sekolah, memungkinkan guru untuk berkreasi dan berinovasi dalam pembelajaran.
 
 ## Target User
 1. **Guru**
@@ -147,7 +147,7 @@ graph LR
 - Marketplace integration
 - Parent portal
 
-# Superkelas Development Action Items - MVP Focus
+# Insperasi Development Action Items - MVP Focus
 Tech Stack: React, NextJS, TypeScript, Tailwind CSS, shadcn/ui, Supabase
 
 ## Phase 1: Foundation

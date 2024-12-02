@@ -6,6 +6,7 @@ export interface Question {
   type: QuestionType;
   options?: string[];
   correctAnswer: string;
+  timeLimit?: number;
 }
 
 export interface QuizState {

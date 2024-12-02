@@ -118,7 +118,7 @@ export function HomeTemplate() {
             Siap Memulai Perjalanan Mengajar yang Lebih Baik?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Bergabung dengan ribuan guru yang telah menggunakan Superkelas.com
+            Bergabung dengan ribuan guru yang telah menggunakan Insperasi.com
             untuk membuat pembelajaran lebih interaktif
           </p>
           <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-primary to-primary-light text-primary-foreground font-semibold text-lg shadow-neon hover:scale-105 transition-transform">

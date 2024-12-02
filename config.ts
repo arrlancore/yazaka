@@ -1,15 +1,15 @@
 export const brand = {
-  title: "SuperKelas",
+  title: "Insperasi",
   domain: "com",
 };
 export const brandName = `${brand.title}.${brand.domain}`;
 
 // app
-export const appSlogan = "Boost your productivity with SuperKelas";
+export const appSlogan = "Boost your productivity with Insperasi";
 export const appTitle = `${appSlogan} | ${brandName}`;
 export const appDescription =
   "Platform untuk guru SD yang berinovasi dan kreatif";
-export const appUrl = "https://superkelas.com";
+export const appUrl = "https://insperasi.com";
 export const appLocale = "id_ID";
 
 // blog
