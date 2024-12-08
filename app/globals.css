@@ -98,3 +98,37 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.7);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0);
+  }
+}
+
+@keyframes criticalPulseGlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+.urgent-prayer {
+  animation: pulseGlow 2s infinite;
+}
+
+.critical-prayer {
+  animation: criticalPulseGlow 1s infinite;
+}

@@ -1,15 +1,15 @@
 export const brand = {
-  title: "Insperasi",
-  domain: "com",
+  title: "Fokus",
+  domain: "muslim",
 };
-export const brandName = `${brand.title}.${brand.domain}`;
+export const brandName = `${brand.title}${brand.domain}`;
 
 // app
-export const appSlogan = "Boost your productivity with Insperasi";
+export const appSlogan = "Jadilah Versi Terbaik Dirimu, Dalam Islam";
 export const appTitle = `${appSlogan} | ${brandName}`;
 export const appDescription =
-  "Platform untuk guru SD yang berinovasi dan kreatif";
-export const appUrl = "https://insperasi.com";
+  "Aplikasi yang membantu kamu tetap produktif sebagai seorang muslim, di era yang banyak sekali godaan-godaan yang melalaikan";
+export const appUrl = "https://fokusmuslim.org";
 export const appLocale = "id_ID";
 
 // blog

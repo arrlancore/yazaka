@@ -1,52 +1,74 @@
 import React from "react";
-import { Button } from "./ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Book, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+
+const topSurah = [
+  "Al-Fatihah",
+  "Al-Kahf",
+  "Al-Mulk",
+  "Al-Waqi'ah",
+  "Yasin",
+  "Ar-Rahman",
+];
 
 const QuranLastRead = () => {
   return (
-    <Card className="bg-white/10 backdrop-blur-md border border-white/20 container shadow-none rounded-none md:rounded-3xl overflow-hidden mt-8">
-      <CardHeader className="px-4 pt-4 pb-0 md:px-6 md:pt-6">
-        <CardTitle className="text-2xl md:text-3xl font-extrabold text-white">
-          Bacaan Qur'an
-        </CardTitle>
+    <Card className="container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
+      <CardHeader className="p-6 text-primary">
+        <CardTitle className="text-2xl font-bold">Bacaan Qur'an</CardTitle>
       </CardHeader>
-      <CardContent className="p-4 md:p-6">
-        <div className="font-bold mb-2">Terakhir dibaca:</div>
-        <div className="flex items-center justify-between mb-4 bg-white/5 p-3 rounded-lg">
-          <div className="text-lg text-gray-300">Al Maidah Ayat 54</div>
-          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-1 px-4 rounded-full text-sm">
-            Lanjut
-          </Button>
-        </div>
-        <div className="font-bold mb-2">Surat pilihan:</div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {[
-            { name: "Al-Fatihah", verses: "7 ayat" },
-            { name: "Al-Kahf", verses: "110 ayat" },
-            { name: "Al-Mulk", verses: "30 ayat" },
-            { name: "Yasin", verses: "83 ayat" },
-            { name: "Al-Waqi'ah", verses: "96 ayat" },
-            { name: "Ar-Rahman", verses: "78 ayat" },
-          ].map((surah, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between bg-white/5 p-2 rounded-lg hover:bg-white/10 transition-all duration-300"
-            >
+      <CardContent className="p-4">
+        <div className="mb-4">
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">
+            Terakhir dibaca:
+          </h3>
+          <div className="flex items-center justify-between p-3 rounded-lg bg-card hover:bg-primary/5 transition-all duration-300">
+            <div className="flex items-center space-x-3">
+              <Book className="text-primary" size={24} />
               <div>
-                <span className="text-white font-semibold">{surah.name}</span>
-                <span className="text-gray-400 text-sm ml-2">
-                  ({surah.verses})
-                </span>
+                <div className="text-lg font-semibold">Al Maidah</div>
+                <div className="text-sm text-muted-foreground">Ayat 54</div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-blue-400 hover:text-blue-300"
-              >
-                Baca
-              </Button>
             </div>
-          ))}
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              Lanjut
+            </Button>
+          </div>
+        </div>
+
+        <div className="mb-2">
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">
+            Surat pilihan:
+          </h3>
+          <div className="flex items-center justify-between p-3 rounded-lg bg-card hover:bg-primary/5 transition-all duration-300">
+            <div className="flex flex-wrap gap-2">
+              {topSurah.map((surah, index) => (
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className={cn(
+                    "cursor-pointer transition-all duration-300",
+                    "bg-gradient-to-br from-white to-gray-100 dark:from-gray-800 dark:to-gray-900",
+                    "border border-gray-200 dark:border-gray-700",
+                    "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1),_0_1px_3px_0_rgba(0,0,0,0.1),_0_1px_2px_-1px_rgba(0,0,0,0.1)]",
+                    "dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),_0_1px_3px_0_rgba(0,0,0,0.1),_0_1px_2px_-1px_rgba(0,0,0,0.1)]",
+                    "hover:shadow-[inset_0_1px_3px_0_rgba(0,0,0,0.1),_0_1px_2px_-1px_rgba(0,0,0,0.1)]",
+                    "dark:hover:shadow-[inset_0_1px_3px_0_rgba(0,0,0,0.1),_0_1px_2px_-1px_rgba(0,0,0,0.1)]",
+                    "hover:bg-gradient-to-tl hover:from-gray-100 hover:to-white",
+                    "dark:hover:from-gray-900 dark:hover:to-gray-800",
+                    "text-gray-800 dark:text-gray-200",
+                    "hover:text-primary dark:hover:text-primary-foreground",
+                    "font-medium"
+                  )}
+                >
+                  {surah}
+                </Badge>
+              ))}
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

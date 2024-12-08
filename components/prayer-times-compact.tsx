@@ -28,7 +28,7 @@ interface Location {
   longitude: number;
 }
 
-const PrayerTimes = () => {
+const PrayerTimesCompact = () => {
   const [location, setLocation] = useState<Location>({
     latitude: 0,
     longitude: 0,
@@ -52,7 +52,6 @@ const PrayerTimes = () => {
 
   const prayerNames: { [key: string]: string } = {
     fajr: "Subuh",
-    sunrise: "Terbit",
     dhuhr: "Dzuhur",
     asr: "Ashar",
     maghrib: "Maghrib",
@@ -219,100 +218,48 @@ const PrayerTimes = () => {
   };
 
   return (
-    <Card className="container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
+    <Card className="p-0 shadow-sm container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem]">
       <CardContent className="p-0">
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary to-primary-light p-6 text-primary-foreground">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Jadwal Shalat</h2>
-            <Button
-              variant="ghost"
-              onClick={() =>
-                requestLocation(
-                  () => {},
-                  () => {}
-                )
-              }
-              className="text-xs p-2 rounded-full hover:bg-white/20"
-            >
-              <MapPin size={18} />
-            </Button>
-          </div>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-5xl font-bold">
-              {currentTime.toLocaleString("id-ID", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-            <span className="text-xl opacity-80">WIB</span>
-          </div>
-          <div className="mt-2 text-sm opacity-80">
-            {currentTime.toLocaleString("id-ID", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </div>
-          {hijriDate && <div className="text-sm opacity-70">{hijriDate} H</div>}
-        </div>
-
-        {/* Next Prayer */}
-        {nextPrayer && (
-          <div className="bg-card p-4 flex items-center justify-between">
-            <div>
-              <span className="text-sm text-muted-foreground">
-                Shalat selanjutnya
-              </span>
-              <h3 className="text-xl font-bold text-primary">
-                {nextPrayer.name}
-              </h3>
-            </div>
-            <div className="text-right">
-              <span className="text-2xl font-bold">{nextPrayer.time}</span>
-            </div>
-          </div>
-        )}
-
-        {/* Prayer Times Grid */}
-        <div className="grid grid-cols-3 gap-3 p-4 bg-background">
-          {Object.entries(prayerNames).map(([key, name]) => (
-            <div
-              key={key}
-              className={cn(
-                "flex flex-col items-center justify-center p-3 rounded-2xl",
-                "bg-gradient-to-br from-card to-card/80",
-                "hover:from-primary/10 hover:to-primary/5",
-                "transition-all duration-300 ease-in-out",
-                "shadow-sm hover:shadow-md",
-                "transform hover:-translate-y-1"
-              )}
-            >
-              <div className="mb-2 p-2 rounded-full bg-primary/10">
-                {getPrayerIcon(key, {
-                  size: 32,
-                  className: "text-primary",
-                })}
-              </div>
-              <span className="text-xs font-medium text-center text-muted-foreground">
-                {name}
-              </span>
-              <span className="text-sm font-bold text-center text-primary">
-                {formatTime(
-                  prayerTimes?.[
-                    key.charAt(0).toUpperCase() + key.slice(1)
-                  ]?.substring(0, 5)
+        <div className="bg-gradient-to-r from-primary to-primary-light p-0 sm:p-1 text-primary-foreground">
+          <div className="grid grid-cols-5 gap-1 p-0">
+            {Object.entries(prayerNames).map(([key, name]) => (
+              <div
+                key={key}
+                className={cn(
+                  "flex flex-col items-center justify-center p-1 sm:p-3"
                 )}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Location */}
-        <div className="p-4 flex items-center justify-center space-x-2 text-sm text-muted-foreground">
-          <MapPin size={16} className="text-primary" />
-          <span>{locationName}</span>
+              >
+                <span
+                  className={cn(
+                    "text-xs font-normal text-center text-secondary",
+                    nextPrayer?.name === name && "font-bold"
+                  )}
+                >
+                  {name}
+                </span>
+                <span className="text-sm font-bold text-center text-secondary">
+                  {formatTime(
+                    prayerTimes?.[
+                      key.charAt(0).toUpperCase() + key.slice(1)
+                    ]?.substring(0, 5)
+                  )}
+                </span>
+              </div>
+            ))}
+          </div>
+          {/* Location */}
+          <div
+            onClick={() =>
+              requestLocation(
+                () => {},
+                () => {}
+              )
+            }
+            className="relative -top-[2px] p-0 sm:p-1 cursor-pointer flex items-center justify-center space-x-2 text-[10px] text-secondary"
+          >
+            <span>{locationName ?? "Perbarui Lokasi.."}</span>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -353,4 +300,4 @@ const getPrayerIcon = (
   }
 };
 
-export default PrayerTimes;
+export default PrayerTimesCompact;

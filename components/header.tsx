@@ -37,7 +37,7 @@ function Header() {
           : "bg-background/60 backdrop-blur-sm"
       )}
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="px-4 sm:container flex h-16 items-center justify-between">
         {/* Logo Section */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -49,7 +49,7 @@ function Header() {
               <span>{brand.title}</span>
               {brand.domain && (
                 <span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-                  .{brand.domain}
+                  {brand.domain}
                 </span>
               )}
             </h1>
