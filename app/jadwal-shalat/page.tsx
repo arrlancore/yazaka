@@ -6,7 +6,7 @@ import PageContainer from "@/components/layout/page-container";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
-import PrayerTimes from "@/components/prayer-times";
+import PrayerTimes from "@/components/prayer-times/prayer-times";
 
 export default function LandingPage() {
   return (

@@ -7,9 +7,9 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import QuranLastRead from "@/components/quran-last-read";
 import TaskTracker from "@/components/task-tracker";
-import NextPrayer from "@/components/next-prayer";
 import AppList from "@/components/app-list";
-import PrayerTimesCompact from "@/components/prayer-times-compact";
+import PrayerTimesCompact from "@/components/prayer-times/prayer-times-compact";
+import NextPrayer from "@/components/prayer-times/next-prayer";
 
 export default function LandingPage() {
   return (

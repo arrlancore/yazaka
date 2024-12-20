@@ -38,7 +38,6 @@ const PrayerTimes = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [hijriDate, setHijriDate] = useState("");
   const [nextPrayer, setNextPrayer] = useState<Prayer | null>(null);
-  const [isLocationLoaded, setIsLocationLoaded] = useState(false);
 
   const dayMapping: { [key: string]: string } = {
     Sunday: "Ahad",
@@ -182,7 +181,6 @@ const PrayerTimes = () => {
             longitude: position.coords.longitude,
           };
           setLocation(newLocation);
-          setIsLocationLoaded(true);
           onSuccess(newLocation);
         },
         (error) => {
@@ -208,7 +206,6 @@ const PrayerTimes = () => {
       },
       () => {
         setLocation(defaultLocation);
-        setIsLocationLoaded(true);
         console.log("Menggunakan lokasi default:", defaultLocation);
       }
     );
