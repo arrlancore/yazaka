@@ -5,7 +5,13 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import SurahDetail from "@/components/surah-detail";
 
-function SurahDetailPage() {
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+function SurahDetailPage({ id }: PageProps) {
   return (
     <ParallaxProvider>
       <PageContainer scrollable withContentTemplate={false}>
