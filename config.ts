@@ -1,6 +1,6 @@
 export const brand = {
-  title: "Fokus",
-  domain: "muslim",
+  title: "Be",
+  domain: "khair",
 };
 export const brandName = `${brand.title}${brand.domain}`;
 
@@ -9,7 +9,7 @@ export const appSlogan = "Jadilah Versi Terbaik Dirimu, Dalam Islam";
 export const appTitle = `${appSlogan} | ${brandName}`;
 export const appDescription =
   "Aplikasi yang membantu kamu tetap produktif sebagai seorang muslim, di era yang banyak sekali godaan-godaan yang melalaikan";
-export const appUrl = "https://fokusmuslim.org";
+export const appUrl = "https://bekhair.org";
 export const appLocale = "id_ID";
 
 // blog

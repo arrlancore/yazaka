@@ -16,29 +16,10 @@ import {
 import { useState, useEffect } from "react";
 import { usePrayerTimesGlobal } from "@/hooks/usePrayerTimes";
 
-const getPrayerIcon = (prayer: string) => {
-  switch (prayer.toLowerCase()) {
-    case "subuh":
-      return <FajrDawnIcon size={32} className="text-primary" />;
-    case "terbit":
-      return <SunriseIcon size={32} className="text-primary" />;
-    case "dzuhur":
-      return <SunIcon size={32} className="text-primary" />;
-    case "ashar":
-      return <AfternoonSunIcon size={32} className="text-primary" />;
-    case "maghrib":
-      return <MagrbIcon size={32} className="text-primary" />;
-    case "isya":
-      return <IsyaIcon size={32} className="text-primary" />;
-    default:
-      return <SunIcon size={32} className="text-primary" />;
-  }
-};
-
 const NextPrayer = () => {
   const { nextPrayer, currentTime } = usePrayerTimesGlobal();
   const [timeRemaining, setTimeRemaining] = useState("-- : --");
-  const [urgencyLevel, setUrgencyLevel] = useState("normal");
+  const [urgencyLevel, setUrgencyLevel] = useState("low");
 
   const calculateTimeRemaining = () => {
     if (!nextPrayer || !nextPrayer.time) {

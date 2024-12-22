@@ -4,9 +4,9 @@ import { brand } from "@/config";
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-background">
+    <footer className="border-t bg-background mt-8">
       <div className="container py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-semibold mb-4">Product</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
@@ -102,14 +102,14 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-        </div>
+        </div> */}
 
         <Separator className="my-8" />
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} {brand.title}
-            {brand.domain ? "." + brand.domain : ""} All rights reserved.
+            {brand.domain ? "" + brand.domain : ""} All rights reserved.
           </div>
           <div className="flex gap-4">
             <a href="#" className="text-muted-foreground hover:text-foreground">

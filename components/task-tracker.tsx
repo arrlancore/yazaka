@@ -155,197 +155,180 @@ function TaskTracker() {
     }));
   };
 
+  const tasksCompletedForToday = tasks.completed.filter(
+    (t) =>
+      new Date(t.completedAt as string).toDateString() ===
+      new Date().toDateString()
+  );
+
   return (
     <Card className="container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
       <CardHeader className="p-6 text-primary">
-        <CardTitle className="text-2xl font-bold">Aktivitas</CardTitle>
+        <CardTitle className="text-2xl font-bold">Kegiatan</CardTitle>
       </CardHeader>
-      <CardContent className="p-4">
-        <Tabs
-          value={activeTab}
-          onValueChange={(value) => setActiveTab(value as "focus" | "tasks")}
-        >
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="focus">Fokus</TabsTrigger>
-            <TabsTrigger value="tasks">Tugas</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="focus" className="space-y-4">
-            {tasks.active ? (
-              <div className="text-center space-y-4">
-                <h3 className="text-xl font-semibold">{tasks.active.title}</h3>
-                <div className="text-4xl font-mono">
-                  {timer.mode === "focus"
-                    ? formatTime(timer.time)
-                    : formatTime(timer.breakTime)}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {timer.mode === "focus" ? "Waktu Fokus" : "Waktu Istirahat"}
-                </p>
-                <div className="flex justify-center gap-2">
-                  {!timer.isRunning && timer.mode === "focus" && (
-                    <Button onClick={handleStartFocus}>
-                      <Play className="w-4 h-4 mr-2" />
-                      Fokus
-                    </Button>
-                  )}
-                  {timer.isRunning && (
-                    <Button onClick={handlePause} variant="outline">
-                      <Pause className="w-4 h-4 mr-2" />
-                      Pause
-                    </Button>
-                  )}
-                  {!timer.isRunning && timer.time > 0 && (
-                    <Button onClick={handleComplete} variant="destructive">
-                      <Check className="w-4 h-4 mr-2" />
-                      Selesai
-                    </Button>
-                  )}
-                  {timer.mode === "focus" && timer.time > 0 && (
-                    <Button onClick={handleBreak} variant="secondary">
-                      <Coffee className="w-4 h-4 mr-2" />
-                      Istirahat
-                    </Button>
-                  )}
-                  {timer.mode === "break" && (
-                    <Button onClick={handleResume} variant="secondary">
-                      <Timer className="w-4 h-4 mr-2" />
-                      Lanjut Fokus
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <Alert>
-                <AlertTitle>Tidak Ada Tugas Aktif</AlertTitle>
-                <AlertDescription className="text-muted-foreground">
-                  Pergi ke tab Tugas untuk mengaktifkan tugas
-                </AlertDescription>
-              </Alert>
-            )}
-          </TabsContent>
-
-          <TabsContent value="tasks" className="space-y-4">
-            <div className="flex gap-2 pt-2">
-              <Input
-                placeholder="Tambah tugas baru..."
-                value={newTaskInput}
-                onChange={(e) => setNewTaskInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleAddTask()}
-              />
-              <Button
-                onClick={handleAddTask}
-                disabled={tasks.inactive.length >= INACTIVE_TASK_LIMIT}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Tambah
-              </Button>
+      <CardContent className="p-4 space-y-6">
+        {/* Active Task and Timer Section */}
+        {tasks.active ? (
+          <div className="text-center space-y-4">
+            <h3 className="text-xl font-semibold">{tasks.active.title}</h3>
+            <div className="text-4xl font-mono">
+              {timer.mode === "focus"
+                ? formatTime(timer.time)
+                : formatTime(timer.breakTime)}
             </div>
+            <p className="text-sm text-muted-foreground">
+              {timer.mode === "focus" ? "Waktu Fokus" : "Waktu Istirahat"}
+            </p>
+            <div className="flex justify-center gap-2">
+              {!timer.isRunning && timer.mode === "focus" && (
+                <Button onClick={handleStartFocus}>
+                  <Play className="w-4 h-4 mr-2" />
+                  Fokus
+                </Button>
+              )}
+              {timer.isRunning && (
+                <Button onClick={handlePause} variant="outline">
+                  <Pause className="w-4 h-4 mr-2" />
+                  Pause
+                </Button>
+              )}
+              {!timer.isRunning && timer.time > 0 && (
+                <Button onClick={handleComplete} variant="destructive">
+                  <Check className="w-4 h-4 mr-2" />
+                  Selesai
+                </Button>
+              )}
+              {timer.mode === "focus" && timer.time > 0 && (
+                <Button onClick={handleBreak} variant="secondary">
+                  <Coffee className="w-4 h-4 mr-2" />
+                  Istirahat
+                </Button>
+              )}
+              {timer.mode === "break" && (
+                <Button onClick={handleResume} variant="secondary">
+                  <Timer className="w-4 h-4 mr-2" />
+                  Lanjut Fokus
+                </Button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <Alert>
+            <AlertTitle>Tidak Ada Kegiatan Aktif</AlertTitle>
+            <AlertDescription className="text-muted-foreground">
+              Pilih kegiatan dari daftar di bawah untuk memulai
+            </AlertDescription>
+          </Alert>
+        )}
 
-            {tasks.inactive.length >= INACTIVE_TASK_LIMIT && (
-              <Alert className="bg-destructive/15">
-                <AlertTitle>Batas Tugas Tercapai</AlertTitle>
-                <AlertDescription>
-                  Selesaikan beberapa tugas sebelum menambahkan yang baru
-                </AlertDescription>
-              </Alert>
-            )}
+        {/* Task Input Section */}
+        <div className="space-y-4">
+          <div className="flex gap-2">
+            <Input
+              placeholder="Tambah kegiatan baru..."
+              value={newTaskInput}
+              onChange={(e) => setNewTaskInput(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleAddTask()}
+            />
+            <Button
+              onClick={handleAddTask}
+              disabled={tasks.inactive.length >= INACTIVE_TASK_LIMIT}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Tambah
+            </Button>
+          </div>
 
-            {tasks.inactive.length === 0 && tasks.completed.length === 0 && (
-              <Alert className="bg-success/15">
-                <AlertTitle>Tidak Ada Tugas Aktif</AlertTitle>
-                <AlertDescription>
-                  Masukkan tugas baru atau ketikkan "Enter" untuk menambahkan
-                  tugas
-                </AlertDescription>
-              </Alert>
-            )}
+          {tasks.inactive.length >= INACTIVE_TASK_LIMIT && (
+            <Alert className="bg-destructive/15">
+              <AlertTitle>Batas Kegiatan Tercapai</AlertTitle>
+              <AlertDescription>
+                Selesaikan beberapa kegiatan sebelum menambahkan yang baru
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
 
-            {tasks.inactive.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="font-semibold">Tugas Tertunda</h3>
-                {tasks.inactive.map((task) => (
-                  <Card key={task.id}>
-                    <CardContent className="flex items-center justify-between p-4">
-                      <span>{task.title}</span>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() => handleActivateTask(task)}
-                          variant="outline"
-                        >
-                          <Play className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleRemoveTask(task.id)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
+        {/* Inactive Tasks Section */}
+        {tasks.inactive.length > 0 && (
+          <div className="space-y-2">
+            <h3 className="font-semibold">Kegiatan Tertunda</h3>
+            {tasks.inactive.map((task) => (
+              <Card key={task.id}>
+                <CardContent className="flex items-center justify-between p-4">
+                  <span>{task.title}</span>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => handleActivateTask(task)}
+                      variant="outline"
+                    >
+                      <Play className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleRemoveTask(task.id)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
-            {tasks.completed.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="font-semibold">Tugas Selesai</h3>
-                {tasks.completed
-                  .filter((_, i) => i < 5) // limit 5
-                  .map((task) => (
-                    <Card key={task.id}>
-                      <CardContent className="p-4">
-                        <div className="flex flex-col gap-1">
-                          <div className="flex justify-between items-center">
-                            <span
-                              className="font-medium truncate flex-1 mr-2"
-                              title={task.title}
-                            >
-                              {task.title}
-                            </span>
-                            <span className="text-xs text-muted-foreground whitespace-nowrap">
-                              {new Date(task.completedAt!).toLocaleDateString(
-                                "id-ID",
-                                {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "2-digit",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex justify-between items-center text-xs text-muted-foreground">
-                            <span>
-                              Dibuat:{" "}
-                              {new Date(task.createdAt).toLocaleDateString(
-                                "id-ID",
-                                {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "2-digit",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )}
-                            </span>
-                            <span>
-                              Fokus: {formatTime(task.focusTime ?? 0)} |
-                              Istirahat: {formatTime(task.breakTime ?? 0)}
-                            </span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+        {/* Completed Tasks Section */}
+        {tasksCompletedForToday.length > 0 && (
+          <div className="space-y-2">
+            <h3 className="font-semibold">Kegiatan Selesai Hari Ini</h3>
+            {tasksCompletedForToday.map((task) => (
+              <Card key={task.id}>
+                <CardContent className="p-4">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex justify-between items-center">
+                      <span
+                        className="font-medium truncate flex-1 mr-2"
+                        title={task.title}
+                      >
+                        {task.title}
+                      </span>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {new Date(task.completedAt!).toLocaleDateString(
+                          "id-ID",
+                          {
+                            day: "numeric",
+                            month: "short",
+                            year: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs text-muted-foreground">
+                      <span>
+                        Dibuat:{" "}
+                        {new Date(task.createdAt).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                      <span>
+                        Fokus: {formatTime(task.focusTime ?? 0)} | Istirahat:{" "}
+                        {formatTime(task.breakTime ?? 0)}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
