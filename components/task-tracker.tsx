@@ -35,12 +35,19 @@ interface TimerState {
 
 function TaskTracker() {
   const [activeTab, setActiveTab] = useState<"focus" | "tasks">("focus");
-  const [tasks, setTasks] = useState<TaskState>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved
-      ? JSON.parse(saved)
-      : { active: null, inactive: [], completed: [] };
+  const [tasks, setTasks] = useState<TaskState>({
+    active: null,
+    inactive: [],
+    completed: [],
   });
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      setTasks(JSON.parse(saved));
+    }
+  }, []);
+
   const [timer, setTimer] = useState<TimerState>({
     time: 0,
     isRunning: false,

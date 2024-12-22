@@ -13,8 +13,8 @@ import {
   SunIcon,
   SunriseIcon,
 } from "./prayer-icons";
-import { usePrayerTimes } from "@/hooks/usePrayerTimes";
 import { useState, useEffect } from "react";
+import { usePrayerTimesGlobal } from "@/hooks/usePrayerTimes";
 
 const getPrayerIcon = (prayer: string) => {
   switch (prayer.toLowerCase()) {
@@ -36,7 +36,7 @@ const getPrayerIcon = (prayer: string) => {
 };
 
 const NextPrayer = () => {
-  const { nextPrayer, currentTime } = usePrayerTimes();
+  const { nextPrayer, currentTime } = usePrayerTimesGlobal();
   const [timeRemaining, setTimeRemaining] = useState("-- : --");
   const [urgencyLevel, setUrgencyLevel] = useState("normal");
 
