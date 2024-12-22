@@ -1,110 +1,104 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+"use client";
+import { useEffect } from "react";
+import { create } from "zustand";
+import {
+  createPrayerTimeUpdater,
+  defaultLocation,
+  formatHijriDate,
+  requestLocation,
+} from "@/lib/prayer-times-utils";
+import { Location, Prayer } from "@/types/prayerTypes";
+import useFetchPrayerTime from "@/hooks/useFetchPrayerTime";
+import { useLocationWithName } from "./useLocationWithName";
 
-interface PrayerTime {
-  [key: string]: string;
+interface PrayerTimesState {
+  location?: Location;
+  nextPrayer: Prayer | null;
+  currentTime: Date;
+  hijriDate: string;
+  prayerTimesData: any; // Replace 'any' with the actual type from useFetchPrayerTime
+  locationName: string;
+  setLocation: (location: Location) => void;
+  setNextPrayer: (prayer: Prayer | null) => void;
+  setCurrentTime: (time: Date) => void;
+  setHijriDate: (date: string) => void;
+  setPrayerTimesData: (data: any) => void; // Replace 'any' with the actual type
+  setLocationName: (name: string) => void;
 }
 
-interface Prayer {
-  name: string;
-  time: string;
-}
+export const usePrayerTimesStore = create<PrayerTimesState>((set) => ({
+  location: defaultLocation,
+  nextPrayer: null,
+  currentTime: new Date(),
+  hijriDate: "",
+  prayerTimesData: null,
+  locationName: "",
+  setLocation: (location) => set({ location }),
+  setNextPrayer: (prayer) => set({ nextPrayer: prayer }),
+  setCurrentTime: (time) => set({ currentTime: time }),
+  setHijriDate: (date) => set({ hijriDate: date }),
+  setPrayerTimesData: (data) => set({ prayerTimesData: data }),
+  setLocationName: (name) => set({ locationName: name }),
+}));
 
-interface Location {
-  latitude: number;
-  longitude: number;
-}
+const prayerNames: { [key: string]: string } = {
+  fajr: "Subuh",
+  sunrise: "Terbit",
+  dhuhr: "Dzuhur",
+  asr: "Ashar",
+  maghrib: "Maghrib",
+  isha: "Isya",
+};
 
-export const usePrayerTimes = () => {
-  const [location, setLocation] = useState<Location>({
-    latitude: 0,
-    longitude: 0,
-  });
-  const [prayerTimes, setPrayerTimes] = useState<PrayerTime>({});
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [nextPrayer, setNextPrayer] = useState<Prayer | null>(null);
+export const usePrayerTimesGlobal = () => {
+  const {
+    nextPrayer,
+    currentTime,
+    hijriDate,
+    prayerTimesData,
+    setLocation,
+    setNextPrayer,
+    setCurrentTime,
+    setHijriDate,
+    setPrayerTimesData,
+  } = usePrayerTimesStore();
 
-  useEffect(() => {
-    const fetchPrayerTimes = async () => {
-      if (location.latitude === 0 || location.longitude === 0) return;
-
-      try {
-        const response = await axios.get(
-          `https://api.aladhan.com/v1/calendar?latitude=${location.latitude}&longitude=${location.longitude}&method=20`
-        );
-
-        const today = response.data.data[currentTime.getDate() - 1];
-        setPrayerTimes(today.timings);
-      } catch (error) {
-        console.error("Failed to fetch prayer times", error);
-      }
-    };
-
-    if (location.latitude && location.longitude) {
-      fetchPrayerTimes();
-    }
-  }, [location]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      setCurrentTime(now);
-      findNextPrayer(now);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [prayerTimes]);
-
-  const findNextPrayer = (now: Date) => {
-    const times = prayerTimes;
-    if (!times || Object.keys(times).length === 0) return;
-
-    const prayers: Prayer[] = [
-      { name: "Subuh", time: times.Fajr || "" },
-      { name: "Terbit", time: times.Sunrise || "" },
-      { name: "Dzuhur", time: times.Dhuhr || "" },
-      { name: "Ashar", time: times.Asr || "" },
-      { name: "Maghrib", time: times.Maghrib || "" },
-      { name: "Isya", time: times.Isha || "" },
-    ];
-
-    const currentHourMinute = now.getHours() * 60 + now.getMinutes();
-
-    const nextPrayerObj =
-      prayers.find((prayer) => {
-        if (!prayer.time) return false;
-        const cleanTime = prayer.time.replace(/\s*\(WIB\)\s*/, "").trim();
-        const [hours, minutes] = cleanTime.split(":").map(Number);
-        if (isNaN(hours) || isNaN(minutes)) return false;
-        const prayerMinutes = hours * 60 + minutes;
-        return prayerMinutes > currentHourMinute;
-      }) || prayers[0];
-
-    setNextPrayer(nextPrayerObj);
-  };
+  const { location, locationName } = useLocationWithName();
+  const { data: fetchedPrayerTimesData } = useFetchPrayerTime(
+    location ?? defaultLocation
+  );
 
   useEffect(() => {
-    const defaultLocation: Location = {
-      latitude: -6.2146,
-      longitude: 106.8451,
-    };
+    if (fetchedPrayerTimesData) {
+      setPrayerTimesData(fetchedPrayerTimesData);
+      setHijriDate(formatHijriDate(fetchedPrayerTimesData.date.hijri));
 
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        () => {
-          setLocation(defaultLocation);
-        }
+      const updatePrayerTime = createPrayerTimeUpdater(
+        setCurrentTime,
+        setNextPrayer,
+        fetchedPrayerTimesData
       );
-    } else {
-      setLocation(defaultLocation);
-    }
-  }, []);
+      const timer = setInterval(updatePrayerTime, 1000);
 
-  return { nextPrayer, currentTime };
+      return () => clearInterval(timer);
+    }
+  }, [
+    fetchedPrayerTimesData,
+    setPrayerTimesData,
+    setHijriDate,
+    setCurrentTime,
+    setNextPrayer,
+  ]);
+
+  return {
+    prayerTimes: prayerTimesData?.timings,
+    nextPrayer,
+    currentTime,
+    hijriDate,
+    location,
+    locationName,
+    setLocation,
+    requestLocation,
+    prayerNames,
+  };
 };

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
+
 import localFont from "next/font/local";
 import "./globals.css";
 import {
@@ -10,6 +11,7 @@ import {
   defaultAuthor,
   appLocale,
 } from "@/config";
+import Providers from "@/components/providers";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -74,7 +76,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <Providers>{children}</Providers>
         </ThemeProvider>
       </body>
     </html>

@@ -1,14 +1,12 @@
 "use client";
-
 import { ParallaxProvider } from "react-scroll-parallax";
 
 import PageContainer from "@/components/layout/page-container";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import PrayerTimes from "@/components/prayer-times/prayer-times";
 
-import PrayerTimes from "@/components/prayer-times";
-
-export default function LandingPage() {
+export default async function LandingPage() {
   return (
     <ParallaxProvider>
       <PageContainer scrollable withContentTemplate={false}>
