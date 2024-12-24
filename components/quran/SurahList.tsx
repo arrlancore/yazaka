@@ -21,7 +21,7 @@ const SurahList: React.FC<SurahListProps> = ({ surahs }) => {
         <div className="bg-background">
           {surahs.map((surah) => (
             <Link
-              href={`/quran/surat/${surah.number}_${encodeURIComponent(surah.name)}`}
+              href={`/quran/surah/${surah.number}_${encodeURIComponent(surah.name)}`}
               key={surah.number}
             >
               <div className="flex justify-between items-center p-4 border-b border-border hover:bg-primary/5 transition-colors">

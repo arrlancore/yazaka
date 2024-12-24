@@ -53,7 +53,40 @@ const dummy = {
     },
   ],
 };
-const SurahDetail = () => {
+
+type SurahDetailProps = {
+  number: number;
+  name: string;
+  arabicName: string;
+  meaning: string;
+  totalVerses: number;
+  type: string;
+  verses: {
+    number: number;
+    arabic: string;
+    translation: string;
+    transliteration: string;
+  }[];
+};
+
+const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
+  return {
+    number: surah.number,
+    name: surah.name.transliteration.id,
+    arabicName: surah.name.short,
+    meaning: surah.name.translation.id,
+    totalVerses: surah.numberOfVerses,
+    type: surah.revelation.id,
+    verses: surah.verses.map((verse) => ({
+      number: verse.number.inSurah,
+      arabic: verse.text.arab,
+      translation: verse.translation.id,
+      transliteration: verse.text.transliteration.en,
+    })),
+  };
+};
+
+const SurahDetail: React.FC<SurahDetailProps> = (props) => {
   const getSurah = () => dummy;
   const surah = getSurah();
 

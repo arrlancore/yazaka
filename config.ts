@@ -17,3 +17,7 @@ export const blogTitle = "Blog";
 export const blogDescription = `Latest news, insights, and tutorials from the ${brand.title}.${brand.domain} team.`;
 export const blogUrl = appUrl + "blog";
 export const defaultAuthor = "Tim Redaksi";
+
+export const URLS = {
+  quranApi: "https://quran-api-tau.vercel.app",
+};

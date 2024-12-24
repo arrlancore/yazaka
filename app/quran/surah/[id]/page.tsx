@@ -4,6 +4,7 @@ import PageContainer from "@/components/layout/page-container";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import SurahDetail from "@/components/surah-detail";
+import { fetchQuranSuratByNumber } from "@/services/quranServices";
 
 interface PageProps {
   params: {
@@ -11,7 +12,11 @@ interface PageProps {
   };
 }
 
-function SurahDetailPage({ id }: PageProps) {
+async function SurahDetailPage({ params }: PageProps) {
+  const [number, name] = params?.id?.split("_");
+  const surahDetail: SurahDetailResponse = await fetchQuranSuratByNumber(
+    parseInt(number)
+  );
   return (
     <ParallaxProvider>
       <PageContainer scrollable withContentTemplate={false}>
