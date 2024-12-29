@@ -1,10 +1,11 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Book } from "lucide-react";
+import { Book, ChevronLeft } from "lucide-react";
 import Verse from "./verse";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SurahNavigation from "./surah-navigation";
+import { useRouter } from "next/navigation";
 
 export type SurahDetailProps = {
   number: number;
@@ -31,6 +32,8 @@ export type SurahDetailProps = {
 };
 
 const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
+  const router = useRouter();
+
   return (
     <div className="max-w-2xl mx-auto mb-8">
       {/* Sticky Header */}
@@ -41,10 +44,20 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
         )}
       >
         <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-lg font-bold">{surah.name}</h2>
-            <div className="text-xs opacity-80">
-              {surah.arabicName} • {surah.meaning}
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full hover:bg-white/20"
+              onClick={() => router.back()}
+            >
+              <ChevronLeft size={20} />
+            </Button>
+            <div>
+              <h2 className="text-lg font-bold">{surah.name}</h2>
+              <div className="text-xs opacity-80">
+                {surah.arabicName} • {surah.meaning}
+              </div>
             </div>
           </div>
           <div className="flex items-center space-x-2">
