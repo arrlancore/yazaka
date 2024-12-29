@@ -29,7 +29,7 @@ const apps: AppItem[] = [
     icon: <QiblaCompassIcon size={40} />,
     href: "/arah-kiblat",
   },
-  { name: "Doa", icon: <DuaIcon size={40} />, href: "/doa" },
+  // { name: "Doa", icon: <DuaIcon size={40} />, href: "/doa" },
 ];
 
 const AppList = () => {

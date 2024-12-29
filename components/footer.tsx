@@ -104,14 +104,14 @@ export default function Footer() {
           </div>
         </div> */}
 
-        <Separator className="my-8" />
+        {/* <Separator className="my-8" /> */}
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} {brand.title}
             {brand.domain ? "" + brand.domain : ""} All rights reserved.
           </div>
-          <div className="flex gap-4">
+          {/* <div className="flex gap-4">
             <a href="#" className="text-muted-foreground hover:text-foreground">
               <Github className="h-5 w-5" />
             </a>
@@ -121,7 +121,7 @@ export default function Footer() {
             <a href="#" className="text-muted-foreground hover:text-foreground">
               <Linkedin className="h-5 w-5" />
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

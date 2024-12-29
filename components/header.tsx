@@ -22,9 +22,9 @@ function Header() {
   }, []);
 
   const navItems = [
-    // { href: "#features", label: "Features" },
-    // { href: "#pricing", label: "Pricing" },
-    // { href: "#about", label: "About" },
+    { href: "/jadwal-shalat", label: "Jadwal Shalat" },
+    { href: "/quran", label: "Quran" },
+    { href: "/arah-kiblat", label: "Arah Kiblat" },
     // { href: "#contact", label: "Contact" },
   ];
 
@@ -66,7 +66,7 @@ function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className={cn(
-                  "relative text-muted-foreground transition-colors",
+                  "relative text-sm text-muted-foreground transition-colors",
                   "hover:text-foreground",
                   "after:absolute after:bottom-0 after:left-0",
                   "after:h-0.5 after:w-0",
@@ -89,7 +89,7 @@ function Header() {
         >
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
-            <Button
+            {/* <Button
               variant="ghost"
               className="hover:bg-primary/10 transition-colors"
             >
@@ -103,7 +103,7 @@ function Header() {
               )}
             >
               Get Started
-            </Button>
+            </Button> */}
             <ModeToggle />
           </div>
 
@@ -144,7 +144,7 @@ function Header() {
                 </a>
               ))}
               <div className="flex flex-col gap-2 p-4">
-                <Button variant="ghost" className="w-full justify-start">
+                {/* <Button variant="ghost" className="w-full justify-start">
                   Sign In
                 </Button>
                 <Button
@@ -156,7 +156,7 @@ function Header() {
                   )}
                 >
                   Get Started
-                </Button>
+                </Button> */}
                 <div className="flex justify-end">
                   <ModeToggle />
                 </div>

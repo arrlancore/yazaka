@@ -5,10 +5,10 @@ export const brand = {
 export const brandName = `${brand.title}${brand.domain}`;
 
 // app
-export const appSlogan = "Jadilah Versi Terbaik Dirimu, Dalam Islam";
+export const appSlogan = "Beriman, Berilmu, Berkarya";
 export const appTitle = `${appSlogan} | ${brandName}`;
 export const appDescription =
-  "Aplikasi yang membantu kamu tetap produktif sebagai seorang muslim, di era yang banyak sekali godaan-godaan yang melalaikan";
+  "Aplikasi yang memadukan spiritualitas Islam dengan produktivitas modern. Jadilah Muslim yang sukses di dunia dan akhirat dengan bantuan fitur-fitur kami yang praktis.";
 export const appUrl = "https://bekhair.org";
 export const appLocale = "id_ID";
 

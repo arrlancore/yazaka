@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 interface PopularSurahsSectionProps {
-  topSurahs: [{ name: string; number: number }];
+  topSurahs: { name: string; number: number }[];
 }
 
 const PopularSurahsSection: React.FC<PopularSurahsSectionProps> = ({
@@ -21,10 +21,10 @@ const PopularSurahsSection: React.FC<PopularSurahsSectionProps> = ({
           <div className="flex flex-wrap gap-2">
             {topSurahs.map((surah, index) => (
               <Link
+                key={index}
                 href={`/quran/surat/${surah.number}_${encodeURIComponent(surah.name)}`}
               >
                 <Badge
-                  key={index}
                   variant="secondary"
                   className={cn(
                     "cursor-pointer transition-all duration-300",
