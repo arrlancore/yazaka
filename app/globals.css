@@ -132,3 +132,10 @@ body {
 .critical-prayer {
   animation: criticalPulseGlow 1s infinite;
 }
+
+@font-face {
+  font-family: 'Uthmanic Hafs';
+  src: url('/fonts/UthmanicHafs.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}

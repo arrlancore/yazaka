@@ -149,7 +149,7 @@ const Verse = ({
           className="text-right mb-6 leading-loose select-none"
           style={{
             fontSize: "32px",
-            fontFamily: "'Uthmanic', 'Scheherazade New', serif",
+            fontFamily: "'Uthmanic Hafs', 'Scheherazade New', serif",
             lineHeight: 2,
           }}
         >

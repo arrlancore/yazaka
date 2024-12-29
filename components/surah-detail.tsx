@@ -1,66 +1,27 @@
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Book } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Book } from "lucide-react";
 import Verse from "./verse";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import SurahNavigation from "./surah-navigation";
 
-const dummy = {
-  number: 1,
-  name: "Al-Fatihah",
-  arabicName: "الفاتحة",
-  meaning: "The Opening",
-  totalVerses: 7,
-  type: "Makkiyah",
-  verses: [
-    {
-      number: 1,
-      arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-      translation: "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang",
-    },
-    {
-      number: 2,
-      arabic: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-      translation: "Segala puji bagi Allah, Tuhan seluruh alam",
-    },
-    {
-      number: 3,
-      arabic: "الرَّحْمَٰنِ الرَّحِيمِ",
-      translation: "Yang Maha Pengasih, Maha Penyayang",
-    },
-    {
-      number: 4,
-      arabic: "مَالِكِ يَوْمِ الدِّينِ",
-      translation: "Pemilik hari pembalasan",
-    },
-    {
-      number: 5,
-      arabic: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
-      translation:
-        "Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan",
-    },
-    {
-      number: 6,
-      arabic: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
-      translation: "Tunjukilah kami jalan yang lurus",
-    },
-    {
-      number: 7,
-      arabic:
-        "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
-      translation:
-        "(yaitu) jalan orang-orang yang telah Engkau beri nikmat kepadanya; bukan (jalan) mereka yang dimurkai dan bukan (pula jalan) mereka yang sesat",
-    },
-  ],
-};
-
-type SurahDetailProps = {
+export type SurahDetailProps = {
   number: number;
   name: string;
   arabicName: string;
   meaning: string;
   totalVerses: number;
   type: string;
+  preBismillah?: {
+    text: {
+      arab: string;
+      transliteration: string;
+    };
+    translation: {
+      id: string;
+    };
+  };
   verses: {
     number: number;
     arabic: string;
@@ -69,27 +30,7 @@ type SurahDetailProps = {
   }[];
 };
 
-const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
-  return {
-    number: surah.number,
-    name: surah.name.transliteration.id,
-    arabicName: surah.name.short,
-    meaning: surah.name.translation.id,
-    totalVerses: surah.numberOfVerses,
-    type: surah.revelation.id,
-    verses: surah.verses.map((verse) => ({
-      number: verse.number.inSurah,
-      arabic: verse.text.arab,
-      translation: verse.translation.id,
-      transliteration: verse.text.transliteration.en,
-    })),
-  };
-};
-
-const SurahDetail: React.FC<SurahDetailProps> = (props) => {
-  const getSurah = () => dummy;
-  const surah = getSurah();
-
+const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
   return (
     <div className="max-w-2xl mx-auto mb-8">
       {/* Sticky Header */}
@@ -124,6 +65,20 @@ const SurahDetail: React.FC<SurahDetailProps> = (props) => {
       {/* Card Content */}
       <Card className="border-none sm:border overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-none sm:shadow-lg text-foreground rounded-b-[2rem] p-0">
         <CardContent className="p-0">
+          {/* pre bismillah */}
+          {surah.preBismillah && (
+            <div className="bg-background p-4 text-center">
+              <p
+                className="text-2xl mb-2 font-arabic"
+                style={{ fontFamily: "'Uthmanic Hafs', Arial" }}
+              >
+                {surah.preBismillah.text.arab}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {surah.preBismillah.translation.id}
+              </p>
+            </div>
+          )}
           {/* Verses */}
           <div className="bg-background p-4">
             {surah.verses.map((verse) => (
@@ -136,17 +91,8 @@ const SurahDetail: React.FC<SurahDetailProps> = (props) => {
             ))}
           </div>
 
-          {/* Navigation right to left */}
-          <div className="bg-card p-4 flex justify-between">
-            <Button variant="outline" className="flex items-center space-x-2">
-              <ChevronLeft size={16} />
-              <span>Al Baqarah</span>
-            </Button>
-            <Button variant="outline" className="flex items-center space-x-2">
-              <span>An Nas</span>
-              <ChevronRight size={16} />
-            </Button>
-          </div>
+          {/* Navigation */}
+          <SurahNavigation currentSurahNumber={surah.number} />
         </CardContent>
       </Card>
     </div>

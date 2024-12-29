@@ -22,7 +22,7 @@ const PopularSurahsSection: React.FC<PopularSurahsSectionProps> = ({
             {topSurahs.map((surah, index) => (
               <Link
                 key={index}
-                href={`/quran/surat/${surah.number}_${encodeURIComponent(surah.name)}`}
+                href={`/quran/surah/${surah.number}_${encodeURIComponent(surah.name)}`}
               >
                 <Badge
                   variant="secondary"
