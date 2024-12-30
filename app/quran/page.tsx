@@ -8,6 +8,8 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Metadata } from "next";
 import { appLocale, appUrl, brandName } from "@/config";
+import { renderMd } from "@/hooks/common";
+import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Al-Quran Online | Baca dan Pelajari Al-Quran dengan Mudah",
@@ -46,7 +48,32 @@ export const metadata: Metadata = {
     "belajar Al-Quran",
   ],
 };
-const QuranPage = () => {
+
+const introContent = `
+    # Pengenalan Aplikasi Quran Online 🌙
+
+    ## Bismillah, Assalamu'alaikum Warahmatullahi Wabarakatuh
+
+    Alhamdulillah, kami senang bisa menghadirkan aplikasi Al-Quran online ini untuk Anda. Semoga aplikasi ini bisa membantu kita semua dalam membaca dan memahami Al-Quran dengan lebih mudah di tengah kesibukan sehari-hari.
+
+    ## Fitur-fitur Aplikasi
+
+    - 📖 Baca Al-Quran kapan saja dan di mana saja
+    - 🎧 Dengarkan bacaan ayat-ayat suci
+    - 💡 Akses tafsir untuk pemahaman lebih mendalam
+    - 🔍 Fitur pencarian ayat
+    - 🏷️ Penanda terakhir dibaca
+    - ⭐ Kumpulan surah-surah populer
+
+    Kami berharap aplikasi ini bisa membantu kita semua untuk lebih dekat dengan Al-Quran. Semoga dengan kemudahan ini, kita bisa meningkatkan frekuensi membaca Al-Quran dan mendapatkan keberkahan darinya.
+
+    Mari kita mulai menjelajahi Al-Quran bersama-sama. Semoga bermanfaat dan membawa kebaikan bagi kita semua. 
+
+    Jazakumullahu Khairan.
+    `;
+
+const QuranPage = async () => {
+  const intro = await renderMd(introContent);
   return (
     <>
       <Header />
@@ -55,6 +82,13 @@ const QuranPage = () => {
         <LastReadSection />
         <PopularSurahsSection topSurahs={topSurahs} />
         <SurahList surahs={surahsBahasa} />
+        {intro && (
+          <Card className="p-8 my-12 container max-w-3xl">
+            <div className="prose prose-lg dark:prose-invert max-w-none">
+              {intro}
+            </div>
+          </Card>
+        )}
       </main>
       <Footer />
     </>

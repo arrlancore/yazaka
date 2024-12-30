@@ -5,6 +5,7 @@ export const brand = {
 export const brandName = `${brand.title}${brand.domain}`;
 
 // app
+export const appVersion = "1.0.0";
 export const appSlogan = "Beriman, Berilmu, Berkarya";
 export const appTitle = `${appSlogan} | ${brandName}`;
 export const appDescription =

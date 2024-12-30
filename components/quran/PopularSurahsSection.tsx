@@ -5,7 +5,14 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 interface PopularSurahsSectionProps {
-  topSurahs: { name: string; number: number }[];
+  topSurahs: {
+    name: string;
+    number: number;
+    alias?: {
+      aliasName: string;
+      ayatNumber: number;
+    };
+  }[];
 }
 
 const PopularSurahsSection: React.FC<PopularSurahsSectionProps> = ({
@@ -22,7 +29,7 @@ const PopularSurahsSection: React.FC<PopularSurahsSectionProps> = ({
             {topSurahs.map((surah, index) => (
               <Link
                 key={index}
-                href={`/quran/surah/${surah.number}_${encodeURIComponent(surah.name)}`}
+                href={`/quran/surah/${surah.number}_${encodeURIComponent(surah.name)}${surah.alias ? `#${surah.alias.ayatNumber}` : ""}`}
               >
                 <Badge
                   variant="secondary"
@@ -41,7 +48,7 @@ const PopularSurahsSection: React.FC<PopularSurahsSectionProps> = ({
                     "font-medium"
                   )}
                 >
-                  {surah.name}
+                  {surah.alias ? surah.alias.aliasName : surah.name}
                 </Badge>
               </Link>
             ))}

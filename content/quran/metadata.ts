@@ -7484,4 +7484,9 @@ export const topSurahs = [
   { number: 36, name: "Yasin" },
   { number: 55, name: "Ar-Rahman" },
   { number: 112, name: "Al-Ikhlas" },
+  {
+    number: 2,
+    name: "Al-Baqarah",
+    alias: { aliasName: "Ayat Kursi", ayatNumber: 255 },
+  },
 ];

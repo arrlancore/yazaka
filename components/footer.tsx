@@ -1,6 +1,6 @@
 import { Menu, X, Github, Twitter, Linkedin } from "lucide-react";
 import { Separator } from "./ui/separator";
-import { brand } from "@/config";
+import { appVersion, brand } from "@/config";
 
 export default function Footer() {
   return (
@@ -109,7 +109,8 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} {brand.title}
-            {brand.domain ? "" + brand.domain : ""} All rights reserved.
+            {brand.domain ? "" + brand.domain : ""} All rights reserved{" "}
+            {`V.${appVersion}`}
           </div>
           {/* <div className="flex gap-4">
             <a href="#" className="text-muted-foreground hover:text-foreground">

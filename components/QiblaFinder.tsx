@@ -6,7 +6,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Location } from "@/types/prayerTypes";
 
-const QIBLA_DEV_MODE = true; // Set this to false for production
+const QIBLA_DEV_MODE = false; // Set this to false for production
 
 // mock jakarta pusat coordinates
 const DEV_COORDINATES = {
