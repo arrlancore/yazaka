@@ -15,10 +15,11 @@ export const prayerNames: { [key: string]: string } = {
   isha: "Isya",
 };
 
-export const requestLocation = (setLocation: any) => {
+export const requestLocation = (setLocation: (loc: Location) => void) => {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        console.info("User's location:", position);
         setLocation({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,

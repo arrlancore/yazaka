@@ -18,12 +18,14 @@ interface PrayerTimesState {
   hijriDate: string;
   prayerTimesData: any; // Replace 'any' with the actual type from useFetchPrayerTime
   locationName: string;
+  isLocationRequested: boolean;
   setLocation: (location: Location) => void;
   setNextPrayer: (prayer: Prayer | null) => void;
   setCurrentTime: (time: Date) => void;
   setHijriDate: (date: string) => void;
   setPrayerTimesData: (data: any) => void; // Replace 'any' with the actual type
   setLocationName: (name: string) => void;
+  setIsLocationRequested: (requested: boolean) => void;
 }
 
 export const usePrayerTimesStore = create<PrayerTimesState>((set) => ({
@@ -33,12 +35,15 @@ export const usePrayerTimesStore = create<PrayerTimesState>((set) => ({
   hijriDate: "",
   prayerTimesData: null,
   locationName: "",
+  isLocationRequested: false,
   setLocation: (location) => set({ location }),
   setNextPrayer: (prayer) => set({ nextPrayer: prayer }),
   setCurrentTime: (time) => set({ currentTime: time }),
   setHijriDate: (date) => set({ hijriDate: date }),
   setPrayerTimesData: (data) => set({ prayerTimesData: data }),
   setLocationName: (name) => set({ locationName: name }),
+  setIsLocationRequested: (requested) =>
+    set({ isLocationRequested: requested }),
 }));
 
 const prayerNames: { [key: string]: string } = {
@@ -61,9 +66,10 @@ export const usePrayerTimesGlobal = () => {
     setCurrentTime,
     setHijriDate,
     setPrayerTimesData,
+    setIsLocationRequested,
   } = usePrayerTimesStore();
 
-  const { location, locationName } = useLocationWithName();
+  const { location, locationName, isLocationRequested } = useLocationWithName();
   const { data: fetchedPrayerTimesData } = useFetchPrayerTime(
     location ?? defaultLocation
   );
@@ -100,5 +106,7 @@ export const usePrayerTimesGlobal = () => {
     setLocation,
     requestLocation,
     prayerNames,
+    isLocationRequested,
+    setIsLocationRequested,
   };
 };
