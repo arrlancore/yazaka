@@ -117,6 +117,7 @@ export default function QiblaFinder() {
       const result = await navigator.permissions.query({ name: "geolocation" });
       setLocationPermission(result.state);
       if (result.state === "granted") {
+        setLocationPermission("granted");
         navigator.geolocation.getCurrentPosition(
           (position) => {
             setLocation({
@@ -139,6 +140,7 @@ export default function QiblaFinder() {
         );
       } else {
         setError("Izin lokasi ditolak");
+        setLocationPermission("denied");
       }
     } catch (err) {
       setError("Gagal meminta izin lokasi");
@@ -227,206 +229,207 @@ export default function QiblaFinder() {
                   </>
                 )}
 
-                {hideButtonRequest ||
-                  (QIBLA_DEV_MODE && (
-                    <>
-                      <div className="relative w-80 h-80">
-                        {/* Compass Rose */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <svg
-                            viewBox="0 0 200 200"
-                            className="w-80 h-80"
-                            style={{
-                              transform: `rotate(${-compass}deg)`,
-                              transition: "transform 0.5s ease-out",
-                            }}
-                          >
-                            {/* Outer circle */}
-                            <circle
-                              cx="100"
-                              cy="100"
-                              r="98"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1"
-                              className="text-muted-foreground/30"
-                            />
-                            {/* Inner circle */}
-                            <circle
-                              cx="100"
-                              cy="100"
-                              r="80"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1"
-                              className="text-muted-foreground/20"
-                            />
-                            {/* Cardinal directions */}
-                            {["N", "E", "S", "W"].map((dir, i) => (
-                              <g
-                                key={dir}
-                                transform={`rotate(${i * 90} 100 100)`}
-                              >
-                                <line
-                                  x1="100"
-                                  y1="20"
-                                  x2="100"
-                                  y2="35"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  className="text-primary"
-                                />
-                                <text
-                                  x="100"
-                                  y="15"
-                                  textAnchor="middle"
-                                  fontSize="14"
-                                  fill="currentColor"
-                                  className="text-primary font-bold"
-                                >
-                                  {dir}
-                                </text>
-                              </g>
-                            ))}
-                            {/* Intercardinal directions */}
-                            {["NE", "SE", "SW", "NW"].map((dir, i) => (
-                              <g
-                                key={dir}
-                                transform={`rotate(${45 + i * 90} 100 100)`}
-                              >
-                                <line
-                                  x1="100"
-                                  y1="20"
-                                  x2="100"
-                                  y2="30"
-                                  stroke="currentColor"
-                                  strokeWidth="1"
-                                  className="text-muted-foreground"
-                                />
-                                <text
-                                  x="100"
-                                  y="15"
-                                  textAnchor="middle"
-                                  fontSize="10"
-                                  fill="currentColor"
-                                  className="text-muted-foreground"
-                                >
-                                  {dir}
-                                </text>
-                              </g>
-                            ))}
-                            {/* Degree markers */}
-                            {Array.from({ length: 72 }, (_, i) => (
+                {QIBLA_DEV_MODE ||
+                (locationPermission === "granted" &&
+                  orientationPermission === "granted") ? (
+                  <>
+                    <div className="relative w-80 h-80">
+                      {/* Compass Rose */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <svg
+                          viewBox="0 0 200 200"
+                          className="w-80 h-80"
+                          style={{
+                            transform: `rotate(${-compass}deg)`,
+                            transition: "transform 0.5s ease-out",
+                          }}
+                        >
+                          {/* Outer circle */}
+                          <circle
+                            cx="100"
+                            cy="100"
+                            r="98"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            className="text-muted-foreground/30"
+                          />
+                          {/* Inner circle */}
+                          <circle
+                            cx="100"
+                            cy="100"
+                            r="80"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            className="text-muted-foreground/20"
+                          />
+                          {/* Cardinal directions */}
+                          {["N", "E", "S", "W"].map((dir, i) => (
+                            <g
+                              key={dir}
+                              transform={`rotate(${i * 90} 100 100)`}
+                            >
                               <line
-                                key={i}
                                 x1="100"
-                                y1="22"
+                                y1="20"
                                 x2="100"
-                                y2={i % 6 === 0 ? "28" : "25"}
+                                y2="35"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                className="text-primary"
+                              />
+                              <text
+                                x="100"
+                                y="15"
+                                textAnchor="middle"
+                                fontSize="14"
+                                fill="currentColor"
+                                className="text-primary font-bold"
+                              >
+                                {dir}
+                              </text>
+                            </g>
+                          ))}
+                          {/* Intercardinal directions */}
+                          {["NE", "SE", "SW", "NW"].map((dir, i) => (
+                            <g
+                              key={dir}
+                              transform={`rotate(${45 + i * 90} 100 100)`}
+                            >
+                              <line
+                                x1="100"
+                                y1="20"
+                                x2="100"
+                                y2="30"
                                 stroke="currentColor"
                                 strokeWidth="1"
-                                className="text-muted-foreground/50"
-                                transform={`rotate(${i * 5} 100 100)`}
+                                className="text-muted-foreground"
                               />
-                            ))}
-                          </svg>
-                        </div>
-
-                        {/* Compass Needle (always pointing up) */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <svg
-                            viewBox="0 0 100 100"
-                            className={`w-40 h-40 ${
-                              isNearMakkah(getDirection())
-                                ? "text-green-600"
-                                : "text-primary"
-                            }`}
-                          >
-                            <defs>
-                              <linearGradient
-                                id="needleGradient"
-                                x1="0%"
-                                y1="0%"
-                                x2="0%"
-                                y2="100%"
+                              <text
+                                x="100"
+                                y="15"
+                                textAnchor="middle"
+                                fontSize="10"
+                                fill="currentColor"
+                                className="text-muted-foreground"
                               >
-                                <stop
-                                  offset="0%"
-                                  stopColor="currentColor"
-                                  stopOpacity="1"
-                                />
-                                <stop
-                                  offset="100%"
-                                  stopColor="currentColor"
-                                  stopOpacity="0.6"
-                                />
-                              </linearGradient>
-                            </defs>
-                            {/* Needle body */}
-                            <path
-                              d="M50,5 L60,50 L50,95 L40,50 Z"
-                              fill="url(#needleGradient)"
+                                {dir}
+                              </text>
+                            </g>
+                          ))}
+                          {/* Degree markers */}
+                          {Array.from({ length: 72 }, (_, i) => (
+                            <line
+                              key={i}
+                              x1="100"
+                              y1="22"
+                              x2="100"
+                              y2={i % 6 === 0 ? "28" : "25"}
                               stroke="currentColor"
                               strokeWidth="1"
+                              className="text-muted-foreground/50"
+                              transform={`rotate(${i * 5} 100 100)`}
                             />
-                            {/* Needle point */}
-                            <path d="M45,5 L50,0 L55,5 Z" fill="currentColor" />
-                            {/* Center circle */}
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="5"
-                              fill="white"
-                              stroke="currentColor"
-                              strokeWidth="1"
-                            />
-                          </svg>
-                        </div>
-
-                        {/* Qibla Direction Indicator */}
-
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div
-                            style={{
-                              transform: `rotate(${qiblaAngle - compass}deg)`,
-                              transition: "transform 0.5s ease-out",
-                              scale: "1.5",
-                            }}
-                          >
-                            <svg width="200" height="200" viewBox="0 0 200 200">
-                              <path
-                                d="M100,10 L105,30 L100,25 L95,30 Z"
-                                fill="#FFD700"
-                              />
-                            </svg>
-                          </div>
-                        </div>
+                          ))}
+                        </svg>
                       </div>
 
-                      {location && (
-                        <div className="text-center space-y-2">
-                          <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                            <MapPin className="w-4 h-4" />
-                            <span className="text-sm">
-                              {location.latitude.toFixed(4)}°LU,{" "}
-                              {location.longitude.toFixed(4)}°BT
-                            </span>
-                          </div>
-                          <p className="text-lg font-semibold">
-                            Kiblat berada {qiblaAngle.toFixed(1)}° dari Utara
-                          </p>
-                          {isNearMakkah(getDirection()) && (
-                            <Alert className="mt-4 text-left text-primary">
-                              <CheckCircle className="h-4 w-4" />
-                              <AlertDescription>
-                                Anda sekarang menghadap ke arah Kiblat!
-                              </AlertDescription>
-                            </Alert>
-                          )}
+                      {/* Compass Needle (always pointing up) */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <svg
+                          viewBox="0 0 100 100"
+                          className={`w-40 h-40 ${
+                            isNearMakkah(getDirection())
+                              ? "text-green-600"
+                              : "text-primary"
+                          }`}
+                        >
+                          <defs>
+                            <linearGradient
+                              id="needleGradient"
+                              x1="0%"
+                              y1="0%"
+                              x2="0%"
+                              y2="100%"
+                            >
+                              <stop
+                                offset="0%"
+                                stopColor="currentColor"
+                                stopOpacity="1"
+                              />
+                              <stop
+                                offset="100%"
+                                stopColor="currentColor"
+                                stopOpacity="0.6"
+                              />
+                            </linearGradient>
+                          </defs>
+                          {/* Needle body */}
+                          <path
+                            d="M50,5 L60,50 L50,95 L40,50 Z"
+                            fill="url(#needleGradient)"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                          />
+                          {/* Needle point */}
+                          <path d="M45,5 L50,0 L55,5 Z" fill="currentColor" />
+                          {/* Center circle */}
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="5"
+                            fill="white"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Qibla Direction Indicator */}
+
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div
+                          style={{
+                            transform: `rotate(${qiblaAngle - compass}deg)`,
+                            transition: "transform 0.5s ease-out",
+                            scale: "1.5",
+                          }}
+                        >
+                          <svg width="200" height="200" viewBox="0 0 200 200">
+                            <path
+                              d="M100,10 L105,30 L100,25 L95,30 Z"
+                              fill="#FFD700"
+                            />
+                          </svg>
                         </div>
-                      )}
-                    </>
-                  ))}
+                      </div>
+                    </div>
+
+                    {location && (
+                      <div className="text-center space-y-2">
+                        <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                          <MapPin className="w-4 h-4" />
+                          <span className="text-sm">
+                            {location.latitude.toFixed(4)}°LU,{" "}
+                            {location.longitude.toFixed(4)}°BT
+                          </span>
+                        </div>
+                        <p className="text-lg font-semibold">
+                          Kiblat berada {qiblaAngle.toFixed(1)}° dari Utara
+                        </p>
+                        {isNearMakkah(getDirection()) && (
+                          <Alert className="mt-4 text-left text-primary">
+                            <CheckCircle className="h-4 w-4" />
+                            <AlertDescription>
+                              Anda sekarang menghadap ke arah Kiblat!
+                            </AlertDescription>
+                          </Alert>
+                        )}
+                      </div>
+                    )}
+                  </>
+                ) : null}
               </div>
 
               {QIBLA_DEV_MODE && (
