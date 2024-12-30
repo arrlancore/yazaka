@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Tooltip,
@@ -16,8 +16,15 @@ import {
   Pause,
   ChevronDown,
   ChevronUp,
+  MoreVertical,
 } from "lucide-react";
 import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface VerseProps {
   number: number;
@@ -29,6 +36,7 @@ interface VerseProps {
   onSetLastRead?: (verseNumber: number) => void;
   isBookmarked?: boolean;
   isLastRead?: boolean;
+  onPlaying?: (isPlaying: boolean) => void;
 }
 
 const Verse = ({
@@ -39,22 +47,50 @@ const Verse = ({
   audioUrl,
   onBookmark,
   onSetLastRead,
+  onPlaying,
   isBookmarked = false,
   isLastRead = false,
 }: VerseProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTafsir, setShowTafsir] = useState(false);
-  const [audio] = useState(audioUrl ? new Audio(audioUrl) : null);
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  const loadAudio = useCallback(() => {
+    if (audioUrl && !audio) {
+      const newAudio = new Audio(audioUrl);
+      newAudio.addEventListener("ended", () => {
+        setIsPlaying(false);
+        if (onPlaying) onPlaying(false);
+      });
+      setAudio(newAudio);
+      return newAudio;
+    }
+    return audio;
+  }, [audioUrl, audio, onPlaying]);
+
+  useEffect(() => {
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio.removeEventListener("ended", () => {
+          setIsPlaying(false);
+          if (onPlaying) onPlaying(false);
+        });
+      }
+    };
+  }, [audio, onPlaying]);
 
   const togglePlay = () => {
-    if (!audio) return;
+    const currentAudio = loadAudio();
+    if (!currentAudio) return;
 
     if (isPlaying) {
-      audio.pause();
+      currentAudio.pause();
     } else {
-      audio.play();
+      currentAudio.play();
     }
     setIsPlaying(!isPlaying);
+    if (onPlaying) onPlaying(!isPlaying);
   };
 
   const handleShare = () => {
@@ -62,17 +98,29 @@ const Verse = ({
       navigator.share({
         title: `Ayat ${number}`,
         text: `${arabic}\n\n${translation || ""}`,
-        url: window.location.href,
+        url: window.location.href + `#${number}`,
       });
+    }
+  };
+
+  const handleSetLastRead = () => {
+    if (onSetLastRead) {
+      onSetLastRead(number);
     }
   };
 
   return (
     <Card
-      className={`mb-4 bg-white/80 dark:bg-[#2A2A2A] backdrop-blur-sm border-border relative
+      id={number + ""}
+      className={`sm:mb-4 shadow-none sm:shadow-sm rounded-none sm:rounded backdrop-blur-sm border-0 sm:border sm:border-border relative
+        ${
+          number % 2 === 0
+            ? "bg-slate-50/80 dark:bg-slate-800/30"
+            : "bg-white/80  dark:bg-slate-900/20"
+        }
         ${isLastRead ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
     >
-      <CardContent className="p-6">
+      <CardContent className="p-3 sm:p-6">
         {/* Verse Header */}
         <div className="flex justify-between items-center mb-6">
           {/* Verse Number */}
@@ -129,16 +177,27 @@ const Verse = ({
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-full"
-                    onClick={handleShare}
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-full"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={handleShare}>
+                        Bagikan Ayat
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleSetLastRead}>
+                        Tandai Terakhir Dibaca
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TooltipTrigger>
-                <TooltipContent>Bagikan Ayat</TooltipContent>
+                <TooltipContent>Opsi Lainnya</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
@@ -158,7 +217,7 @@ const Verse = ({
 
         {/* Translation */}
         {translation && (
-          <p className="text-muted-foreground leading-relaxed pt-4 border-t border-border">
+          <p className="text-muted-foreground leading-relaxed pt-4">
             {translation}
           </p>
         )}
@@ -190,8 +249,8 @@ const Verse = ({
 
         {/* Last Read Indicator */}
         {isLastRead && (
-          <div className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-            Last Read
+          <div className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs text-[10px] px-2 py-1 rounded-full">
+            Terakhir Dibaca
           </div>
         )}
       </CardContent>

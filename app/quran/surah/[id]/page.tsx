@@ -28,6 +28,7 @@ export const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
       arabic: verse.text.arab,
       translation: verse.translation.id,
       transliteration: verse.text.transliteration.en,
+      audioUrl: verse.audio.primary,
     })),
   };
 };
@@ -72,7 +73,7 @@ async function SurahDetailPage({ params }: PageProps) {
   );
   return (
     <>
-      <main className="sm:container flex flex-col sm:gap-4">
+      <main className="max-w-2xl mx-auto mb-8">
         <SurahDetail {...mapToSurahDetail(surahDetail.data)} />
       </main>
       <Footer />

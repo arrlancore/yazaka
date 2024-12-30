@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SurahNavigation from "./surah-navigation";
 import { useRouter } from "next/navigation";
+import { useQuranLastRead } from "@/hooks/useQuranLastRead";
+import { useEffect } from "react";
 
 export type SurahDetailProps = {
   number: number;
@@ -28,11 +30,34 @@ export type SurahDetailProps = {
     arabic: string;
     translation: string;
     transliteration: string;
+    audioUrl?: string;
   }[];
 };
 
 const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
   const router = useRouter();
+  const { lastRead, updateLastRead } = useQuranLastRead();
+
+  const handleSetLastRead = (ayatNumber: number) => {
+    updateLastRead(surah.number, surah.name, ayatNumber);
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash) {
+        const ayatNumber = parseInt(hash.slice(1));
+        if (!isNaN(ayatNumber)) {
+          const element = document.getElementById(`${ayatNumber}`);
+          if (element) {
+            setTimeout(() => {
+              element.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 100);
+          }
+        }
+      }
+    }
+  }, []);
 
   return (
     <div className="max-w-2xl mx-auto mb-8">
@@ -49,12 +74,14 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
               variant="ghost"
               size="icon"
               className="rounded-full hover:bg-white/20"
-              onClick={() => router.back()}
+              onClick={() => router.push("/quran")}
             >
               <ChevronLeft size={20} />
             </Button>
             <div>
-              <h2 className="text-lg font-bold">{surah.name}</h2>
+              <h2 className="text-lg font-bold">
+                {surah.number}. {surah.name}
+              </h2>
               <div className="text-xs opacity-80">
                 {surah.arabicName} • {surah.meaning}
               </div>
@@ -93,13 +120,19 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
             </div>
           )}
           {/* Verses */}
-          <div className="bg-background p-4">
+          <div className="bg-background p-0 sm:p-4">
             {surah.verses.map((verse) => (
               <Verse
                 key={verse.number}
                 arabic={verse.arabic}
                 translation={verse.translation}
                 number={verse.number}
+                audioUrl={verse.audioUrl}
+                isLastRead={
+                  lastRead?.surahNumber === surah.number &&
+                  lastRead?.ayatNumber === verse.number
+                }
+                onSetLastRead={(ayatNumber) => handleSetLastRead(ayatNumber)}
               />
             ))}
           </div>

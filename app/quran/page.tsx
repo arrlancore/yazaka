@@ -50,12 +50,12 @@ const QuranPage = () => {
   return (
     <>
       <Header />
-      <div className="max-w-2xl mx-auto mb-8">
+      <main className="max-w-2xl mx-auto mb-8">
         <QuranHeader />
-        {/* <LastReadSection /> */}
+        <LastReadSection />
         <PopularSurahsSection topSurahs={topSurahs} />
         <SurahList surahs={surahsBahasa} />
-      </div>
+      </main>
       <Footer />
     </>
   );

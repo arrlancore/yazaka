@@ -1,6 +1,5 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-// import QuranLastRead from "@/components/quran-last-read";
 import TaskTracker from "@/components/task-tracker";
 import AppList from "@/components/app-list";
 import PrayerTimesCompact from "@/components/prayer-times/prayer-times-compact";
@@ -13,6 +12,7 @@ import {
   appUrl,
   brandName,
 } from "@/config";
+import QuranLastRead from "@/components/quran-last-read";
 
 export const metadata: Metadata = {
   title: appSlogan,
@@ -61,7 +61,7 @@ export default function LandingPage() {
         <PrayerTimesCompact />
         <AppList />
         <TaskTracker />
-        {/* <QuranLastRead /> */}
+        <QuranLastRead />
       </main>
       <Footer />
     </>

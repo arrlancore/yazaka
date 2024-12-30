@@ -5,15 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-
-const topSurah = [
-  "Al-Fatihah",
-  "Al-Kahf",
-  "Al-Mulk",
-  "Al-Waqi'ah",
-  "Yasin",
-  "Ar-Rahman",
-];
+import { topSurahs } from "@/content/quran/metadata";
 
 const QuranLastRead = () => {
   return (
@@ -54,7 +46,7 @@ const QuranLastRead = () => {
             Surat pilihan:
           </h3>
           <div className="flex flex-wrap gap-2">
-            {topSurah.map((surah, index) => (
+            {topSurahs.map((surah, index) => (
               <Badge
                 key={index}
                 variant="secondary"
@@ -70,7 +62,7 @@ const QuranLastRead = () => {
                   "text-xs font-medium"
                 )}
               >
-                {surah}
+                {surah.name}
               </Badge>
             ))}
           </div>
