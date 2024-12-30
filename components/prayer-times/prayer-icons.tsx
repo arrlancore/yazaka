@@ -1,4 +1,4 @@
-export const MagrbIcon = (props) => (
+export const MagrbIcon = (props: any) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
@@ -36,7 +36,7 @@ export const MagrbIcon = (props) => (
   </svg>
 );
 
-export const IsyaIcon = (props) => (
+export const IsyaIcon = (props: any) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
@@ -94,7 +94,7 @@ export const IsyaIcon = (props) => (
     </g>
   </svg>
 );
-export const FajrDawnIcon = (props) => (
+export const FajrDawnIcon = (props: any) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
@@ -154,7 +154,7 @@ export const FajrDawnIcon = (props) => (
     </g>
   </svg>
 );
-export const SunriseIcon = (props) => (
+export const SunriseIcon = (props: any) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
@@ -213,7 +213,7 @@ export const SunriseIcon = (props) => (
     </g>
   </svg>
 );
-export const SunIcon = (props) => (
+export const SunIcon = (props: any) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
@@ -294,7 +294,7 @@ export const SunIcon = (props) => (
     </g>
   </svg>
 );
-export const AfternoonSunIcon = (props) => (
+export const AfternoonSunIcon = (props: any) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
