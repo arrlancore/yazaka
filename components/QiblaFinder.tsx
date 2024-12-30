@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Location } from "@/types/prayerTypes";
+import RequestLocation from "./request-location";
+import RequestOrientation from "./RequestOrientation";
 
 const QIBLA_DEV_MODE = false; // Set this to false for production
 
@@ -71,8 +73,6 @@ export default function QiblaFinder() {
         if (response === "granted") {
           setOrientationPermission("granted");
           window.addEventListener("deviceorientation", handleOrientation, true);
-
-          requestLocationPermission();
         } else {
           setOrientationPermission("denied");
           setError(
@@ -80,7 +80,6 @@ export default function QiblaFinder() {
           );
         }
       }
-
       // Android and other devices
       else {
         setOrientationPermission("granted");
@@ -88,13 +87,23 @@ export default function QiblaFinder() {
       }
 
       // Test if the orientation event is actually working
-      setTimeout(() => {
-        if (compass === 0) {
-          setError(
-            "Sensor orientasi tidak merespon. Pastikan perangkat Anda mendukung dan mengizinkan akses kompas."
-          );
-        }
+      let orientationTestTimeout = setTimeout(() => {
+        setError(
+          "Sensor orientasi tidak merespon. Pastikan perangkat Anda mendukung dan mengizinkan akses kompas."
+        );
       }, 3000);
+
+      const testOrientation = (event: DeviceOrientationEvent) => {
+        if (
+          event.alpha !== null ||
+          (event as any).webkitCompassHeading !== undefined
+        ) {
+          clearTimeout(orientationTestTimeout);
+          window.removeEventListener("deviceorientation", testOrientation);
+        }
+      };
+
+      window.addEventListener("deviceorientation", testOrientation, true);
     } catch (err) {
       console.error("Error requesting orientation permission:", err);
       setError(
@@ -187,7 +196,7 @@ export default function QiblaFinder() {
           </Alert>
         </div>
       ) : (
-        <div className="min-h-screen bg-background p-4 flex flex-col items-center justify-start">
+        <div className="min-h-[300px] bg-background p-4 flex flex-col items-center justify-start">
           <Card className="w-full max-w-md border-none shadow-none">
             <CardHeader>
               <CardTitle className="text-center flex items-center justify-center gap-2">
@@ -204,10 +213,18 @@ export default function QiblaFinder() {
                 </Alert>
               )}
               <div className="flex flex-col items-center space-y-6">
-                {hideButtonRequest || QIBLA_DEV_MODE ? null : (
-                  <Button onClick={requestOrientationPermission}>
-                    Izinkan Akses
-                  </Button>
+                {!QIBLA_DEV_MODE && (
+                  <>
+                    <RequestLocation
+                      isRequested={locationPermission === "granted"}
+                      request={requestLocationPermission}
+                      caption="Kami memerlukan lokasi Anda untuk memberikan arah kiblat yang akurat."
+                    />
+                    <RequestOrientation
+                      isRequested={orientationPermission === "granted"}
+                      request={requestOrientationPermission}
+                    />
+                  </>
                 )}
 
                 {hideButtonRequest ||
