@@ -14,26 +14,23 @@ import {
 } from "./prayer-icons";
 import { usePrayerTimesGlobal } from "@/hooks/usePrayerTimes";
 import RequestLocation from "../request-location";
-import { Location } from "@/types/prayerTypes";
+import { useLocationWithName } from "@/hooks/useLocationWithName";
 
 const PrayerTimes = () => {
+  const { locationName, location, request } = useLocationWithName({
+    onRequestGranted: () => setIsLocationRequested(true),
+  });
+
   const {
     prayerTimes,
     prayerNames,
     nextPrayer,
     currentTime,
     hijriDate,
-    locationName,
     requestLocation,
-    setLocation,
     isLocationRequested,
     setIsLocationRequested,
-  } = usePrayerTimesGlobal();
-
-  const onRequestLocation = (loc: Location) => {
-    setIsLocationRequested(true);
-    setLocation(loc);
-  };
+  } = usePrayerTimesGlobal(location);
 
   return (
     <Card className="container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
@@ -45,7 +42,7 @@ const PrayerTimes = () => {
               <h2 className="text-2xl font-bold">Jadwal Shalat</h2>
               <Button
                 variant="ghost"
-                onClick={() => requestLocation?.(onRequestLocation)}
+                onClick={() => request()}
                 className="text-xs p-2 rounded-full hover:bg-white/20"
               >
                 <MapPin size={18} />
@@ -132,7 +129,7 @@ const PrayerTimes = () => {
       ) : (
         <RequestLocation
           isRequested={isLocationRequested}
-          request={() => requestLocation(onRequestLocation)}
+          request={() => request()}
         />
       )}
     </Card>

@@ -9,17 +9,14 @@ import {
 } from "@/lib/prayer-times-utils";
 import { Location, Prayer } from "@/types/prayerTypes";
 import useFetchPrayerTime from "@/hooks/useFetchPrayerTime";
-import { useLocationWithName } from "./useLocationWithName";
 
 interface PrayerTimesState {
-  location?: Location;
   nextPrayer: Prayer | null;
   currentTime: Date;
   hijriDate: string;
   prayerTimesData: any; // Replace 'any' with the actual type from useFetchPrayerTime
   locationName: string;
   isLocationRequested: boolean;
-  setLocation: (location: Location) => void;
   setNextPrayer: (prayer: Prayer | null) => void;
   setCurrentTime: (time: Date) => void;
   setHijriDate: (date: string) => void;
@@ -36,7 +33,6 @@ export const usePrayerTimesStore = create<PrayerTimesState>((set) => ({
   prayerTimesData: null,
   locationName: "",
   isLocationRequested: false,
-  setLocation: (location) => set({ location }),
   setNextPrayer: (prayer) => set({ nextPrayer: prayer }),
   setCurrentTime: (time) => set({ currentTime: time }),
   setHijriDate: (date) => set({ hijriDate: date }),
@@ -55,21 +51,20 @@ const prayerNames: { [key: string]: string } = {
   isha: "Isya",
 };
 
-export const usePrayerTimesGlobal = () => {
+export const usePrayerTimesGlobal = (location: Location | null) => {
   const {
     nextPrayer,
     currentTime,
     hijriDate,
     prayerTimesData,
-    setLocation,
     setNextPrayer,
     setCurrentTime,
     setHijriDate,
     setPrayerTimesData,
     setIsLocationRequested,
+    isLocationRequested,
   } = usePrayerTimesStore();
 
-  const { location, locationName, isLocationRequested } = useLocationWithName();
   const { data: fetchedPrayerTimesData } = useFetchPrayerTime(
     location ?? defaultLocation
   );
@@ -102,8 +97,6 @@ export const usePrayerTimesGlobal = () => {
     currentTime,
     hijriDate,
     location,
-    locationName,
-    setLocation,
     requestLocation,
     prayerNames,
     isLocationRequested,

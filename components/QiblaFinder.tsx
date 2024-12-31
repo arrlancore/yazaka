@@ -3,10 +3,9 @@ import { useState, useEffect } from "react";
 import { Compass, MapPin, AlertCircle, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Location } from "@/types/prayerTypes";
 import RequestLocation from "./request-location";
 import RequestOrientation from "./RequestOrientation";
+import { useLocationWithName } from "@/hooks/useLocationWithName";
 
 const QIBLA_DEV_MODE = false; // Set this to false for production
 
@@ -18,7 +17,13 @@ const DEV_COORDINATES = {
 
 // Copy all the component logic from the original file to here
 export default function QiblaFinder() {
-  const [location, setLocation] = useState<Location | null>(null);
+  const {
+    locationName,
+    location,
+    request: requestLocation,
+  } = useLocationWithName({
+    onRequestGranted: () => setLocationPermission("granted"),
+  });
   const [qiblaAngle, setQiblaAngle] = useState(0);
   const [compass, setCompass] = useState(0);
   const [error, setError] = useState("");
@@ -29,9 +34,6 @@ export default function QiblaFinder() {
   const [locationPermission, setLocationPermission] = useState<
     "granted" | "denied" | "prompt"
   >("prompt");
-
-  const hideButtonRequest =
-    orientationPermission === "granted" && locationPermission === "granted";
 
   // Kaaba coordinates
   const KAABA_LAT = 21.4225;
@@ -112,41 +114,6 @@ export default function QiblaFinder() {
     }
   };
 
-  const requestLocationPermission = async () => {
-    try {
-      const result = await navigator.permissions.query({ name: "geolocation" });
-      setLocationPermission(result.state);
-      if (result.state === "granted") {
-        setLocationPermission("granted");
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            });
-            setQiblaAngle(
-              calculateQibla(
-                position.coords.latitude,
-                position.coords.longitude
-              )
-            );
-          },
-          () => setError("Tidak dapat mengakses lokasi")
-        );
-      } else if (result.state === "prompt") {
-        navigator.geolocation.getCurrentPosition(
-          () => setLocationPermission("granted"),
-          () => setLocationPermission("denied")
-        );
-      } else {
-        setError("Izin lokasi ditolak");
-        setLocationPermission("denied");
-      }
-    } catch (err) {
-      setError("Gagal meminta izin lokasi");
-    }
-  };
-
   const handleOrientation = (event: DeviceOrientationEvent) => {
     if (QIBLA_DEV_MODE) return; // Skip in dev mode
 
@@ -165,11 +132,16 @@ export default function QiblaFinder() {
   };
 
   useEffect(() => {
+    if (location) {
+      setQiblaAngle(calculateQibla(location.latitude, location.longitude));
+    }
+  }, [location]);
+
+  useEffect(() => {
     const mobileCheck = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     setIsMobile(mobileCheck);
 
     if (QIBLA_DEV_MODE) {
-      setLocation(DEV_COORDINATES);
       setQiblaAngle(
         calculateQibla(DEV_COORDINATES.latitude, DEV_COORDINATES.longitude)
       );
@@ -219,7 +191,7 @@ export default function QiblaFinder() {
                   <>
                     <RequestLocation
                       isRequested={locationPermission === "granted"}
-                      request={requestLocationPermission}
+                      request={requestLocation}
                       caption="Kami memerlukan lokasi Anda untuk memberikan arah kiblat yang akurat."
                     />
                     <RequestOrientation
@@ -408,13 +380,12 @@ export default function QiblaFinder() {
 
                     {location && (
                       <div className="text-center space-y-2">
-                        <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                          <MapPin className="w-4 h-4" />
-                          <span className="text-sm">
-                            {location.latitude.toFixed(4)}°LU,{" "}
-                            {location.longitude.toFixed(4)}°BT
-                          </span>
-                        </div>
+                        {locationName && (
+                          <div className="text-sm text-muted-foreground mt-2">
+                            <MapPin className="inline-block mr-1" size={16} />
+                            {locationName}
+                          </div>
+                        )}
                         <p className="text-lg font-semibold">
                           Kiblat berada {qiblaAngle.toFixed(1)}° dari Utara
                         </p>

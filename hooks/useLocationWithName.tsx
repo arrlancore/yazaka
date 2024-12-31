@@ -1,35 +1,27 @@
-import { useEffect } from "react";
-import { usePrayerTimesStore } from "@/hooks/usePrayerTimes";
+import { useEffect, useState } from "react";
 import useFetchLocationName from "@/hooks/useFetchLocationName";
 import { defaultLocation, requestLocation } from "@/lib/prayer-times-utils";
 import { Location } from "@/types/prayerTypes";
 
-export const useLocationWithName = () => {
-  const {
-    location,
-    setLocationName,
-    setLocation,
-    isLocationRequested,
-    setIsLocationRequested,
-  } = usePrayerTimesStore();
+export const useLocationWithName = (props: {
+  onRequestGranted?: () => void;
+}) => {
+  const [location, setLocation] = useState<Location | null>(null);
   const { data: fetchedLocationName } = useFetchLocationName(
     location ?? defaultLocation
   );
 
-  const onRequestLocation = (loc: Location) => {
-    setIsLocationRequested(true);
-    setLocation(loc);
-  };
+  const request = () =>
+    requestLocation((loc) => {
+      setLocation(loc);
+      if (props.onRequestGranted) {
+        props.onRequestGranted();
+      }
+    });
 
   useEffect(() => {
-    requestLocation(onRequestLocation);
-  }, [setLocation]);
+    request();
+  }, []);
 
-  useEffect(() => {
-    if (fetchedLocationName) {
-      setLocationName(fetchedLocationName);
-    }
-  }, [fetchedLocationName, setLocationName]);
-
-  return { location, locationName: fetchedLocationName, isLocationRequested };
+  return { location, locationName: fetchedLocationName, request };
 };
