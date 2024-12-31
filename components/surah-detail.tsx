@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import SurahNavigation from "./surah-navigation";
 import { useRouter } from "next/navigation";
 import { useQuranLastRead } from "@/hooks/useQuranLastRead";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { shouldRenderMetaInfo } from "@/lib/quran-utils";
 
 export type SurahDetailProps = {
   number: number;
@@ -31,6 +32,10 @@ export type SurahDetailProps = {
     translation: string;
     transliteration: string;
     audioUrl?: string;
+    meta: {
+      juz: number;
+      page: number;
+    };
   }[];
 };
 
@@ -121,20 +126,43 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
           )}
           {/* Verses */}
           <div className="bg-background p-0 sm:p-4">
-            {surah.verses.map((verse) => (
-              <Verse
-                key={verse.number}
-                arabic={verse.arabic}
-                translation={verse.translation}
-                number={verse.number}
-                audioUrl={verse.audioUrl}
-                isLastRead={
-                  lastRead?.surahNumber === surah.number &&
-                  lastRead?.ayatNumber === verse.number
-                }
-                onSetLastRead={(ayatNumber) => handleSetLastRead(ayatNumber)}
-              />
-            ))}
+            {surah.verses.map((verse) => {
+              const shouldRenderInfo = shouldRenderMetaInfo(
+                surah.number,
+                verse.number,
+                verse.meta.page,
+                verse.meta.juz
+              );
+
+              return (
+                <React.Fragment key={verse.number}>
+                  <Verse
+                    key={verse.number}
+                    arabic={verse.arabic}
+                    translation={verse.translation}
+                    number={verse.number}
+                    audioUrl={verse.audioUrl}
+                    isLastRead={
+                      lastRead?.surahNumber === surah.number &&
+                      lastRead?.ayatNumber === verse.number
+                    }
+                    onSetLastRead={(ayatNumber) =>
+                      handleSetLastRead(ayatNumber)
+                    }
+                  />
+                  {shouldRenderInfo && (
+                    <div className="my-0 p-3 bg-primary/10 text-muted-foreground flex justify-between items-center">
+                      <span className="flex items-center text-xs">
+                        Halaman {verse.meta.page}
+                      </span>
+                      <span className="flex items-center text-xs">
+                        Juz {verse.meta.juz}
+                      </span>
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </div>
 
           {/* Navigation */}

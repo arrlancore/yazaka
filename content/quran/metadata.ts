@@ -1,4 +1,4 @@
-const quranMeta: QuranMeta = {
+export const quranMeta: QuranMeta = {
   ayahs: {
     count: 6236,
   },

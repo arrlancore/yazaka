@@ -29,6 +29,10 @@ const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
       translation: verse.translation.id,
       transliteration: verse.text.transliteration.en,
       audioUrl: verse.audio.primary,
+      meta: {
+        juz: verse.meta.juz,
+        page: verse.meta.page,
+      },
     })),
   };
 };

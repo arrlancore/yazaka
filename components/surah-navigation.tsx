@@ -34,7 +34,7 @@ const SurahNavigation: React.FC<SurahNavigationProps> = ({
 
   return (
     <div className="bg-card p-4 flex justify-between">
-      {nextSurah && (
+      {nextSurah ? (
         <Link
           href={`/quran/surah/${nextSurah.number}_${nextSurah.name}`}
           passHref
@@ -44,6 +44,8 @@ const SurahNavigation: React.FC<SurahNavigationProps> = ({
             <span>{nextSurah.name}</span>
           </Button>
         </Link>
+      ) : (
+        <span />
       )}
       {prevSurah ? (
         <Link
@@ -56,7 +58,7 @@ const SurahNavigation: React.FC<SurahNavigationProps> = ({
           </Button>
         </Link>
       ) : (
-        <div></div> // Empty div to maintain layout when there's no previous surah
+        <span /> // Empty div to maintain layout when there's no previous surah
       )}
     </div>
   );

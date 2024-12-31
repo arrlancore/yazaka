@@ -10,7 +10,7 @@ const QuranLastRead = () => {
   const { lastRead } = useQuranLastRead();
 
   return (
-    <Card className="container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
+    <Card className="container shadow-none sm:shadow border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 text-foreground rounded-[0] sm:rounded-[2rem] p-0">
       <CardHeader className="p-4 flex flex-row items-center justify-between">
         <CardTitle className="text-xl font-bold text-primary">
           Bacaan Qur'an
