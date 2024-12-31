@@ -1,6 +1,6 @@
 export const brand = {
-  title: "Be",
-  domain: "khair",
+  title: "Bekhair",
+  domain: "",
 };
 export const brandName = `${brand.title}${brand.domain}`;
 

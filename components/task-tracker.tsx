@@ -164,8 +164,11 @@ function TaskTracker() {
   return (
     <Card className="container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
       <CardHeader className="p-6 text-primary">
-        <CardTitle className="text-2xl font-bold">Kegiatan</CardTitle>
+        <CardTitle className="text-xl font-bold text-primary">
+          Kegiatan
+        </CardTitle>
       </CardHeader>
+
       <CardContent className="p-4 space-y-6">
         {/* Active Task and Timer Section */}
         {tasks.active ? (

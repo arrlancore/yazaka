@@ -15,7 +15,7 @@ import {
 import QuranLastRead from "@/components/quran-last-read";
 
 export const metadata: Metadata = {
-  title: appSlogan,
+  title: appSlogan + " | " + brandName,
   description: appDescription,
   openGraph: {
     title: appSlogan,

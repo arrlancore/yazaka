@@ -1,8 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { MapPin, Sun } from "lucide-react";
-import axios from "axios";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
@@ -18,7 +16,7 @@ import { useLocationWithName } from "@/hooks/useLocationWithName";
 
 const PrayerTimesCompact = () => {
   const { location, locationName } = useLocationWithName({});
-  const { prayerTimes, prayerNames, nextPrayer } =
+  const { prayerTimes, prayerNames, nextPrayer, hijriDate, currentTime } =
     usePrayerTimesGlobal(location);
 
   const compactPrayerNames: {
@@ -30,13 +28,17 @@ const PrayerTimesCompact = () => {
   if (!location) return null;
 
   return (
-    <Card className="p-0 shadow-sm container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem]">
+    <Card className="p-0 shadow-sm container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 text-foreground rounded-[0] sm:rounded-[2rem]">
       <CardContent className="p-0">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary to-primary-light p-0 sm:p-1 text-primary-foreground">
           {locationName && (
-            <div className=" text-center text-xs">{locationName}</div>
+            <div className="flex items-center justify-center text-xs space-x-1 py-1">
+              <MapPin size={10} className="text-secondary" />
+              <span className="text-center">{locationName}</span>
+            </div>
           )}
+
           <div className="grid grid-cols-5 gap-1 p-0">
             {Object.entries(compactPrayerNames).map(([key, name]) => (
               <div
@@ -55,7 +57,14 @@ const PrayerTimesCompact = () => {
                 >
                   {name}
                 </span>
-                <span className="text-sm font-bold text-center text-secondary">
+                <span
+                  className={cn(
+                    "text-sm text-center text-secondary",
+                    nextPrayer?.name === name
+                      ? "font-bold opacity-100"
+                      : "opacity-80"
+                  )}
+                >
                   {prayerTimes?.[
                     key.charAt(0).toUpperCase() + key.slice(1)
                   ]?.substring(0, 5) ?? "-"}
@@ -65,6 +74,23 @@ const PrayerTimesCompact = () => {
           </div>
         </div>
       </CardContent>
+      <div className="flex justify-between items-center px-4 sm:px-6 py-1 text-muted-foreground">
+        {currentTime && (
+          <span className="text-xs text-left">
+            {currentTime?.toLocaleString("id-ID", {
+              weekday: "long",
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </span>
+        )}
+        {hijriDate && (
+          <span className="text-xs text-right">
+            {hijriDate?.split(",")[1].trim()}
+          </span>
+        )}
+      </div>
     </Card>
   );
 };
