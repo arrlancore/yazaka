@@ -16,9 +16,11 @@ import {
 } from "./prayer-icons";
 import { useState, useEffect } from "react";
 import { usePrayerTimesGlobal } from "@/hooks/usePrayerTimes";
+import { useLocationWithName } from "@/hooks/useLocationWithName";
 
 const NextPrayer = () => {
-  const { nextPrayer, currentTime } = usePrayerTimesGlobal();
+  const { location } = useLocationWithName({});
+  const { nextPrayer, currentTime } = usePrayerTimesGlobal(location);
   const [timeRemaining, setTimeRemaining] = useState("-- : --");
   const [urgencyLevel, setUrgencyLevel] = useState("low");
 

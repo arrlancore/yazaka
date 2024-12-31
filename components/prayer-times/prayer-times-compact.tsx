@@ -14,10 +14,12 @@ import {
   SunriseIcon,
 } from "./prayer-icons";
 import { usePrayerTimesGlobal } from "@/hooks/usePrayerTimes";
+import { useLocationWithName } from "@/hooks/useLocationWithName";
 
 const PrayerTimesCompact = () => {
-  const { location, prayerTimes, prayerNames, nextPrayer, locationName } =
-    usePrayerTimesGlobal();
+  const { location, locationName } = useLocationWithName({});
+  const { prayerTimes, prayerNames, nextPrayer } =
+    usePrayerTimesGlobal(location);
 
   const compactPrayerNames: {
     [key: string]: string;
