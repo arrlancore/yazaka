@@ -6,7 +6,7 @@ export const brandName = `${brand.title}${brand.domain}`;
 
 // app
 export const appVersion = "1.0.0";
-export const appSlogan = "Beriman, Berilmu, Berkarya";
+export const appSlogan = "Jangan Tunda Berbuat Baik";
 export const appTitle = `${appSlogan} | ${brandName}`;
 export const appDescription =
   "Aplikasi yang memadukan spiritualitas Islam dengan produktivitas modern. Jadilah Muslim yang sukses di dunia dan akhirat dengan bantuan fitur-fitur kami yang praktis.";

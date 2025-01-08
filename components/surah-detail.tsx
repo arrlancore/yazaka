@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Book, ChevronLeft } from "lucide-react";
+import { ArrowLeft, Book } from "lucide-react";
 import Verse from "./verse";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -81,7 +81,7 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
               className="rounded-full hover:bg-white/20"
               onClick={() => router.push("/quran")}
             >
-              <ChevronLeft size={20} />
+              <ArrowLeft size={20} />
             </Button>
             <div>
               <h2 className="text-lg font-bold">

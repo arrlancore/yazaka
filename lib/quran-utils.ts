@@ -1,4 +1,4 @@
-import { quranMeta } from "@/content/quran/metadata";
+import { quranMeta, surahsBahasa } from "@/content/quran/metadata";
 
 interface MetaInfo {
   newPage?: number;
@@ -69,4 +69,10 @@ export function getJuzNumber(
   );
 
   return juzIndex !== -1 ? juzIndex + 1 : null;
+}
+
+export function getSurahName(surahNumber: number): string {
+  const surah = surahsBahasa[surahNumber - 1];
+
+  return surah?.name || "";
 }
