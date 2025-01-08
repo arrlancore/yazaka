@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import {
   DuaIcon,
+  MemorizationIcon,
   PrayerScheduleIcon,
   QiblaCompassIcon,
   QuranIcon,
@@ -28,6 +29,11 @@ const apps: AppItem[] = [
     name: "Arah Kiblat",
     icon: <QiblaCompassIcon size={40} />,
     href: "/arah-kiblat",
+  },
+  {
+    name: "Hafalan Quran",
+    icon: <MemorizationIcon size={40} />,
+    href: "/hafalan-quran",
   },
   // { name: "Doa", icon: <DuaIcon size={40} />, href: "/doa" },
 ];

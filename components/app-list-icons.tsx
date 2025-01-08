@@ -318,3 +318,65 @@ export const DuaIcon = ({
     </g>
   </svg>
 );
+
+// memorization Icon Component (like a bulb)
+export const MemorizationIcon = ({
+  size = 24,
+  primaryColor = "#34D399",
+  secondaryColor = "#00d1a0",
+}: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 100"
+    width={size}
+    height={size}
+    style={{ background: "transparent" }}
+  >
+    <defs>
+      <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor={primaryColor} />
+        <stop offset="100%" stopColor={secondaryColor} />
+      </linearGradient>
+    </defs>
+
+    {/* Background Circle */}
+    <circle cx={50} cy={50} r={45} fill="url(#bg-gradient)" />
+
+    {/* Bulb Outline */}
+    <path
+      d="M50 30
+         Q62 30 68 40
+         Q74 50 70 60
+         Q66 70 58 73
+         L58 76
+         Q58 79 54 79
+         L46 79
+         Q42 79 42 76
+         L42 73
+         Q34 70 30 60
+         Q26 50 32 40
+         Q38 30 50 30"
+      fill="none"
+      stroke="#FFFFFF"
+      strokeWidth="3"
+    />
+
+    {/* Crescent Moon */}
+    <path
+      d="M55 45
+         A 12 12 0 0 0 47 65
+         A 15 15 0 0 1 55 45"
+      fill="none"
+      stroke="#FFFFFF"
+      strokeWidth="2"
+    />
+
+    {/* Base */}
+    <path
+      d="M42 79 L58 79 M45 82 L55 82"
+      stroke="#FFFFFF"
+      strokeWidth="3"
+      strokeLinecap="round"
+    />
+  </svg>
+);
