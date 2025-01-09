@@ -28,7 +28,6 @@ export function shouldRenderMetaInfo(
     }
   }
 
-  console.log({ currentVersePage, nextVersePage });
   // Check if the page changes
   if (currentVersePage !== nextVersePage && nextVersePage !== null) {
     return true;
@@ -52,7 +51,6 @@ export function getPageNumber(
   surahNumber: number,
   ayahNumber: number
 ): number | null {
-  console.log({ surahNumber, ayahNumber });
   const pageIndex = quranMeta.pages.references.findIndex(
     (ref) => ref.surah === surahNumber && ref.ayah === ayahNumber
   );

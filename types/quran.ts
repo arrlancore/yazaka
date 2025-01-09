@@ -150,6 +150,7 @@ interface Verse {
   };
   text: {
     arab: string;
+    arabTajweed?: string;
     transliteration: {
       en: string;
     };

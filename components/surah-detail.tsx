@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useQuranLastRead } from "@/hooks/useQuranLastRead";
 import React, { useEffect } from "react";
 import { shouldRenderMetaInfo } from "@/lib/quran-utils";
+import { useIsWebKit } from "@/hooks/useIsWebKit";
 
 export type SurahDetailProps = {
   number: number;
@@ -29,6 +30,7 @@ export type SurahDetailProps = {
   verses: {
     number: number;
     arabic: string;
+    arabicTajweed?: string;
     translation: string;
     transliteration: string;
     audioUrl?: string;
@@ -42,6 +44,7 @@ export type SurahDetailProps = {
 const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
   const router = useRouter();
   const { lastRead, updateLastRead } = useQuranLastRead();
+  const isWebKit = useIsWebKit();
 
   const handleSetLastRead = (ayatNumber: number) => {
     updateLastRead(surah.number, surah.name, ayatNumber);
@@ -114,8 +117,12 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
           {surah.preBismillah && (
             <div className="bg-background p-4 text-center">
               <p
-                className="text-2xl mb-2 font-arabic"
-                style={{ fontFamily: "'Uthmanic Hafs', Arial" }}
+                className="text-2xl mb-2"
+                style={{
+                  fontFamily: "'Uthmanic Hafs', Arial",
+                  direction: "rtl",
+                  lineHeight: 2,
+                }}
               >
                 {surah.preBismillah.text.arab}
               </p>
@@ -139,6 +146,7 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
                   <Verse
                     key={verse.number}
                     arabic={verse.arabic}
+                    arabicTajweed={verse.arabicTajweed}
                     translation={verse.translation}
                     number={verse.number}
                     audioUrl={verse.audioUrl}
@@ -149,6 +157,7 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
                     onSetLastRead={(ayatNumber) =>
                       handleSetLastRead(ayatNumber)
                     }
+                    isWebKit={isWebKit}
                   />
                   {shouldRenderInfo && (
                     <div className="my-0 p-3 bg-primary/10 text-muted-foreground flex justify-between items-center">
@@ -169,6 +178,53 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
           <SurahNavigation currentSurahNumber={surah.number} />
         </CardContent>
       </Card>
+      <style jsx global>{`
+        .ham_wasl {
+          color: #aaaaaa;
+        }
+        .slnt {
+          color: #aaaaaa;
+        }
+        .madda_normal {
+          color: #537fff;
+        }
+        .madda_permissible {
+          color: #4050ff;
+        }
+        .madda_necessary {
+          color: #000ebc;
+        }
+        .qlq {
+          color: #dd0008;
+        }
+        .madda_pbligatory {
+          color: #2144c1;
+        }
+        .ikhf_shfw {
+          color: #d500b7;
+        }
+        .ikhf {
+          color: #9400a8;
+        }
+        .idghm_shfw {
+          color: #58b800;
+        }
+        .iqlb {
+          color: #26bffd;
+        }
+        .idgh_ghn {
+          color: #169777;
+        }
+        .idgh_w_ghn {
+          color: #169200;
+        }
+        .idgh_mus {
+          color: #a1a1a1;
+        }
+        .ghn {
+          color: #ff7e1e;
+        }
+      `}</style>
     </div>
   );
 };

@@ -25,10 +25,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { renderTajweed } from "@/lib/renderTajweed";
 
 interface VerseProps {
   number: number;
   arabic: string;
+  arabicTajweed?: string;
   translation?: string;
   tafsir?: string;
   audioUrl?: string;
@@ -37,11 +39,13 @@ interface VerseProps {
   isBookmarked?: boolean;
   isLastRead?: boolean;
   onPlaying?: (isPlaying: boolean) => void;
+  isWebKit: boolean;
 }
 
 const Verse = ({
   number,
   arabic,
+  arabicTajweed,
   translation,
   tafsir,
   audioUrl,
@@ -50,6 +54,7 @@ const Verse = ({
   onPlaying,
   isBookmarked = false,
   isLastRead = false,
+  isWebKit = true,
 }: VerseProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTafsir, setShowTafsir] = useState(false);
@@ -204,16 +209,32 @@ const Verse = ({
         </div>
 
         {/* Arabic Text */}
-        <p
-          className="text-right mb-6 leading-loose select-none"
-          style={{
-            fontSize: "32px",
-            fontFamily: "'Uthmanic Hafs', 'Scheherazade New', serif",
-            lineHeight: 2,
-          }}
-        >
-          {arabic}
-        </p>
+        {arabicTajweed ? (
+          <div
+            className="text-right mb-6 leading-loose select-none"
+            style={{
+              fontSize: "32px",
+              lineHeight: 2,
+              fontFamily: "Kitab, 'Scheherazade New', serif",
+              direction: "rtl",
+            }}
+            dangerouslySetInnerHTML={{
+              __html: renderTajweed(arabicTajweed, isWebKit),
+            }}
+          />
+        ) : (
+          <p
+            className="text-right mb-6 leading-loose select-none"
+            style={{
+              fontSize: "32px",
+              fontFamily: "'Uthmanic Hafs', 'Scheherazade New', serif",
+              lineHeight: 2,
+              direction: "rtl",
+            }}
+          >
+            {arabic}
+          </p>
+        )}
 
         {/* Translation */}
         {translation && (

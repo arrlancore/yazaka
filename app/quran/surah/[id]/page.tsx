@@ -5,6 +5,74 @@ import { fetchQuranSuratByNumber } from "@/services/quranServices";
 import { appLocale, appUrl, brandName } from "@/config";
 
 const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
+  const tj = [
+    {
+      number: 6231,
+      text: "قُلْ أَعُوذُ بِرَبِّ [h:14683[ٱ][l[ل][g[نّ][p[َا]سِ",
+      numberInSurah: 1,
+      juz: 30,
+      manzil: 7,
+      page: 604,
+      ruku: 556,
+      hizbQuarter: 240,
+      sajda: false,
+    },
+    {
+      number: 6232,
+      text: "مَلِكِ [h:14684[ٱ][l[ل][g[نّ][p[َا]سِ",
+      numberInSurah: 2,
+      juz: 30,
+      manzil: 7,
+      page: 604,
+      ruku: 556,
+      hizbQuarter: 240,
+      sajda: false,
+    },
+    {
+      number: 6233,
+      text: "إِلَ[n[ـٰ]هِ [h:14685[ٱ][l[ل][g[نّ][p[َا]سِ",
+      numberInSurah: 3,
+      juz: 30,
+      manzil: 7,
+      page: 604,
+      ruku: 556,
+      hizbQuarter: 240,
+      sajda: false,
+    },
+    {
+      number: 6234,
+      text: "مِ[f:14679[ن ش]َرِّ [h:14686[ٱ]لْوَسْوَاسِ [h:14687[ٱ]لْخَ[g[نّ][p[َا]سِ",
+      numberInSurah: 4,
+      juz: 30,
+      manzil: 7,
+      page: 604,
+      ruku: 556,
+      hizbQuarter: 240,
+      sajda: false,
+    },
+    {
+      number: 6235,
+      text: "ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ [h:14688[ٱ][l[ل][g[نّ][p[َا]سِ",
+      numberInSurah: 5,
+      juz: 30,
+      manzil: 7,
+      page: 604,
+      ruku: 556,
+      hizbQuarter: 240,
+      sajda: false,
+    },
+    {
+      number: 6236,
+      text: "مِنَ [h:6531[ٱ]لْجِ[g[نّ]َةِ وَ[h:824[ٱ][l[ل][g[نّ][p[َا]سِ",
+      numberInSurah: 6,
+      juz: 30,
+      manzil: 7,
+      page: 604,
+      ruku: 556,
+      hizbQuarter: 240,
+      sajda: false,
+    },
+  ];
   return {
     number: surah.number,
     name: surah.name.transliteration.id,
@@ -23,9 +91,10 @@ const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
           },
         }
       : undefined,
-    verses: surah.verses.map((verse) => ({
+    verses: surah.verses.map((verse, i) => ({
       number: verse.number.inSurah,
       arabic: verse.text.arab,
+      arabicTajweed: verse.text.arabTajweed,
       translation: verse.translation.id,
       transliteration: verse.text.transliteration.en,
       audioUrl: verse.audio.primary,

@@ -31,7 +31,6 @@ export const AddLogForm: React.FC<{
   const surahList = surahsBahasa.filter(
     (surah) => surah.number >= rangesSurah[0] && surah.number <= rangesSurah[1]
   );
-  console.log({ startAyah, endAyah, startSurah, endSurah, duration, notes });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +46,6 @@ export const AddLogForm: React.FC<{
       duration: parseInt(duration),
       notes,
     };
-    console.log({ newLog });
     addLog(targetId, newLog);
     // Reset form
     setStartAyah(0);

@@ -30,8 +30,6 @@ const TajweedTypes = {
   IKHAFA: 16,
 } as const;
 
-type TajweedType = (typeof TajweedTypes)[keyof typeof TajweedTypes];
-
 const meta: TajweedMetaMap = {
   [TajweedTypes.WASL]: {
     identifier: "[h",
@@ -155,35 +153,57 @@ const meta: TajweedMetaMap = {
 };
 
 const createTajweedParser = () => {
+  const escapeRegExp = (string: string): string => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  };
+
   const parseTajweed = (text: string): string => {
+    // First handle markers with IDs
+    text = text.replace(/\[([a-z]):(\d+)\[/gi, (match, type, id) => {
+      const metaItem = Object.values(meta).find(
+        (m) => m.identifier === `[${type}`
+      );
+      if (!metaItem) return match;
+      return `<tajweed class="${metaItem.default_css_class}" data-type="${metaItem.type}" data-description="${metaItem.description}" data-tajweed=":${id}">`;
+    });
+
+    // Then handle regular markers
     Object.values(meta).forEach((meta) => {
-      const pattern = new RegExp(`\\${meta.identifier}(?::\\d+)?(.+?)\\]`, "g");
+      const pattern = new RegExp(`\\[${meta.identifier.slice(1)}\\[`, "g");
       text = text.replace(
         pattern,
-        `<tajweed class="${meta.default_css_class}" data-type="${meta.type}" data-description="${meta.description}" data-tajweed="$1">$1</tajweed>`
+        `<tajweed class="${meta.default_css_class}" data-type="${meta.type}" data-description="${meta.description}" data-tajweed="">`
       );
     });
+
     return text;
   };
 
   const closeParsing = (text: string): string => {
-    text = text.replace(/\[:\d+\]/g, "");
-    return text.replace(/\[|\]/g, "");
+    // Handle closing brackets
+    return text.replace(/\]/g, "</tajweed>");
   };
 
   const webkitFix = (text: string): string => {
-    text = text.replace(/<\/tajweed>(\S)/g, "‍$&");
+    // Add ZWJ after closing tags
+    text = text.replace(/(<\/tajweed>)(\S)/g, "$1$2");
+
+    // Add double ZWJ between opening tags and content
     text = text.replace(
       /(\S)<tajweed class="(.*?)" data-type="(.*?)" data-description="(.*?)" data-tajweed="(.*?)">(\S)/g,
-      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">‍‍$6'
+      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">$6'
     );
-    text = text.replace(/ٱ‍/g, "ٱ");
+
     return text;
   };
 
   return (text: string, fixWebkit: boolean = true): string => {
-    const parsed = closeParsing(parseTajweed(text));
-    return fixWebkit ? webkitFix(parsed) : parsed;
+    let parsed = parseTajweed(text);
+    parsed = closeParsing(parsed);
+    if (fixWebkit) {
+      parsed = webkitFix(parsed);
+    }
+    return parsed;
   };
 };
 

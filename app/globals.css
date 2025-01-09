@@ -139,3 +139,10 @@ body {
   font-weight: normal;
   font-style: normal;
 }
+
+@font-face {
+  font-family: 'Kitab';
+  src: url('/fonts/Kitab-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}

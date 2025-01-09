@@ -61,8 +61,6 @@ export default function HafalanPage() {
   const { targets, addTarget, updatePreparation, completeReview } =
     useHafalanStore();
 
-  console.log({ activeTarget, targets });
-
   // Calculate today's target
   const todayTarget = activeTarget
     ? {
