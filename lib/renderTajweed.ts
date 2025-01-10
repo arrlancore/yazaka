@@ -153,10 +153,6 @@ const meta: TajweedMetaMap = {
 };
 
 const createTajweedParser = () => {
-  const escapeRegExp = (string: string): string => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  };
-
   const parseTajweed = (text: string): string => {
     // First handle markers with IDs
     text = text.replace(/\[([a-z]):(\d+)\[/gi, (match, type, id) => {
@@ -191,8 +187,11 @@ const createTajweedParser = () => {
     // Add double ZWJ between opening tags and content
     text = text.replace(
       /(\S)<tajweed class="(.*?)" data-type="(.*?)" data-description="(.*?)" data-tajweed="(.*?)">(\S)/g,
-      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">$6'
+      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">&#8203;$6'
     );
+
+    // Remove unnecessary joiners for Alif and Waw
+    text = text.replace(/ٱ&zwj;/g, "ٱ");
 
     return text;
   };

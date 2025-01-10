@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Uthmanic Hafs';
+  src: url('/fonts/UthmanicHafs.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Kitab';
+  src: url('/fonts/Kitab-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -133,16 +146,57 @@ body {
   animation: criticalPulseGlow 1s infinite;
 }
 
-@font-face {
-  font-family: 'Uthmanic Hafs';
-  src: url('/fonts/UthmanicHafs.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
+
+:root {
+  --ham-wasl-color: #aaaaaa;
+  --slnt-color: #aaaaaa;
+  --madda-normal-color: #537fff;
+  --madda-permissible-color: #4050ff;
+  --madda-necessary-color: #000ebc;
+  --qlq-color: #dd0008;
+  --madda-pbligatory-color: #2144c1;
+  --ikhf-shfw-color: #d500b7;
+  --ikhf-color: #9400a8;
+  --idghm-shfw-color: #58b800;
+  --iqlb-color: #26bffd;
+  --idgh-ghn-color: #169777;
+  --idgh-w-ghn-color: #169200;
+  --idgh-mus-color: #a1a1a1;
+  --ghn-color: #ff7e1e;
 }
 
-@font-face {
-  font-family: 'Kitab';
-  src: url('/fonts/Kitab-Regular.ttf');
-  font-weight: normal;
-  font-style: normal;
+@media (prefers-color-scheme: light) {
+  :root {
+    --ham-wasl-color: #bbb;
+    --slnt-color: #bbb;
+    --madda-normal-color: #7b96ff;
+    --madda-permissible-color: #6c7bff;
+    --madda-necessary-color: #3f4ccc;
+    --qlq-color: #ff4d4d;
+    --madda-pbligatory-color: #4f68d1;
+    --ikhf-shfw-color: #e066e0;
+    --ikhf-color: #b54db5;
+    --idghm-shfw-color: #8cd68c;
+    --iqlb-color: #66d9ff;
+    --idgh-ghn-color: #4db6a1;
+    --idgh-w-ghn-color: #4db64d;
+    --idgh-mus-color: #b3b3b3;
+    --ghn-color: #ffa366;
+  }
 }
+
+.ham_wasl { color: var(--ham-wasl-color); }
+.slnt { color: var(--slnt-color); }
+.madda_normal { color: var(--madda-normal-color); }
+.madda_permissible { color: var(--madda-permissible-color); }
+.madda_necessary { color: var(--madda-necessary-color); }
+.qlq { color: var(--qlq-color); }
+.madda_pbligatory { color: var(--madda-pbligatory-color); }
+.ikhf_shfw { color: var(--ikhf-shfw-color); }
+.ikhf { color: var(--ikhf-color); }
+.idghm_shfw { color: var(--idghm-shfw-color); }
+.iqlb { color: var(--iqlb-color); }
+.idgh_ghn { color: var(--idgh-ghn-color); }
+.idgh_w_ghn { color: var(--idgh-w-ghn-color); }
+.idgh_mus { color: var(--idgh-mus-color); }
+.ghn { color: var(--ghn-color); }

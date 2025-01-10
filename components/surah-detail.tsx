@@ -178,53 +178,6 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
           <SurahNavigation currentSurahNumber={surah.number} />
         </CardContent>
       </Card>
-      <style jsx global>{`
-        .ham_wasl {
-          color: #aaaaaa;
-        }
-        .slnt {
-          color: #aaaaaa;
-        }
-        .madda_normal {
-          color: #537fff;
-        }
-        .madda_permissible {
-          color: #4050ff;
-        }
-        .madda_necessary {
-          color: #000ebc;
-        }
-        .qlq {
-          color: #dd0008;
-        }
-        .madda_pbligatory {
-          color: #2144c1;
-        }
-        .ikhf_shfw {
-          color: #d500b7;
-        }
-        .ikhf {
-          color: #9400a8;
-        }
-        .idghm_shfw {
-          color: #58b800;
-        }
-        .iqlb {
-          color: #26bffd;
-        }
-        .idgh_ghn {
-          color: #169777;
-        }
-        .idgh_w_ghn {
-          color: #169200;
-        }
-        .idgh_mus {
-          color: #a1a1a1;
-        }
-        .ghn {
-          color: #ff7e1e;
-        }
-      `}</style>
     </div>
   );
 };
