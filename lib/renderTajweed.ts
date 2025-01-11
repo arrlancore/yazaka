@@ -187,11 +187,13 @@ const createTajweedParser = () => {
     // Add double ZWJ between opening tags and content
     text = text.replace(
       /(\S)<tajweed class="(.*?)" data-type="(.*?)" data-description="(.*?)" data-tajweed="(.*?)">(\S)/g,
-      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">&#8203;$6'
+      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">&zwj;&zwj;$6'
     );
 
-    // Remove unnecessary joiners for Alif and Waw
-    text = text.replace(/ٱ&zwj;/g, "ٱ");
+    // Remove unnecessary joiners for Alif
+    text = text.replace(/ٱ\u200D/g, "ٱ");
+    // Remove unnecessary joiners for Waw
+    text = text.replace(/و\u200D/g, "و");
 
     return text;
   };
