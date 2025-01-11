@@ -181,19 +181,19 @@ const createTajweedParser = () => {
   };
 
   const webkitFix = (text: string): string => {
-    // Add ZWJ after closing tags
-    text = text.replace(/(<\/tajweed>)(\S)/g, "$1$2");
+    // Identify Tajweed tags, if there is not a space before or after, add &zwj;
+    // After
+    text = text.replace(/(<\/tajweed>)(\S)/g, "$&");
 
-    // Add double ZWJ between opening tags and content
+    // Before
     text = text.replace(
       /(\S)<tajweed class="(.*?)" data-type="(.*?)" data-description="(.*?)" data-tajweed="(.*?)">(\S)/g,
-      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">&zwj;&zwj;$6'
+      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">$6'
     );
 
-    // Remove unnecessary joiners for Alif
-    text = text.replace(/ٱ\u200D/g, "ٱ");
-    // Remove unnecessary joiners for Waw
-    text = text.replace(/و\u200D/g, "و");
+    // Let's remove all joiners where not needed for an Alif and a Waw
+    text = text.replace(/ٱ&zwj;/g, "ٱ");
+    text = text.replace(/و&zwj;/g, "و");
 
     return text;
   };
