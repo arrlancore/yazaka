@@ -30,6 +30,7 @@ import { renderTajweed } from "@/lib/renderTajweed";
 interface VerseProps {
   number: number;
   arabic: string;
+  transliteration: string;
   arabicTajweed?: string;
   translation?: string;
   tafsir?: string;
@@ -47,6 +48,7 @@ const Verse = ({
   arabic,
   arabicTajweed,
   translation,
+  transliteration,
   tafsir,
   audioUrl,
   onBookmark,
@@ -236,6 +238,12 @@ const Verse = ({
           </p>
         )}
 
+        {/* Transliteration */}
+        {transliteration && (
+          <p className="text-sm text-muted-foreground/70 italic mb-2 leading-relaxed">
+            {transliteration}
+          </p>
+        )}
         {/* Translation */}
         {translation && (
           <p className="text-muted-foreground leading-relaxed pt-4">

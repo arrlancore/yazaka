@@ -145,6 +145,7 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
                 <React.Fragment key={verse.number}>
                   <Verse
                     key={verse.number}
+                    transliteration={verse.transliteration}
                     arabic={verse.arabic}
                     arabicTajweed={verse.arabicTajweed}
                     translation={verse.translation}

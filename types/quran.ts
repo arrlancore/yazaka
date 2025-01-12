@@ -153,6 +153,7 @@ interface Verse {
     arabTajweed?: string;
     transliteration: {
       en: string;
+      id: string;
     };
   };
   translation: {
