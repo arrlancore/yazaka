@@ -56,7 +56,7 @@ const Verse = ({
   onPlaying,
   isBookmarked = false,
   isLastRead = false,
-  isWebKit = true,
+  isWebKit = false,
 }: VerseProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTafsir, setShowTafsir] = useState(false);

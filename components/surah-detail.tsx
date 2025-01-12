@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Book } from "lucide-react";
+import { AlertCircle, ArrowLeft, Book } from "lucide-react";
 import Verse from "./verse";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 import { useQuranLastRead } from "@/hooks/useQuranLastRead";
 import React, { useEffect } from "react";
 import { shouldRenderMetaInfo } from "@/lib/quran-utils";
-import { useIsWebKit } from "@/hooks/useIsWebKit";
+import useBrowserDetection from "@/hooks/useBrowserDetection";
+import { Alert, AlertDescription } from "./ui/alert";
 
 export type SurahDetailProps = {
   number: number;
@@ -44,7 +45,7 @@ export type SurahDetailProps = {
 const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
   const router = useRouter();
   const { lastRead, updateLastRead } = useQuranLastRead();
-  const isWebKit = useIsWebKit();
+  const { isWebKit, isSafari } = useBrowserDetection();
 
   const handleSetLastRead = (ayatNumber: number) => {
     updateLastRead(surah.number, surah.name, ayatNumber);
@@ -130,6 +131,16 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
                 {surah.preBismillah.translation.id}
               </p>
             </div>
+          )}
+          {isSafari && (
+            <Alert variant="default" className="my-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Tampilan Al-Qur'an ini lebih optimal jika dibuka menggunakan
+                browser Firefox, Chrome, atau Edge untuk pengalaman yang lebih
+                baik.
+              </AlertDescription>
+            </Alert>
           )}
           {/* Verses */}
           <div className="bg-background p-0 sm:p-4">

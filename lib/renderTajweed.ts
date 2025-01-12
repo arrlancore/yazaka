@@ -171,24 +171,21 @@ const createTajweedParser = () => {
         `<tajweed class="${meta.default_css_class}" data-type="${meta.type}" data-description="${meta.description}" data-tajweed="">`
       );
     });
-
     return text;
   };
 
   const closeParsing = (text: string): string => {
-    // Handle closing brackets
-    return text.replace(/\]/g, "</tajweed>");
+    return text.replace(/\[/g, '">').replace(/\]/g, "</tajweed>");
   };
 
   const webkitFix = (text: string): string => {
-    // Identify Tajweed tags, if there is not a space before or after, add &zwj;
     // After
-    text = text.replace(/(<\/tajweed>)(\S)/g, "$&");
+    text = text.replace(/(<\/tajweed>)(\S)/g, "&zwj;$1$2");
 
     // Before
     text = text.replace(
       /(\S)<tajweed class="(.*?)" data-type="(.*?)" data-description="(.*?)" data-tajweed="(.*?)">(\S)/g,
-      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">$6'
+      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">&zwj;&zwj;$6'
     );
 
     // Let's remove all joiners where not needed for an Alif and a Waw
@@ -198,13 +195,11 @@ const createTajweedParser = () => {
     return text;
   };
 
-  return (text: string, fixWebkit: boolean = true): string => {
-    let parsed = parseTajweed(text);
-    parsed = closeParsing(parsed);
+  return (text: string, fixWebkit: boolean = false): string => {
     if (fixWebkit) {
-      parsed = webkitFix(parsed);
+      return webkitFix(closeParsing(parseTajweed(text)));
     }
-    return parsed;
+    return closeParsing(parseTajweed(text));
   };
 };
 
