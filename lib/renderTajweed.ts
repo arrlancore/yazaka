@@ -179,23 +179,76 @@ const createTajweedParser = () => {
   };
 
   const webkitFix = (text: string): string => {
-    // After
-    text = text.replace(/(<\/tajweed>)(\S)/g, "&zwj;$1$2");
-
-    // Before
+    const connectableLetters = [
+      "ـ",
+      "ب",
+      "ت",
+      "ث",
+      "ج",
+      "ح",
+      "خ",
+      "س",
+      "ش",
+      "ص",
+      "ض",
+      "ط",
+      "ظ",
+      "ع",
+      "غ",
+      "ف",
+      "ق",
+      "ك",
+      "ل",
+      "م",
+      "ن",
+      "ه",
+      "ي",
+    ];
+    // Handler for connectable letters
     text = text.replace(
       /(\S)<tajweed class="(.*?)" data-type="(.*?)" data-description="(.*?)" data-tajweed="(.*?)">(\S)/g,
-      '$1<tajweed class="$2" data-type="$3" data-description="$4" data-tajweed="$5">&zwj;&zwj;$6'
+      (match, before, className, type, description, tajweed, content) => {
+        // Check if the character before is in the connectableLetters array
+        if (connectableLetters.includes(before.slice(-1))) {
+          return `${before}<tajweed class="${className}" data-type="${type}" data-description="${description}" data-tajweed="${tajweed}">\u200D\u200D${content}\u200D</tajweed>\u200D`;
+        }
+        return match;
+      }
     );
 
-    // Let's remove all joiners where not needed for an Alif and a Waw
-    text = text.replace(/ٱ&zwj;/g, "ٱ");
-    text = text.replace(/و&zwj;/g, "و");
+    // // Add ZWJ after closing tajweed tags
+    text = text.replace(
+      /(<\/tajweed>)(\S)/g,
+      (match, closingTag, nextChar, offset, string) => {
+        const openingTagIndex = string.lastIndexOf("<tajweed", offset);
+        if (openingTagIndex !== -1) {
+          const tagContent = string.slice(
+            openingTagIndex,
+            offset + closingTag.length
+          );
+          if (!tagContent.includes('class="ghn"')) {
+            return `\u200D${closingTag}${nextChar}`;
+          }
+        }
+        return match;
+      }
+    );
+
+    text = text.replace(/([^\s>])(<tajweed)/g, "$1\u200D$2");
+
+    text = text.replace(/(ل)(<tajweed[^>]*>)(ر)/g, "$1\u200D$2\u200D$3");
+
+    // // Let's remove all joiners where not needed for an Alif and a Waw
+    text = text.replace(/[ٱو]&zwj;/g, (match) => match[0]);
+
+    // Remove joiner from the last character
+    text = text.replace(/\u200D([^\u200D]*)$/, "$1");
 
     return text;
   };
 
   return (text: string, fixWebkit: boolean = false): string => {
+    console.log(1, { fixWebkit });
     if (fixWebkit) {
       return webkitFix(closeParsing(parseTajweed(text)));
     }

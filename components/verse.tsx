@@ -213,7 +213,7 @@ const Verse = ({
         {/* Arabic Text */}
         {arabicTajweed ? (
           <div
-            className="text-right text-muted-foreground mb-6 leading-loose select-none"
+            className="text-right text-foreground/80 mb-6 leading-loose select-none"
             style={{
               fontSize: "36px",
               lineHeight: 2,
@@ -226,7 +226,7 @@ const Verse = ({
           />
         ) : (
           <p
-            className="text-right text-muted-foreground mb-6 leading-loose select-none"
+            className="text-right text-foreground/80 mb-6 leading-loose select-none"
             style={{
               fontSize: "36px",
               fontFamily: "'Uthmanic Hafs', 'Scheherazade New', serif",
