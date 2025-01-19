@@ -16,7 +16,32 @@ import {
   DAILY_MINIMUM_REVIEW_COUNT,
 } from "@/lib/utils/hafalan";
 
+interface Review {
+  reviewDate: Date;
+  isSmooth: boolean;
+  notes?: {
+    ayah: number;
+    note: string;
+  }[];
+}
 interface HafalanState {
+  memorizedSummary: {
+    surahDetails: {
+      surahNumber: number;
+      createdAt: Date;
+      lastReviewDate: Date | null;
+      reviews?: Review[]; // review per surah for short sura <= 2 pages
+      isNew: boolean; // Newly added surahs are considered as new until current time > createdAt + 7 days
+      // review per segment for long sura > 2 pages
+      segments?: {
+        startPage: number;
+        endPage: number;
+        startVerse: number;
+        endVerse: number;
+        reviews?: Review[];
+      }[];
+    }[];
+  };
   targets: MemorizationTarget[];
   activeTargetId: string | null;
   // Actions for targets
@@ -45,6 +70,9 @@ interface HafalanState {
 export const useHafalanStore = create<HafalanState>()(
   persist(
     (set, get) => ({
+      memorizedSummary: {
+        surahDetails: [],
+      },
       targets: [],
       activeTargetId: null,
 
