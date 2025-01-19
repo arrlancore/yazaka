@@ -109,218 +109,208 @@ const TargetHafalanDetail: React.FC<TargetHafalanDetailProps> = ({
         )} : ${target.ayahRange.endAyah}`;
 
   return (
-    <div className="container max-w-2xl mx-auto p-4">
-      <Card className="border-none sm:border overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
-        <AppHeader
-          title="Detail Target Hafalan"
-          backHref="/hafalan-quran/targets"
-        />
-        <CardContent className="p-6 space-y-6">
-          <div className="flex justify-between">
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold">Target Hafalan</h3>
-              <p className="text-muted-foreground">{targetSurah}</p>
-            </div>
-
-            <div className="flex justify-start">
-              <Link
-                href={`/quran/surah/${target.ayahRange.startSurah}_${encodeURIComponent(getSurahName(target.ayahRange.startSurah))}#${target.ayahRange.startAyah}`}
-                passHref
-              >
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center"
-                >
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  Buka Qur'an
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Aktivitas Persiapan</h3>
-            <ActivityItem
-              icon={<ListMusic className="h-5 w-5 text-primary" />}
-              label="Mendengarkan"
-              value={target.preparation.listeningCount}
-              unit="kali"
-              editable={target.status === "IN_PROGRESS"}
-              onUpdate={(newValue) =>
-                handleActivityUpdate("listening", newValue)
-              }
-            />
-            <ActivityItem
-              icon={<BookOpen className="h-5 w-5 text-primary" />}
-              label="Membaca"
-              value={target.preparation.readingMinutes}
-              unit="menit"
-              editable={target.status === "IN_PROGRESS"}
-              onUpdate={(newValue) => handleActivityUpdate("reading", newValue)}
-            />
-            <ActivityItem
-              icon={<Brain className="h-5 w-5 text-primary" />}
-              label="Menghafal"
-              value={target.preparation.memorizationMinutes}
-              unit="menit"
-              editable={target.status === "IN_PROGRESS"}
-              onUpdate={(newValue) =>
-                handleActivityUpdate("memorizing", newValue)
-              }
-            />
-
-            {target.status === "PLANNED" ? (
-              <Alert className="text-muted-foreground text-sm">
-                Silahkan klik tombol "Aktifkan Target" untuk memulai hafalan
-                ini.
-              </Alert>
-            ) : null}
-
-            {disableUpdateStatusToMemorized &&
-            target.status === "IN_PROGRESS" ? (
-              <Alert className="text-muted-foreground text-sm">
-                Untuk menghafal disarankan setidaknya sudah mendengarkan bacaan
-                dari qori yang baik {MINIMUM_LISTENING_COUNT} kali, sudah
-                membaca berulang kali selama {MINIMUM_READING_MINUTES} menit,
-                dan menghafalkan nya selama {MINIMUM_MEMOIZATION_MINUTES} menit.
-                Setelah itu tombol "Selesai Menghafal" akan diaktifkan.
-              </Alert>
-            ) : null}
-
-            {target.status === "MEMORIZED_SELF_REVIEW" ? (
-              <Alert className="text-muted-foreground text-sm">
-                Selanjutnya disarankan anda melakukan setoran hafalan kepada
-                seorang guru atau orang lain yang bisa membetulkan bacaan anda.
-                Jika sudah selesai tambahkan review dan klik tombol "Selesai
-                Setoran"
-              </Alert>
-            ) : null}
-          </div>
-
+    <Card className="border-none sm:border overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
+      <AppHeader
+        title="Detail Target Hafalan"
+        backHref="/hafalan-quran/targets"
+      />
+      <CardContent className="p-6 space-y-6">
+        <div className="flex justify-between">
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Status</h3>
-            <Badge variant="secondary" className="text-sm">
-              {memorizationStatusLabels[target.status]}
-            </Badge>
-
-            {!activeTargetId && target.status === "PLANNED" ? (
-              <Button
-                className="ml-4"
-                onClick={() => setActiveTarget(target.id)}
-                size="sm"
-              >
-                Aktifkan Target
-              </Button>
-            ) : null}
-
-            {activeTargetId && target.status === "IN_PROGRESS" && (
-              <Button
-                className="ml-4"
-                disabled={disableUpdateStatusToMemorized}
-                onClick={() => {
-                  setActiveTarget(null);
-                  updateStatus(targetId, "MEMORIZED_SELF_REVIEW");
-                }}
-                size="sm"
-              >
-                Selesai Menghafal
-              </Button>
-            )}
-            {target.status === "MEMORIZED_SELF_REVIEW" && (
-              <Button
-                className="ml-4"
-                onClick={() => {
-                  setActiveTarget(null);
-                  updateStatus(targetId, "MEMORIZED_TEACHER_REVIEW");
-                }}
-                size="sm"
-              >
-                Selesai Setoran
-              </Button>
-            )}
+            <h3 className="text-lg font-semibold">Target Hafalan</h3>
+            <p className="text-muted-foreground">{targetSurah}</p>
           </div>
-          {/* logs */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Catatan Progress</h3>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowAddLogForm(!showAddLogForm)}
-              >
-                {showAddLogForm ? (
-                  <>
-                    <X className="h-4 w-4 mr-2" />
-                    Batal
-                  </>
-                ) : (
-                  <>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Tambah
-                  </>
-                )}
+
+          <div className="flex justify-start">
+            <Link
+              href={`/quran/surah/${target.ayahRange.startSurah}_${encodeURIComponent(getSurahName(target.ayahRange.startSurah))}#${target.ayahRange.startAyah}`}
+              passHref
+            >
+              <Button variant="outline" size="sm" className="flex items-center">
+                <BookOpen className="h-4 w-4 mr-2" />
+                Buka Qur'an
               </Button>
-            </div>
-            {showAddLogForm && (
-              <AddLogForm
-                targetId={targetId}
-                onAddLog={(log) => {
-                  setShowAddLogForm(false);
-                  updatePreparation(
-                    targetId,
-                    "memorizing",
-                    target.preparation.memorizationMinutes + (log.duration ?? 0)
-                  );
-                }}
-                rangesSurah={[
-                  target.ayahRange.startSurah,
-                  target.ayahRange.endSurah,
-                ]}
-              />
-            )}
-            <LogList logs={target.logs} />
+            </Link>
           </div>
-          {/* review */}
-          {target.reviews.length ? (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Jadwal Murajaah</h3>
-              <ReviewScheduleSection
-                targetId={targetId}
-                reviews={target.reviews}
-              />
-            </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Aktivitas Persiapan</h3>
+          <ActivityItem
+            icon={<ListMusic className="h-5 w-5 text-primary" />}
+            label="Mendengarkan"
+            value={target.preparation.listeningCount}
+            unit="kali"
+            editable={target.status === "IN_PROGRESS"}
+            onUpdate={(newValue) => handleActivityUpdate("listening", newValue)}
+          />
+          <ActivityItem
+            icon={<BookOpen className="h-5 w-5 text-primary" />}
+            label="Membaca"
+            value={target.preparation.readingMinutes}
+            unit="menit"
+            editable={target.status === "IN_PROGRESS"}
+            onUpdate={(newValue) => handleActivityUpdate("reading", newValue)}
+          />
+          <ActivityItem
+            icon={<Brain className="h-5 w-5 text-primary" />}
+            label="Menghafal"
+            value={target.preparation.memorizationMinutes}
+            unit="menit"
+            editable={target.status === "IN_PROGRESS"}
+            onUpdate={(newValue) =>
+              handleActivityUpdate("memorizing", newValue)
+            }
+          />
+
+          {target.status === "PLANNED" ? (
+            <Alert className="text-muted-foreground text-sm">
+              Silahkan klik tombol "Aktifkan Target" untuk memulai hafalan ini.
+            </Alert>
           ) : null}
 
-          {/* add button to delete the target with confirmation dialog */}
-          <div className="flex justify-end mt-6">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Hapus Target
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Tindakan ini tidak dapat dibatalkan. Ini akan menghapus
-                    target hafalan Anda secara permanen.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Batal</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteTarget}>
-                    Hapus
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+          {disableUpdateStatusToMemorized && target.status === "IN_PROGRESS" ? (
+            <Alert className="text-muted-foreground text-sm">
+              Untuk menghafal disarankan setidaknya sudah mendengarkan bacaan
+              dari qori yang baik {MINIMUM_LISTENING_COUNT} kali, sudah membaca
+              berulang kali selama {MINIMUM_READING_MINUTES} menit, dan
+              menghafalkan nya selama {MINIMUM_MEMOIZATION_MINUTES} menit.
+              Setelah itu tombol "Selesai Menghafal" akan diaktifkan.
+            </Alert>
+          ) : null}
+
+          {target.status === "MEMORIZED_SELF_REVIEW" ? (
+            <Alert className="text-muted-foreground text-sm">
+              Selanjutnya disarankan anda melakukan setoran hafalan kepada
+              seorang guru atau orang lain yang bisa membetulkan bacaan anda.
+              Jika sudah selesai tambahkan review dan klik tombol "Selesai
+              Setoran"
+            </Alert>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">Status</h3>
+          <Badge variant="secondary" className="text-sm">
+            {memorizationStatusLabels[target.status]}
+          </Badge>
+
+          {!activeTargetId && target.status === "PLANNED" ? (
+            <Button
+              className="ml-4"
+              onClick={() => setActiveTarget(target.id)}
+              size="sm"
+            >
+              Aktifkan Target
+            </Button>
+          ) : null}
+
+          {activeTargetId && target.status === "IN_PROGRESS" && (
+            <Button
+              className="ml-4"
+              disabled={disableUpdateStatusToMemorized}
+              onClick={() => {
+                setActiveTarget(null);
+                updateStatus(targetId, "MEMORIZED_SELF_REVIEW");
+              }}
+              size="sm"
+            >
+              Selesai Menghafal
+            </Button>
+          )}
+          {target.status === "MEMORIZED_SELF_REVIEW" && (
+            <Button
+              className="ml-4"
+              onClick={() => {
+                setActiveTarget(null);
+                updateStatus(targetId, "MEMORIZED_TEACHER_REVIEW");
+              }}
+              size="sm"
+            >
+              Selesai Setoran
+            </Button>
+          )}
+        </div>
+        {/* logs */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Catatan Progress</h3>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAddLogForm(!showAddLogForm)}
+            >
+              {showAddLogForm ? (
+                <>
+                  <X className="h-4 w-4 mr-2" />
+                  Batal
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Tambah
+                </>
+              )}
+            </Button>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          {showAddLogForm && (
+            <AddLogForm
+              targetId={targetId}
+              onAddLog={(log) => {
+                setShowAddLogForm(false);
+                updatePreparation(
+                  targetId,
+                  "memorizing",
+                  target.preparation.memorizationMinutes + (log.duration ?? 0)
+                );
+              }}
+              rangesSurah={[
+                target.ayahRange.startSurah,
+                target.ayahRange.endSurah,
+              ]}
+            />
+          )}
+          <LogList logs={target.logs} />
+        </div>
+        {/* review */}
+        {target.reviews.length ? (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Jadwal Murajaah</h3>
+            <ReviewScheduleSection
+              targetId={targetId}
+              reviews={target.reviews}
+            />
+          </div>
+        ) : null}
+
+        {/* add button to delete the target with confirmation dialog */}
+        <div className="flex justify-end mt-6">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm">
+                <Trash2 className="h-4 w-4 mr-2" />
+                Hapus Target
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Tindakan ini tidak dapat dibatalkan. Ini akan menghapus target
+                  hafalan Anda secara permanen.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Batal</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteTarget}>
+                  Hapus
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

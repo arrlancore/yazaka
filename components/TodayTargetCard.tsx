@@ -113,23 +113,22 @@ export const TodayTargetCard: React.FC<TodayTargetProps> = ({
         {todayTarget ? (
           <Button
             variant="outline"
-            className="w-full mt-4"
+            className="w-full mt-4 bg-primary text-primary-foreground"
             onClick={handleNavigateToDetail}
             disabled={!todayTarget}
           >
-            Lihat Detail Target
+            Detail Target
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
-        ) : (
-          <Button
-            variant="outline"
-            className="w-full mt-4"
-            onClick={() => router.push(`/hafalan-quran/targets`)}
-          >
-            <List className="mr-2 h-4 w-4" />
-            Lihat Daftar Target
-          </Button>
-        )}
+        ) : null}
+        <Button
+          variant="outline"
+          className="w-full mt-4"
+          onClick={() => router.push(`/hafalan-quran/targets`)}
+        >
+          <List className="mr-2 h-4 w-4" />
+          Daftar Target
+        </Button>
       </CardContent>
     </Card>
   );

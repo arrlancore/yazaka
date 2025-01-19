@@ -71,7 +71,7 @@ async function HafalanQuranPage() {
   return (
     <>
       <Header />
-      <main className="sm:container flex flex-col sm:gap-4 py-4">
+      <main className="max-w-2xl mx-auto mb-8">
         <HafalanQuran />
         {intro && (
           <Card className="p-8 my-12 container max-w-xl">

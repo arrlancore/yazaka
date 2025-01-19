@@ -12,7 +12,7 @@ async function HafalanQuranTargetsPage() {
   return (
     <>
       <Header />
-      <main className="sm:container flex flex-col sm:gap-4 py-4">
+      <main className="max-w-2xl mx-auto mb-8">
         <HafalanQuranTargets />
       </main>
       <Footer />
