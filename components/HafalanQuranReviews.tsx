@@ -243,7 +243,7 @@ const HafalanQuranReviews = () => {
           Belum ada surat untuk di review
         </p>
       ) : (
-        <ScrollArea className="min-h-[200px] max-h-[600px] pr-4">
+        <>
           {memorizedSummary.surahDetails
             .sort(
               (a, b) =>
@@ -256,7 +256,7 @@ const HafalanQuranReviews = () => {
                 <Dialog key={surah.id}>
                   <DialogTrigger asChild>
                     <Card className="mb-4 hover:bg-slate-50 cursor-pointer">
-                      <CardContent className="p-4">
+                      <CardContent className="p-4 w-full">
                         <div className="flex justify-between items-start">
                           <div>
                             <h3 className="font-bold">
@@ -473,7 +473,7 @@ const HafalanQuranReviews = () => {
                 </Dialog>
               );
             })}
-        </ScrollArea>
+        </>
       )}
 
       <AddSurahReviewForm onAdd={handleAddSurahToReview} />

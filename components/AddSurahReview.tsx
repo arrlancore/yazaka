@@ -17,18 +17,8 @@ interface AddSurahFormProps {
   onAdd: (surahId: number, startDate?: string) => void;
 }
 const AddSurahReviewForm: React.FC<AddSurahFormProps> = ({ onAdd }) => {
-  const [open, setOpen] = useState(false);
   const [selectedSurah, setSelectedSurah] = useState<number>();
   const [startDate, setStartDate] = useState("");
-
-  const surahList = [
-    { number: 1, name: "Al-Fatihah", arabicName: "الفاتحة" },
-    { number: 2, name: "Al-Baqarah", arabicName: "البقرة" },
-    { number: 3, name: "Ali 'Imran", arabicName: "آل عمران" },
-    { number: 4, name: "An-Nisa", arabicName: "النساء" },
-    { number: 5, name: "Al-Ma'idah", arabicName: "المائدة" },
-    // ... more surahs
-  ];
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,7 +32,10 @@ const AddSurahReviewForm: React.FC<AddSurahFormProps> = ({ onAdd }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-2">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-wrap items-center gap-2 pt-8"
+    >
       <div className="min-w-[140px] max-w-[140px]">
         <Select
           onValueChange={(e) => {
