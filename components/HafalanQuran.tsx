@@ -45,6 +45,7 @@ import {
 } from "@/components/ui/select";
 import { surahsBahasa } from "@/content/quran/metadata";
 import { useRouter } from "next/navigation";
+import HafalanQuranReviews from "./HafalanQuranReviews";
 
 export default function HafalanPage() {
   const router = useRouter();
@@ -335,43 +336,9 @@ export default function HafalanPage() {
           </Dialog>
         </div>
 
-        {/* Today's Reviews */}
-        {todayReviews.length ? (
-          <Card className="bg-card hover:bg-primary/5 transition-colors duration-300">
-            <CardHeader>
-              <CardTitle className="text-base">Review Hari Ini</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {todayReviews.map((review) => (
-                  <li
-                    key={review.date.getTime()}
-                    className="flex justify-between items-center p-2 rounded-md bg-background"
-                  >
-                    <div>
-                      <p className="font-medium">
-                        {activeTarget?.ayahRange.startSurah}
-                        Ayat {activeTarget?.ayahRange.startAyah} -
-                        {activeTarget?.ayahRange.endSurah}
-                        Ayat {activeTarget?.ayahRange.endAyah}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {review.time}
-                      </p>
-                    </div>
-                    {review.completed ? (
-                      <Check className="h-5 w-5 text-green-500" />
-                    ) : (
-                      <Button size="sm" variant="outline">
-                        Mulai
-                      </Button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        ) : null}
+        {/* Reviews */}
+
+        <HafalanQuranReviews />
 
         {/* Recent Achievements */}
         {recentAchievements.length ? (

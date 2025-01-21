@@ -6789,6 +6789,65 @@ export const quranMeta: QuranMeta = {
   },
 };
 
+// Helper functions untuk mengolah metadata halaman
+export const calculateSurahSegments = (
+  surahNumber: number,
+  totalVerses: number
+) => {
+  // Filter pages yang relevan dengan surah ini
+  const metadata = {
+    pages: quranMeta.pages.references,
+  };
+  // Find the start and end indices for the current surah
+  let startIndex = metadata.pages.findIndex(
+    (page) => page.surah === surahNumber
+  );
+  const endIndex = metadata.pages.findIndex(
+    (page, index) => index > startIndex && page.surah > surahNumber
+  );
+
+  // If endIndex is -1, it means this is the last surah, so we use the last page
+  const lastIndex = endIndex === -1 ? metadata.pages.length - 1 : endIndex - 1;
+
+  // Get all pages that contain this surah
+  const surahPages = metadata.pages.slice(startIndex, lastIndex + 1);
+
+  if (surahPages.length <= 2) {
+    if (startIndex === -1) {
+      startIndex = lastIndex;
+    }
+    // If surah is only 1-2 pages, no need to divide
+    return [
+      {
+        startPage: startIndex + 1,
+        endPage: lastIndex + 1,
+        startVerse: 1,
+        endVerse: totalVerses,
+      },
+    ];
+  }
+
+  // Divide into segments of 2 pages
+  const segments = [];
+  for (let i = 0; i < surahPages.length; i += 2) {
+    const startPage = startIndex + i + 1;
+    const endPage = Math.min(startPage + 1, lastIndex + 1);
+
+    const startVerse = i === 0 ? 1 : surahPages[i].ayah;
+    const endVerse =
+      i + 2 < surahPages.length ? surahPages[i + 2].ayah - 1 : totalVerses;
+
+    segments.push({
+      startPage,
+      endPage,
+      startVerse,
+      endVerse,
+    });
+  }
+
+  return segments;
+};
+
 export const surahsBahasa = [
   {
     number: 1,

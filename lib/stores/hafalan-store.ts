@@ -16,31 +16,54 @@ import {
   DAILY_MINIMUM_REVIEW_COUNT,
 } from "@/lib/utils/hafalan";
 
-interface Review {
-  reviewDate: Date;
+export interface Review {
+  date: string;
   isSmooth: boolean;
-  notes?: {
-    ayah: number;
-    note: string;
-  }[];
+  notes: { ayah: number; note: string }[];
 }
+
+export interface Segment {
+  startPage: number;
+  endPage: number;
+  startVerse: number;
+  endVerse: number;
+  reviews?: Review[];
+}
+
+export interface SurahDetail {
+  surahNumber: number;
+  createdAt: Date;
+  lastReviewDate: Date | null;
+  onGoing?: [number, number][];
+  segments: Segment[];
+  id: string;
+}
+
+interface MemorizedSummary {
+  meta: {
+    totalAyahMemorized: number;
+    totalSurahsMemorized: number;
+    lastReviewDate: Date | null;
+    reviewStreak: {
+      current: number;
+      longest: number;
+    };
+  };
+  surahDetails: SurahDetail[];
+}
+
 interface HafalanState {
   memorizedSummary: {
-    surahDetails: {
-      surahNumber: number;
-      createdAt: Date;
+    meta: {
+      totalAyahMemorized: number;
+      totalSurahsMemorized: number;
       lastReviewDate: Date | null;
-      reviews?: Review[]; // review per surah for short sura <= 2 pages
-      isNew: boolean; // Newly added surahs are considered as new until current time > createdAt + 7 days
-      // review per segment for long sura > 2 pages
-      segments?: {
-        startPage: number;
-        endPage: number;
-        startVerse: number;
-        endVerse: number;
-        reviews?: Review[];
-      }[];
-    }[];
+      reviewStreak: {
+        current: number;
+        longest: number;
+      };
+    };
+    surahDetails: SurahDetail[];
   };
   targets: MemorizationTarget[];
   activeTargetId: string | null;
@@ -65,12 +88,33 @@ interface HafalanState {
   // Actions for status
   updateStatus: (targetId: string, status: MemorizationStatus) => void;
   addLog: (targetId: string, log: MemorizationProgressLog) => void;
+
+  updateMeta: (meta: Partial<MemorizedSummary["meta"]>) => void;
+  addSurahDetail: (surahDetail: SurahDetail) => void;
+  updateSurahDetail: (
+    surahNumber: number,
+    updates: Partial<SurahDetail>
+  ) => void;
+  addReviewSegment: (
+    surahNumber: number,
+    segmentIndex: number,
+    review: Review
+  ) => void;
 }
 
 export const useHafalanStore = create<HafalanState>()(
   persist(
     (set, get) => ({
       memorizedSummary: {
+        meta: {
+          totalAyahMemorized: 0,
+          totalSurahsMemorized: 0,
+          lastReviewDate: null,
+          reviewStreak: {
+            current: 0,
+            longest: 0,
+          },
+        },
         surahDetails: [],
       },
       targets: [],
@@ -290,6 +334,54 @@ export const useHafalanStore = create<HafalanState>()(
             return target;
           }),
         })),
+      updateMeta: (meta) =>
+        set((state) => ({
+          memorizedSummary: {
+            ...state.memorizedSummary,
+            meta: { ...state.memorizedSummary.meta, ...meta },
+          },
+        })),
+      addSurahDetail: (surahDetail) => {
+        set((state) => ({
+          memorizedSummary: {
+            ...state.memorizedSummary,
+            surahDetails: [...state.memorizedSummary.surahDetails, surahDetail],
+          },
+        }));
+      },
+      updateSurahDetail: (surahNumber, updates) =>
+        set((state) => ({
+          memorizedSummary: {
+            ...state.memorizedSummary,
+            surahDetails: state.memorizedSummary.surahDetails.map((detail) =>
+              detail.surahNumber === surahNumber
+                ? { ...detail, ...updates }
+                : detail
+            ),
+          },
+        })),
+      addReviewSegment: (surahNumber, segmentIndex, review) =>
+        set((state) => ({
+          memorizedSummary: {
+            ...state.memorizedSummary,
+            surahDetails: state.memorizedSummary.surahDetails.map((detail) =>
+              detail.surahNumber === surahNumber
+                ? {
+                    ...detail,
+                    segments: detail.segments.map((segment, index) =>
+                      index === segmentIndex
+                        ? {
+                            ...segment,
+                            reviews: [...(segment.reviews || []), review],
+                          }
+                        : segment
+                    ),
+                    lastReviewDate: new Date(),
+                  }
+                : detail
+            ),
+          },
+        })),
     }),
     {
       name: "hafalan-storage",
@@ -333,6 +425,26 @@ export const useHafalanStore = create<HafalanState>()(
                   : undefined,
               })
             );
+          }
+
+          if (parsed.state && parsed.state.memorizedSummary) {
+            parsed.state.memorizedSummary.meta = {
+              ...parsed.state.memorizedSummary.meta,
+              lastReviewDate: parsed.state.memorizedSummary.meta?.lastReviewDate
+                ? new Date(parsed.state.memorizedSummary.meta.lastReviewDate)
+                : null,
+            };
+
+            parsed.state.memorizedSummary.surahDetails =
+              parsed.state.memorizedSummary.surahDetails.map(
+                (detail: SurahDetail) => ({
+                  ...detail,
+                  createdAt: new Date(detail.createdAt),
+                  lastReviewDate: detail.lastReviewDate
+                    ? new Date(detail.lastReviewDate)
+                    : null,
+                })
+              );
           }
 
           return parsed;
