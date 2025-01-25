@@ -29,6 +29,8 @@ import {
   ThumbsDown,
   History,
   Trash,
+  BookOpen,
+  LinkIcon,
 } from "lucide-react";
 import {
   Segment,
@@ -40,6 +42,7 @@ import { getSurahName } from "@/lib/quran-utils";
 import { calculateSurahSegments, surahsBahasa } from "@/content/quran/metadata";
 import { memorizationStatusLabels } from "@/types/hafalan";
 import AddSurahReviewForm from "./AddSurahReview";
+import Link from "next/link";
 
 const HafalanQuranReviews = () => {
   const {
@@ -348,6 +351,12 @@ const HafalanQuranReviews = () => {
                     <DialogHeader>
                       <DialogTitle>
                         {surahData.name} ({surahData.arabicName})
+                        <Link
+                          className="inline-block ml-2"
+                          href={`/quran/surah/${surahData.number}_${encodeURIComponent(surahData.name)}`}
+                        >
+                          <LinkIcon className="h-4 w-4" />
+                        </Link>
                       </DialogTitle>
                     </DialogHeader>
                     <ScrollArea className="h-[600px] space-y-4">
