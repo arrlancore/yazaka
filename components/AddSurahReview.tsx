@@ -66,7 +66,7 @@ const AddSurahReviewForm: React.FC<AddSurahFormProps> = ({ onAdd }) => {
         type="date"
         value={startDate}
         onChange={(e) => setStartDate(e.target.value)}
-        className="w-auto"
+        className="w-auto min-w-24"
         placeholder="Tanggal Mulai (Opsional)"
       />
 

@@ -1,11 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,42 +11,30 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import {
-  AlertCircle,
-  CheckCircle2,
   Clock,
-  Flame,
   Book,
   ThumbsUp,
   ThumbsDown,
   History,
   Trash,
-  BookOpen,
   LinkIcon,
+  CheckCheck,
 } from "lucide-react";
-import {
-  Segment,
-  Review,
-  SurahDetail,
-  useHafalanStore,
-} from "@/lib/stores/hafalan-store";
-import { getSurahName } from "@/lib/quran-utils";
+import { Segment, useHafalanStore } from "@/lib/stores/hafalan-store";
 import { calculateSurahSegments, surahsBahasa } from "@/content/quran/metadata";
-import { memorizationStatusLabels } from "@/types/hafalan";
 import AddSurahReviewForm from "./AddSurahReview";
 import Link from "next/link";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { TooltipContent } from "@radix-ui/react-tooltip";
+import { cn } from "@/lib/utils";
+
+const COUNT_REVIEW_REQUIRED = 2;
 
 const HafalanQuranReviews = () => {
-  const {
-    targets,
-    memorizedSummary,
-    updateMeta,
-    addSurahDetail,
-    updateSurahDetail,
-    addReviewSegment,
-  } = useHafalanStore();
+  const { memorizedSummary, addSurahDetail, addReviewSegment } =
+    useHafalanStore();
 
   const [selectedSegment, setSelectedSegment] = useState<{
     surahId: number;
@@ -102,23 +84,30 @@ const HafalanQuranReviews = () => {
     totalAyahs: number
   ): number => {
     const uniqueAyahsWithNotes = new Set<number>();
-    const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+    let hasReviews = false;
+
     segments.forEach((segment) => {
-      segment.reviews?.forEach((review) => {
-        // Check if the review is from today
-        if (review.date.startsWith(today)) {
-          if (!review.isSmooth) {
-            review.notes.forEach((note) => {
-              uniqueAyahsWithNotes.add(note.ayah);
-            });
-          }
+      if (segment.reviews && segment.reviews.length > 0) {
+        hasReviews = true;
+        // Get the latest review for this segment
+        const latestReview = segment.reviews[segment.reviews.length - 1];
+
+        if (!latestReview.isSmooth) {
+          latestReview.notes.forEach((note) => {
+            uniqueAyahsWithNotes.add(note.ayah);
+          });
         }
-      });
+      }
     });
 
+    // If there are no reviews, return 0
+    if (!hasReviews) {
+      return 0;
+    }
+
     const smoothAyahs = totalAyahs - uniqueAyahsWithNotes.size;
-    const res = (smoothAyahs / totalAyahs) * 100;
-    return res;
+    const progress = (smoothAyahs / totalAyahs) * 100;
+    return Math.round(progress);
   };
 
   // Check if a surah is recently created (within 7 days)
@@ -209,16 +198,6 @@ const HafalanQuranReviews = () => {
     }
   };
 
-  const getListSurahsFromRange = (startSurah: number, endSurah: number) => {
-    const list: number[] = [];
-
-    for (let i = startSurah; i <= endSurah; i++) {
-      list.push(i);
-    }
-
-    return list;
-  };
-
   const handleAddSurahToReview = (surahNumber: number, startDate?: string) => {
     const surahDetail = memorizedSummary.surahDetails.find(
       (s) => s.surahNumber === surahNumber
@@ -235,6 +214,20 @@ const HafalanQuranReviews = () => {
         id: crypto.randomUUID(),
         segments: segments,
       });
+    }
+  };
+
+  const getBadgeVariant = (
+    segments: Segment[]
+  ): "destructive" | "warning" | "secondary" => {
+    const daysSinceLastReview = getDaysSinceReview(getLastReview(segments));
+
+    if (daysSinceLastReview > 7) {
+      return "destructive";
+    } else if (daysSinceLastReview > 3) {
+      return "warning";
+    } else {
+      return "secondary";
     }
   };
 
@@ -269,44 +262,49 @@ const HafalanQuranReviews = () => {
                             <p className="text-sm text-muted-foreground">
                               {surahData.totalVerses} ayat
                             </p>
-                            {surah.lastReviewDate
-                              ?.toISOString()
-                              ?.startsWith(
-                                new Date().toISOString().split("T")[0]
-                              ) ? (
-                              <div className="mt-2">
-                                <Progress
-                                  value={calculateProgress(
-                                    surah.segments,
-                                    surahData.totalVerses
-                                  )}
-                                  className="w-32"
-                                />
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  {Math.round(
+
+                            <div className="mt-2">
+                              <Progress
+                                value={calculateProgress(
+                                  surah.segments,
+                                  surahData.totalVerses
+                                )}
+                                className={cn("w-32", {
+                                  "bg-red-200":
                                     calculateProgress(
                                       surah.segments,
                                       surahData.totalVerses
-                                    )
-                                  )}
-                                  % lancar
-                                </p>
-                              </div>
-                            ) : null}
+                                    ) === 0,
+                                  "bg-yellow-200":
+                                    calculateProgress(
+                                      surah.segments,
+                                      surahData.totalVerses
+                                    ) > 0 &&
+                                    calculateProgress(
+                                      surah.segments,
+                                      surahData.totalVerses
+                                    ) < 100,
+                                  "bg-green-200":
+                                    calculateProgress(
+                                      surah.segments,
+                                      surahData.totalVerses
+                                    ) === 100,
+                                })}
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {Math.round(
+                                  calculateProgress(
+                                    surah.segments,
+                                    surahData.totalVerses
+                                  )
+                                )}
+                                % lancar
+                              </p>
+                            </div>
                           </div>
                           <div className="text-right">
                             <Badge
-                              variant={
-                                getDaysSinceReview(
-                                  getLastReview(surah.segments)
-                                ) > 14
-                                  ? "destructive"
-                                  : getDaysSinceReview(
-                                        getLastReview(surah.segments)
-                                      ) > 7
-                                    ? "outline"
-                                    : "secondary"
-                              }
+                              variant={getBadgeVariant(surah.segments)}
                               className="flex flex-col gap-1"
                             >
                               <div className="flex items-center gap-1">
@@ -330,23 +328,67 @@ const HafalanQuranReviews = () => {
                             </div>
                           </div>
                         </div>
-                        {isRecentlyCreated(surah.createdAt.toISOString()) && (
+                        {isRecentlyCreated(surah.createdAt.toISOString()) ? (
                           <div className="mt-2">
-                            <Badge
-                              variant={
-                                getTodayReviewCount(surah.segments) < 2
-                                  ? "outline"
-                                  : "default"
-                              }
-                            >
-                              {getTodayReviewCount(surah.segments)} / 2 review
-                            </Badge>
+                            {getTodayReviewCount(surah.segments) >=
+                            COUNT_REVIEW_REQUIRED ? (
+                              <div className="flex items-center text-green-500">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <CheckCheck className="w-5 h-5 mr-1" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <div className="bg-primary-foreground text-sm">
+                                        Review hari ini sudah diselesaikan
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+                            ) : (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <Badge variant="outline">
+                                      {getTodayReviewCount(surah.segments)} /{" "}
+                                      {COUNT_REVIEW_REQUIRED} review
+                                    </Badge>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <div className="bg-primary-foreground text-sm">
+                                      {COUNT_REVIEW_REQUIRED -
+                                        getTodayReviewCount(
+                                          surah.segments
+                                        )}{" "}
+                                      review lagi diperlukan
+                                    </div>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
                           </div>
-                        )}
+                        ) : getTodayReviewCount(surah.segments) >= 1 ? (
+                          <div className="flex items-center text-green-500">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <CheckCheck className="w-5 h-5 mr-1" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <div className="bg-primary-foreground text-sm">
+                                    Review hari ini sudah diselesaikan
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                        ) : null}
                       </CardContent>
                     </Card>
                   </DialogTrigger>
 
+                  {/* Review detail */}
                   <DialogContent className="max-w-2xl">
                     <DialogHeader>
                       <DialogTitle>
@@ -364,13 +406,15 @@ const HafalanQuranReviews = () => {
                         <div className="mb-4">
                           <Badge
                             variant={
-                              getTodayReviewCount(surah.segments) < 2
+                              getTodayReviewCount(surah.segments) <
+                              COUNT_REVIEW_REQUIRED
                                 ? "outline"
                                 : "default"
                             }
                           >
                             Review hari ini :{" "}
-                            {getTodayReviewCount(surah.segments)} / 2
+                            {getTodayReviewCount(surah.segments)} /{" "}
+                            {COUNT_REVIEW_REQUIRED}
                           </Badge>
                         </div>
                       )}
