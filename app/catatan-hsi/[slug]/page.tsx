@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps) {
   
   if (!catatan) {
     return {
-      title: 'Catatan not found',
+      title: 'Catatan tidak ditemukan',
     };
   }
 

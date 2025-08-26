@@ -3,8 +3,8 @@ import { CatatanCard } from '@/components/catatan-hsi/CatatanCard';
 import { BookOpen, Volume2 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Catatan HSI - Study Notes with Audio Synchronization',
-  description: 'Islamic study notes with synchronized audio transcription for immersive learning experience',
+  title: 'Catatan HSI - Catatan Kajian dengan Sinkronisasi Audio',
+  description: 'Catatan kajian Islam dengan transkripsi audio tersinkronisasi untuk pengalaman belajar yang mendalam',
 };
 
 export default async function CatatanHSIPage() {
@@ -29,9 +29,9 @@ export default async function CatatanHSIPage() {
               Catatan HSI
             </h1>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Islamic study notes with synchronized audio transcription. 
-              Follow along with audio lectures while reading synchronized text for 
-              an immersive learning experience.
+              Catatan kajian Islam dengan transkripsi audio tersinkronisasi. 
+              Ikuti ceramah audio sambil membaca teks tersinkronisasi untuk 
+              pengalaman belajar yang mendalam.
             </p>
           </div>
         </div>
@@ -43,10 +43,10 @@ export default async function CatatanHSIPage() {
               <BookOpen className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No Study Notes Available
+              Belum Ada Catatan Kajian
             </h3>
             <p className="text-gray-600">
-              Study notes with audio synchronization will appear here when available.
+              Catatan kajian dengan sinkronisasi audio akan muncul di sini ketika tersedia.
             </p>
           </div>
         ) : (
@@ -58,7 +58,7 @@ export default async function CatatanHSIPage() {
                   <div className="text-2xl font-bold text-emerald-600">
                     {catatanList.length}
                   </div>
-                  <div className="text-sm text-gray-600">Study Sessions</div>
+                  <div className="text-sm text-gray-600">Sesi Kajian</div>
                 </div>
               </div>
               
@@ -67,7 +67,7 @@ export default async function CatatanHSIPage() {
                   <div className="text-2xl font-bold text-blue-600">
                     {catatanList.reduce((acc, catatan) => acc + catatan.transcription.length, 0)}
                   </div>
-                  <div className="text-sm text-gray-600">Text Segments</div>
+                  <div className="text-sm text-gray-600">Segmen Teks</div>
                 </div>
               </div>
               
@@ -76,7 +76,7 @@ export default async function CatatanHSIPage() {
                   <div className="text-2xl font-bold text-purple-600">
                     {new Set(catatanList.map(c => c.metadata.series)).size}
                   </div>
-                  <div className="text-sm text-gray-600">Series Available</div>
+                  <div className="text-sm text-gray-600">Seri Tersedia</div>
                 </div>
               </div>
             </div>

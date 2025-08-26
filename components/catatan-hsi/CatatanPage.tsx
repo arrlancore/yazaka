@@ -106,7 +106,7 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
           <Separator className="mb-4" />
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
-              <span className="font-medium">Source: </span>
+              <span className="font-medium">Sumber: </span>
               <Link 
                 href={metadata.source}
                 target="_blank"
@@ -119,7 +119,7 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
             </div>
             
             <div className="text-xs text-gray-500">
-              Last updated: {new Date(metadata.publishedAt).toLocaleDateString('id-ID')}
+              Terakhir diperbarui: {new Date(metadata.publishedAt).toLocaleDateString('id-ID')}
             </div>
           </div>
         </div>

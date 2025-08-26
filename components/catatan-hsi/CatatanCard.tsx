@@ -48,7 +48,7 @@ export function CatatanCard({ catatan }: CatatanCardProps) {
             ))}
             {metadata.tags.length > 3 && (
               <Badge variant="outline" className="text-xs">
-                +{metadata.tags.length - 3} more
+                +{metadata.tags.length - 3} lagi
               </Badge>
             )}
           </div>

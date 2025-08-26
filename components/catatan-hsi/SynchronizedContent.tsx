@@ -54,7 +54,7 @@ export function SynchronizedContent({ segments, currentTime, onSeek }: Synchroni
   if (segments.length === 0) {
     return (
       <div className="bg-gray-50 rounded-xl p-6">
-        <p className="text-gray-500 text-center">No transcription available</p>
+        <p className="text-gray-500 text-center">Transkripsi tidak tersedia</p>
       </div>
     );
   }
@@ -62,7 +62,7 @@ export function SynchronizedContent({ segments, currentTime, onSeek }: Synchroni
   return (
     <div className="bg-gray-50 rounded-xl p-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">
-        Synchronized Transcription
+        Transkripsi Tersinkronisasi
       </h3>
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {segments.map((segment, index) => (
@@ -93,8 +93,8 @@ export function SynchronizedContent({ segments, currentTime, onSeek }: Synchroni
       {segments.length > 0 && (
         <div className="mt-4 pt-4 border-t border-gray-200">
           <p className="text-xs text-gray-500 text-center">
-            Click on any text segment to jump to that part of the audio. 
-            The active segment will auto-scroll into view as the audio plays.
+            Klik pada segmen teks mana pun untuk melompat ke bagian audio tersebut. 
+            Segmen yang aktif akan otomatis di-scroll ke tampilan saat audio diputar.
           </p>
         </div>
       )}

@@ -35,11 +35,11 @@ export function CatatanContentTabs({
       <TabsList className="grid w-full grid-cols-2 mb-6">
         <TabsTrigger value="content" className="flex items-center gap-2">
           <BookOpen className="w-4 h-4" />
-          Content
+          Konten
         </TabsTrigger>
         <TabsTrigger value="transcription" className="flex items-center gap-2">
           <Volume2 className="w-4 h-4" />
-          Transcription
+          Transkripsi
           {isPlaying && (
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
           )}
