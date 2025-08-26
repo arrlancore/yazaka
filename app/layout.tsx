@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: appTitle,
     description: appDescription,
-    images: [`${appUrl}/og-image.jpg`],
+    images: [`${appUrl}/og-image.png`],
   },
   robots: {
     index: true,
@@ -47,6 +47,11 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  icons: {
+    icon: "/images/icons/icon-192x192.png",
+    shortcut: "/images/icons/icon-192x192.png",
+    apple: "/images/icons/icon-192x192.png",
+  },
 };
 
 export default function RootLayout({
@@ -55,7 +60,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <body>
         <ThemeProvider
           attribute="class"

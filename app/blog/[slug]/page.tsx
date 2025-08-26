@@ -35,7 +35,7 @@ export async function generateMetadata({
       siteName: brandName,
       images: [
         {
-          url: post.image || `${appUrl}/og-image.jpg`,
+          url: post.image || `${appUrl}/og-image.png`,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -53,7 +53,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: post.title,
       description: post.summary,
-      images: [post.image || `${appUrl}/og-image.jpg`],
+      images: [post.image || `${appUrl}/og-image.png`],
     },
   };
 }
