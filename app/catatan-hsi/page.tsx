@@ -7,8 +7,8 @@ export const metadata = {
   description: 'Islamic study notes with synchronized audio transcription for immersive learning experience',
 };
 
-export default function CatatanHSIPage() {
-  const catatanList = getAllCatatan();
+export default async function CatatanHSIPage() {
+  const catatanList = await getAllCatatan();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -65,9 +65,9 @@ export default function CatatanHSIPage() {
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-blue-600">
-                    {catatanList.reduce((acc, catatan) => acc + Math.floor(catatan.metadata.duration / 60), 0)}
+                    {catatanList.reduce((acc, catatan) => acc + catatan.transcription.length, 0)}
                   </div>
-                  <div className="text-sm text-gray-600">Minutes of Content</div>
+                  <div className="text-sm text-gray-600">Text Segments</div>
                 </div>
               </div>
               

@@ -1,8 +1,10 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import matter from 'gray-matter';
+import { MDXRemote } from 'next-mdx-remote/rsc';
 import { CatatanData, CatatanMetadata } from './types';
 import { parseTranscription } from './transcription';
+import components from '@/lib/mdx/mdx-components';
 
 const catatanDirectory = join(process.cwd(), 'content/catatan-hsi');
 
@@ -14,13 +16,13 @@ export function getAllCatatanSlugs(): string[] {
   }
 }
 
-export function getCatatanBySlug(slug: string): CatatanData | null {
+export async function getCatatanBySlug(slug: string): Promise<CatatanData | null> {
   try {
     const fullPath = join(catatanDirectory, slug, 'index.mdx');
     const transcriptionPath = join(catatanDirectory, slug, 'transcription.txt');
     
     const fileContents = readFileSync(fullPath, 'utf8');
-    const { data: metadata, content } = matter(fileContents);
+    const { data: metadata, content: rawContent } = matter(fileContents);
     
     let transcriptionText = '';
     try {
@@ -30,11 +32,16 @@ export function getCatatanBySlug(slug: string): CatatanData | null {
     }
 
     const transcription = transcriptionText ? parseTranscription(transcriptionText) : [];
+    
+    const mdxContent = await MDXRemote({
+      source: rawContent,
+      components: components,
+    });
 
     return {
       slug,
       metadata: metadata as CatatanMetadata,
-      content,
+      content: mdxContent,
       transcription,
     };
   } catch (error) {
@@ -43,10 +50,12 @@ export function getCatatanBySlug(slug: string): CatatanData | null {
   }
 }
 
-export function getAllCatatan(): CatatanData[] {
+export async function getAllCatatan(): Promise<CatatanData[]> {
   const slugs = getAllCatatanSlugs();
-  return slugs
-    .map(slug => getCatatanBySlug(slug))
+  const catatanPromises = slugs.map(slug => getCatatanBySlug(slug));
+  const catatanResults = await Promise.all(catatanPromises);
+  
+  return catatanResults
     .filter((catatan): catatan is CatatanData => catatan !== null)
     .sort((a, b) => {
       // Sort by series and episode

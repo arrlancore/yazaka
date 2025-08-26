@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { CatatanData } from "@/lib/catatan-hsi/types";
-import { formatTime } from "@/lib/catatan-hsi/transcription";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, User, MapPin } from "lucide-react";
+import { User } from "lucide-react";
 
 interface CatatanCardProps {
   catatan: CatatanData;
@@ -30,21 +29,10 @@ export function CatatanCard({ catatan }: CatatanCardProps) {
         </CardHeader>
         
         <CardContent className="space-y-3">
-          <div className="flex items-center gap-4 text-sm text-gray-600">
-            <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1 text-sm text-gray-600">
               <User className="w-4 h-4" />
               <span>{metadata.ustad}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              <span>{formatTime(metadata.duration)}</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 text-sm text-gray-500">
-              <MapPin className="w-3 h-3" />
-              <span>{metadata.location}</span>
             </div>
             
             <div className="flex items-center gap-1 text-xs text-gray-500">

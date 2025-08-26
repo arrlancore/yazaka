@@ -1,3 +1,5 @@
+import { ReactElement } from 'react';
+
 export interface TranscriptionSegment {
   startTime: number;
   text: string;
@@ -10,19 +12,16 @@ export interface CatatanMetadata {
   summary: string;
   audioSrc: string;
   transcriptionSrc: string;
-  duration: number;
-  location: string;
   series: string;
   episode: number;
   totalEpisodes: number;
   tags: string[];
-  level: string;
   source: string;
 }
 
 export interface CatatanData {
   slug: string;
   metadata: CatatanMetadata;
-  content: string;
+  content: ReactElement;
   transcription: TranscriptionSegment[];
 }

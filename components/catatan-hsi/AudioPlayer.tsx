@@ -8,9 +8,10 @@ interface AudioPlayerProps {
   audioSrc: string;
   onTimeUpdate?: (currentTime: number) => void;
   onSeek?: (time: number) => void;
+  onPlayingChange?: (isPlaying: boolean) => void;
 }
 
-export function AudioPlayer({ audioSrc, onTimeUpdate, onSeek }: AudioPlayerProps) {
+export function AudioPlayer({ audioSrc, onTimeUpdate, onSeek, onPlayingChange }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -37,6 +38,7 @@ export function AudioPlayer({ audioSrc, onTimeUpdate, onSeek }: AudioPlayerProps
 
   const handleEnded = () => {
     setIsPlaying(false);
+    onPlayingChange?.(false);
   };
 
   const handleError = () => {
@@ -52,12 +54,15 @@ export function AudioPlayer({ audioSrc, onTimeUpdate, onSeek }: AudioPlayerProps
   const togglePlayPause = () => {
     if (!audioRef.current || error) return;
 
+    const newPlayingState = !isPlaying;
+    
     if (isPlaying) {
       audioRef.current.pause();
     } else {
       audioRef.current.play();
     }
-    setIsPlaying(!isPlaying);
+    setIsPlaying(newPlayingState);
+    onPlayingChange?.(newPlayingState);
   };
 
   // Handle seek

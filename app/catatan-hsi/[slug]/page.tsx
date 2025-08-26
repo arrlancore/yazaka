@@ -17,7 +17,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const catatan = getCatatanBySlug(params.slug);
+  const catatan = await getCatatanBySlug(params.slug);
   
   if (!catatan) {
     return {
@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export default function CatatanDetailPage({ params }: PageProps) {
-  const catatan = getCatatanBySlug(params.slug);
+export default async function CatatanDetailPage({ params }: PageProps) {
+  const catatan = await getCatatanBySlug(params.slug);
 
   if (!catatan) {
     notFound();

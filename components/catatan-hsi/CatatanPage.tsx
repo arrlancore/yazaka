@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { CatatanData } from "@/lib/catatan-hsi/types";
 import { AudioPlayer } from "./AudioPlayer";
-import { SynchronizedContent } from "./SynchronizedContent";
+import { CatatanContentTabs } from "./CatatanContentTabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ExternalLink, User, MapPin, Calendar, Clock } from "lucide-react";
+import { ExternalLink, User, Calendar } from "lucide-react";
 import Link from "next/link";
 
 interface CatatanPageProps {
@@ -15,7 +15,8 @@ interface CatatanPageProps {
 
 export function CatatanPage({ catatan }: CatatanPageProps) {
   const [currentTime, setCurrentTime] = useState(0);
-  const { metadata, transcription } = catatan;
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { metadata, transcription, content } = catatan;
   
   const audioSrc = `/audio/catatan-hsi/${metadata.audioSrc}`;
 
@@ -25,6 +26,10 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
 
   const handleSeek = (time: number) => {
     setCurrentTime(time);
+  };
+
+  const handlePlayingChange = (playing: boolean) => {
+    setIsPlaying(playing);
   };
 
   return (
@@ -40,9 +45,6 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
                 </Badge>
                 <Badge variant="outline" className="text-xs">
                   Episode {metadata.episode}/{metadata.totalEpisodes}
-                </Badge>
-                <Badge variant="outline" className="text-xs capitalize">
-                  {metadata.level}
                 </Badge>
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -61,20 +63,12 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
               <span>{metadata.ustad}</span>
             </div>
             <div className="flex items-center gap-1">
-              <MapPin className="w-4 h-4" />
-              <span>{metadata.location}</span>
-            </div>
-            <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
               <span>{new Date(metadata.publishedAt).toLocaleDateString('id-ID', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
               })}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              <span>{Math.floor(metadata.duration / 60)} minutes</span>
             </div>
           </div>
 
@@ -94,14 +88,17 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
             audioSrc={audioSrc}
             onTimeUpdate={handleTimeUpdate}
             onSeek={handleSeek}
+            onPlayingChange={handlePlayingChange}
           />
         </div>
 
-        {/* Synchronized Content */}
-        <SynchronizedContent
-          segments={transcription}
+        {/* Content Tabs */}
+        <CatatanContentTabs
+          content={content}
+          transcription={transcription}
           currentTime={currentTime}
           onSeek={handleSeek}
+          isPlaying={isPlaying}
         />
 
         {/* Source Citation */}
