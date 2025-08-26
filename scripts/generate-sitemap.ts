@@ -1,9 +1,10 @@
 // scripts/generate-sitemap.ts
-import { readdirSync, readFileSync } from "fs";
+import { readdirSync, readFileSync, statSync } from "fs";
 import { writeFile } from "fs/promises";
 import path from "path";
 import prettier from "prettier";
 import matter from "gray-matter";
+// Remove import to avoid module resolution issues in build script
 
 const surahsBahasa = [
   {
@@ -779,6 +780,36 @@ async function generateSitemap() {
       )
       .join("");
 
+    // Catatan HSI pages  
+    const CATATAN_PATH = path.join(process.cwd(), "content/catatan-hsi");
+    
+    const getCatatanSlugs = (): string[] => {
+      try {
+        return readdirSync(CATATAN_PATH).filter(item => {
+          const fullPath = path.join(CATATAN_PATH, item);
+          const stat = statSync(fullPath);
+          return stat.isDirectory();
+        });
+      } catch (error) {
+        console.error("Error reading catatan directory:", error);
+        return [];
+      }
+    };
+
+    const catatanSlugs = getCatatanSlugs();
+    const catatanUrls = catatanSlugs
+      .map(
+        (slug) => `
+      <url>
+        <loc>${domain}/catatan-hsi/${slug}</loc>
+        <lastmod>${new Date().toISOString()}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+      </url>
+    `
+      )
+      .join("");
+
     const sitemap = `
       <?xml version="1.0" encoding="UTF-8"?>
       <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -821,6 +852,9 @@ async function generateSitemap() {
         <!-- Quran Surahs -->
         ${quranSurahUrls}
 
+        <!-- Catatan HSI -->
+        ${catatanUrls}
+
         <!-- Blog Posts -->
         ${posts
           .map(
@@ -849,7 +883,7 @@ async function generateSitemap() {
 
     console.log("✅ Sitemap generated successfully!");
     console.log(
-      `✅ Generated sitemap for ${pages.length + authors.length} pages and ${posts.length} blog posts`
+      `✅ Generated sitemap for ${pages.length + authors.length + surahsBahasa.length + catatanSlugs.length} pages, ${posts.length} blog posts, and ${catatanSlugs.length} catatan`
     );
   } catch (error) {
     console.error("Error generating sitemap:", error);
