@@ -24,6 +24,7 @@ function Header() {
   const navItems = [
     { href: "/jadwal-shalat", label: "Jadwal Shalat" },
     { href: "/quran", label: "Quran" },
+    { href: "/catatan-hsi", label: "Catatan HSI" },
     { href: "/arah-kiblat", label: "Arah Kiblat" },
     // { href: "#contact", label: "Contact" },
   ];
