@@ -22,3 +22,6 @@ export const defaultAuthor = "Tim Redaksi";
 export const URLS = {
   quranApi: "https://quran-api-tau.vercel.app",
 };
+
+// Analytics
+export const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_ID;

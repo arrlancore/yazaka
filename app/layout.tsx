@@ -12,6 +12,7 @@ import {
   appLocale,
 } from "@/config";
 import Providers from "@/components/providers";
+import GoogleAnalytics from "@/components/analytics/google-analytics";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -61,6 +62,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body>
         <ThemeProvider
           attribute="class"
