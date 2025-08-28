@@ -90,7 +90,7 @@ ${latestContent.content}`;
     }
 
     // Then create files on GitHub
-    const baseUrl = `https://api.github.com/repos/${githubRepo}/contents/content/catatan-hsi/${content.slug}`;
+    const baseUrl = `https://api.github.com/repos/${githubRepo}/contents/content/catatan-hsi/${latestContent.slug}`;
     
     const headers = {
       'Authorization': `Bearer ${githubToken}`,
@@ -103,7 +103,7 @@ ${latestContent.content}`;
       method: 'PUT',
       headers,
       body: JSON.stringify({
-        message: `Publish: ${content.title}`,
+        message: `Publish: ${latestContent.title}`,
         content: Buffer.from(indexMdx).toString('base64'),
         branch: githubBranch,
         author: {
@@ -123,8 +123,8 @@ ${latestContent.content}`;
       method: 'PUT',
       headers,
       body: JSON.stringify({
-        message: `Publish transcription: ${content.title}`,
-        content: Buffer.from(content.transcription).toString('base64'),
+        message: `Publish transcription: ${latestContent.title}`,
+        content: Buffer.from(latestContent.transcription).toString('base64'),
         branch: githubBranch,
         author: {
           name: process.env.GITHUB_AUTHOR_NAME || 'Bekhair Admin',
@@ -138,7 +138,7 @@ ${latestContent.content}`;
       throw new Error(`GitHub API error: ${transcriptionResponse.status} ${error}`);
     }
 
-    return NextResponse.json({ success: true, slug: content.slug });
+    return NextResponse.json({ success: true, slug: latestContent.slug });
   } catch (error) {
     console.error('Publish error:', error);
     return NextResponse.json({ error: 'Failed to publish' }, { status: 500 });
