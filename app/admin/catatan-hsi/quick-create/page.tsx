@@ -79,6 +79,7 @@ export default function QuickCreatePage() {
           summary: 'Processing...',
           tags: [],
           source: '',
+          audio_src: null, // Will be set in edit form
           created_by: user.id,
           status: 'raw'
         }])

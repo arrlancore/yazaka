@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Edit, Eye, Calendar, User } from 'lucide-react';
+import { Plus, Search, Edit, Eye, Calendar, User, Upload } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -21,6 +21,7 @@ export default function CatatanHSIListPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [seriesFilter, setSeriesFilter] = useState<string>('all');
   const [availableSeries, setAvailableSeries] = useState<string[]>([]);
+  const [publishing, setPublishing] = useState<string | null>(null);
 
   useEffect(() => {
     fetchContent();
@@ -80,6 +81,35 @@ export default function CatatanHSIListPage() {
       month: 'short',
       day: 'numeric'
     });
+  }
+
+  async function handlePublish(id: string) {
+    if (!confirm('Are you sure you want to publish this content to GitHub?')) {
+      return;
+    }
+
+    setPublishing(id);
+    try {
+      const response = await fetch('/api/admin/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to publish');
+      }
+
+      alert(`Successfully published to GitHub as ${result.slug}`);
+      fetchContent(); // Refresh to show updated status
+    } catch (error) {
+      console.error('Publish error:', error);
+      alert(`Failed to publish: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setPublishing(null);
+    }
   }
 
   return (
@@ -218,6 +248,19 @@ export default function CatatanHSIListPage() {
                           Edit
                         </Link>
                       </Button>
+                      
+                      {item.status !== 'published' && item.status !== 'raw' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePublish(item.id)}
+                          disabled={publishing === item.id || !item.audio_src}
+                          title={!item.audio_src ? 'Audio source is required to publish' : 'Publish to GitHub'}
+                        >
+                          <Upload className="h-4 w-4 mr-1" />
+                          {publishing === item.id ? 'Publishing...' : 'Publish'}
+                        </Button>
+                      )}
                       
                       {item.status === 'published' && (
                         <Button variant="outline" size="sm" asChild>

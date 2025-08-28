@@ -121,7 +121,7 @@ export async function enhanceTranscription(
   const profileContext = `Ustadz Dr. Abdullah Roy, yang nama aslinya adalah Roy Grafika Penataran, adalah seorang dai dan akademisi kelahiran Bantul, Yogyakarta, tahun 1980. Beliau merupakan lulusan S1, S2, dan S3 dari Universitas Islam Madinah (UIM), di mana ia mendalami bidang Akidah. Beliau dikenal sebagai pendiri program belajar online HSI AbdullahRoy dan pernah menjadi pengajar tetap kajian berbahasa Indonesia di Masjid Nabawi pada periode 2013–2017`;
 
   const systemPrompt = `Anda adalah asisten AI yang bertugas memperbaiki transkrip audio kajian Islam dan mengubahnya menjadi artikel konten yang terstruktur dan akurat, sesuai dengan contoh dan aturan ketat yang diberikan di bawah ini.
-
+**Biografi Ustad**: ${profileContext} 
 **Prinsip Utama: Akurasi dan Otentisitas**
 Konten transkrip dan artikel harus sama persis dengan makna yang terkandung dalam transkrip asli. Jangan mengubah, menafsirkan ulang, atau mengurangi ajaran atau dalil (Al-Quran dan Hadits) yang disampaikan.
 
@@ -161,19 +161,34 @@ Konten transkrip dan artikel harus sama persis dengan makna yang terkandung dala
         *   Daftar berpoin (*bullet points*) untuk ringkasan atau penjelasan.
         *   Teks tebal (\`**teks**\`) untuk menekankan istilah penting.
     *   **Penutup:** Akhiri artikel dengan kalimat penutup dari penceramah, nama, dan lokasi.
-    *   **Ringkasan Poin:** Buat bagian "Poin Penting untuk Diingat" di akhir untuk merangkum pelajaran utama dari kajian.
-     
-**Biografi Ustad**: ${profileContext}   
+    *   **Ringkasan Poin:** Buat bagian "Poin Penting untuk Diingat" di akhir atau setelah artikel untuk merangkum pelajaran utama dari kajian.  
 
 **WAJIB: Format response sebagai:**
 {
   "enhanced_transcription": "transkrip yang sudah diperbaiki dengan format timestamp",
   "enhanced_content": "artikel dalam format Markdown",
   "improved_summary": "ringkasan 2-3 kalimat",
-  "suggested_tags": ["tag1", "tag2", ...],
+  "suggested_tags": ["tag1", "tag2", etc], // max 5
   "extracted_title": "judul yang diambil dari konten",
   "extracted_ustad": "nama ustad dari konten",
   "extracted_series": "nama seri kajian"
+}
+
+**Contoh Response:**
+{
+  "enhanced_transcription": "(0:00) Assalamualaikum warahmatullahi wabarakatuh\\n(0:05) Alhamdulillah wassalatu wassalamu 'ala Rasulillah\\n(0:09) wa 'ala alihi wa sahbihi ajma'in.\\n(0:13) Halaqah yang ketiga dari silsilah ilmiah\\n(0:16) beriman dengan takdir Allah Subhanahu wa Ta'ala\\n(0:19) adalah tentang kedudukan iman dengan takdir\\n(0:24) di dalam agama Islam.\\n(0:27) Iman dengan takdir Allah memiliki kedudukan yang tinggi\\n(0:33) Di antara yang menunjukkan ketinggian kedudukannya\\n(0:38) yang pertama, beriman dengan takdir",
+  
+  "enhanced_content": "# Kedudukan Iman dengan Takdir dalam Islam\\n\\nAssalamualaikum warahmatullahi wabarakatuh.\\n\\nAlhamdulillah wassalatu wassalamu 'ala Rasulillah ﷺ wa 'ala alihi wa sahbihi ajma'in.\\n\\nHalaqah ketiga dari silsilah ilmiah **Beriman dengan Takdir Allah** membahas kedudukan iman dengan takdir dalam agama Islam.\\n\\n## Pendahuluan\\n\\nIman dengan takdir Allah Subhanahu wa Ta'ala memiliki kedudukan yang sangat tinggi dalam Islam. Berikut adalah beberapa poin yang menunjukkan ketinggian kedudukannya:\\n\\n## 1. Termasuk Rukun Iman\\n\\nBeriman dengan takdir adalah salah satu dari **enam rukun iman** yang wajib diimani oleh setiap Muslim.\\n\\n## 2. Bagian dari Tauhid\\n\\nKeimanan terhadap takdir merupakan bagian integral dari **tauhid rububiyah** dan **asma' wa sifat**.\\n\\n---\\n\\n**Poin Penting untuk Diingat:**\\n- Iman kepada takdir adalah rukun iman\\n- Berkaitan dengan tauhid Allah\\n- Mempengaruhi kehidupan sehari-hari\\n\\nWassalamualaikum warahmatullahi wabarakatuh.\\n\\n**Abdullah Roy**\\nMadinah Al-Munawwarah",
+  
+  "improved_summary": "Kajian ini membahas kedudukan tinggi iman kepada takdir dalam Islam sebagai bagian dari rukun iman dan tauhid Allah. Dijelaskan bahwa keimanan terhadap takdir merupakan fondasi penting dalam akidah Islam yang mempengaruhi kehidupan Muslim sehari-hari.",
+  
+  "suggested_tags": ["takdir", "rukun iman", "tauhid", "akidah", "iman"],
+  
+  "extracted_title": "Kedudukan Iman dengan Takdir dalam Islam",
+  
+  "extracted_ustad": "Abdullah Roy",
+  
+  "extracted_series": "Halaqah Silsilah Ilmiah Beriman dengan Takdir Allah"
 }`;
 
   const userPrompt = `**Combined Transcription:**
@@ -243,12 +258,10 @@ Silakan perbaiki transkrip dan buat artikel sesuai dengan aturan yang telah dibe
           parsed.extracted_series || parsed.series || "HSI Series",
       };
     } catch (parseError) {
-
       // Try to extract JSON from within the content if it's wrapped in other text
       const jsonMatch = content.match(/```json\s*(\{[\s\S]*?\})\s*```/);
       if (jsonMatch) {
         try {
-
           // Extract fields using regex patterns instead of JSON.parse
           const extractField = (
             fieldName: string,
@@ -340,8 +353,7 @@ Silakan perbaiki transkrip dan buat artikel sesuai dengan aturan yang telah dibe
           };
 
           return result;
-        } catch (innerParseError) {
-        }
+        } catch (innerParseError) {}
       }
 
       // If all JSON parsing fails, create structured response
