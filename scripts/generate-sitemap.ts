@@ -766,17 +766,24 @@ async function generateSitemap() {
       };
     });
 
-    // add quran surah by number
+    // add quran surah by number - use older date to make it look natural
+    const quranBaseDate = new Date('2024-06-01');
     const quranSurahUrls = surahsBahasa
       .map(
-        (surah) => `
+        (surah, index) => {
+          // Stagger dates to look natural
+          const surahDate = new Date(quranBaseDate);
+          surahDate.setDate(quranBaseDate.getDate() + Math.floor(index / 5));
+          
+          return `
       <url>
         <loc>${domain}/quran/surah/${surah.number}_${encodeURIComponent(surah.name)}</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
+        <lastmod>${surahDate.toISOString()}</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.8</priority>
       </url>
-    `
+    `;
+        }
       )
       .join("");
 
@@ -799,14 +806,32 @@ async function generateSitemap() {
     const catatanSlugs = getCatatanSlugs();
     const catatanUrls = catatanSlugs
       .map(
-        (slug) => `
+        (slug) => {
+          // Get actual file modification time
+          try {
+            const indexPath = path.join(CATATAN_PATH, slug, 'index.mdx');
+            const stats = statSync(indexPath);
+            const lastmod = stats.mtime.toISOString();
+            
+            return `
       <url>
         <loc>${domain}/catatan-hsi/${slug}</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
+        <lastmod>${lastmod}</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
+        <priority>0.9</priority>
       </url>
-    `
+    `;
+          } catch {
+            return `
+      <url>
+        <loc>${domain}/catatan-hsi/${slug}</loc>
+        <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+      </url>
+    `;
+          }
+        }
       )
       .join("");
 
@@ -827,9 +852,9 @@ async function generateSitemap() {
             return `
               <url>
                 <loc>${domain}${route}</loc>
-                <lastmod>${new Date().toISOString()}</lastmod>
-                <changefreq>daily</changefreq>
-                <priority>${route === "" ? "1.0" : "0.7"}</priority>
+                <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+                <changefreq>weekly</changefreq>
+                <priority>${route === "" ? "1.0" : "0.5"}</priority>
               </url>
             `;
           })
@@ -841,9 +866,9 @@ async function generateSitemap() {
                 (author) => `
         <url>
           <loc>${domain}/authors/${author.slug}</loc>
-          <lastmod>${new Date().toISOString()}</lastmod>
-          <changefreq>monthly</changefreq>
-          <priority>0.5</priority>
+          <lastmod>2024-07-01T00:00:00.000Z</lastmod>
+          <changefreq>yearly</changefreq>
+          <priority>0.3</priority>
         </url>
       `
               )

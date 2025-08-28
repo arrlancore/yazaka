@@ -4,46 +4,890 @@
 
   <url>
     <loc>https://bekhair.org</loc>
-    <lastmod>2024-12-30T15:38:12.376Z</lastmod>
-    <changefreq>daily</changefreq>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
     <loc>https://bekhair.org/arah-kiblat</loc>
-    <lastmod>2024-12-30T15:38:12.376Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
 
   <url>
     <loc>https://bekhair.org/blog</loc>
-    <lastmod>2024-12-30T15:38:12.376Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/catatan-hsi</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/hafalan-quran</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
 
   <url>
     <loc>https://bekhair.org/jadwal-shalat</loc>
-    <lastmod>2024-12-30T15:38:12.376Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
 
   <url>
     <loc>https://bekhair.org/quran</loc>
-    <lastmod>2024-12-30T15:38:12.376Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/hafalan-quran/targets</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
 
   <!-- Author Pages -->
 
   <url>
     <loc>https://bekhair.org/authors/tim-redaksi</loc>
-    <lastmod>2024-12-30T15:38:12.376Z</lastmod>
+    <lastmod>2024-07-01T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Quran Surahs -->
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/1_Al-Fatihah</loc>
+    <lastmod>2024-06-01T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/2_Al-Baqarah</loc>
+    <lastmod>2024-06-01T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/3_Ali%20'Imran</loc>
+    <lastmod>2024-06-01T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/4_An-Nisa'</loc>
+    <lastmod>2024-06-01T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/5_Al-Ma'idah</loc>
+    <lastmod>2024-06-01T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/6_Al-An'am</loc>
+    <lastmod>2024-06-02T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/7_Al-A'raf</loc>
+    <lastmod>2024-06-02T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/8_Al-Anfal</loc>
+    <lastmod>2024-06-02T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/9_At-Taubah</loc>
+    <lastmod>2024-06-02T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/10_Yunus</loc>
+    <lastmod>2024-06-02T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/11_Hud</loc>
+    <lastmod>2024-06-03T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/12_Yusuf</loc>
+    <lastmod>2024-06-03T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/13_Ar-Ra'd</loc>
+    <lastmod>2024-06-03T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/14_Ibrahim</loc>
+    <lastmod>2024-06-03T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/15_Al-Hijr</loc>
+    <lastmod>2024-06-03T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/16_An-Nahl</loc>
+    <lastmod>2024-06-04T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/17_Al-Isra'</loc>
+    <lastmod>2024-06-04T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/18_Al-Kahf</loc>
+    <lastmod>2024-06-04T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/19_Maryam</loc>
+    <lastmod>2024-06-04T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/20_Taha</loc>
+    <lastmod>2024-06-04T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/21_Al-Anbiya'</loc>
+    <lastmod>2024-06-05T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/22_Al-Hajj</loc>
+    <lastmod>2024-06-05T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/23_Al-Mu'minun</loc>
+    <lastmod>2024-06-05T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/24_An-Nur</loc>
+    <lastmod>2024-06-05T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/25_Al-Furqan</loc>
+    <lastmod>2024-06-05T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/26_Asy-Syu'ara'</loc>
+    <lastmod>2024-06-06T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/27_An-Naml</loc>
+    <lastmod>2024-06-06T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/28_Al-Qasas</loc>
+    <lastmod>2024-06-06T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/29_Al-'Ankabut</loc>
+    <lastmod>2024-06-06T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/30_Ar-Rum</loc>
+    <lastmod>2024-06-06T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/31_Luqman</loc>
+    <lastmod>2024-06-07T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/32_As-Sajdah</loc>
+    <lastmod>2024-06-07T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/33_Al-Ahzab</loc>
+    <lastmod>2024-06-07T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/34_Saba'</loc>
+    <lastmod>2024-06-07T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/35_Fatir</loc>
+    <lastmod>2024-06-07T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/36_Yasin</loc>
+    <lastmod>2024-06-08T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/37_As-Saffat</loc>
+    <lastmod>2024-06-08T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/38_Sad</loc>
+    <lastmod>2024-06-08T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/39_Az-Zumar</loc>
+    <lastmod>2024-06-08T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/40_Gafir</loc>
+    <lastmod>2024-06-08T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/41_Fussilat</loc>
+    <lastmod>2024-06-09T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/42_Asy-Syura</loc>
+    <lastmod>2024-06-09T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/43_Az-Zukhruf</loc>
+    <lastmod>2024-06-09T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/44_Ad-Dukhan</loc>
+    <lastmod>2024-06-09T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/45_Al-Jasiyah</loc>
+    <lastmod>2024-06-09T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/46_Al-Ahqaf</loc>
+    <lastmod>2024-06-10T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/47_Muhammad</loc>
+    <lastmod>2024-06-10T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/48_Al-Fath</loc>
+    <lastmod>2024-06-10T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/49_Al-Hujurat</loc>
+    <lastmod>2024-06-10T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/50_Qaf</loc>
+    <lastmod>2024-06-10T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/51_Az-Zariyat</loc>
+    <lastmod>2024-06-11T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/52_At-Tur</loc>
+    <lastmod>2024-06-11T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/53_An-Najm</loc>
+    <lastmod>2024-06-11T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/54_Al-Qamar</loc>
+    <lastmod>2024-06-11T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/55_Ar-Rahman</loc>
+    <lastmod>2024-06-11T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/56_Al-Waqi'ah</loc>
+    <lastmod>2024-06-12T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/57_Al-Hadid</loc>
+    <lastmod>2024-06-12T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/58_Al-Mujadalah</loc>
+    <lastmod>2024-06-12T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/59_Al-Hasyr</loc>
+    <lastmod>2024-06-12T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/60_Al-Mumtahanah</loc>
+    <lastmod>2024-06-12T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/61_As-Saff</loc>
+    <lastmod>2024-06-13T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/62_Al-Jumu'ah</loc>
+    <lastmod>2024-06-13T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/63_Al-Munafiqun</loc>
+    <lastmod>2024-06-13T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/64_At-Tagabun</loc>
+    <lastmod>2024-06-13T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/65_At-Talaq</loc>
+    <lastmod>2024-06-13T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/66_At-Tahrim</loc>
+    <lastmod>2024-06-14T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/67_Al-Mulk</loc>
+    <lastmod>2024-06-14T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/68_Al-Qalam</loc>
+    <lastmod>2024-06-14T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/69_Al-Haqqah</loc>
+    <lastmod>2024-06-14T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/70_Al-Ma'arij</loc>
+    <lastmod>2024-06-14T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/71_Nuh</loc>
+    <lastmod>2024-06-15T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/72_Al-Jinn</loc>
+    <lastmod>2024-06-15T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/73_Al-Muzzammil</loc>
+    <lastmod>2024-06-15T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/74_Al-Muddassir</loc>
+    <lastmod>2024-06-15T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/75_Al-Qiyamah</loc>
+    <lastmod>2024-06-15T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/76_Al-Insan</loc>
+    <lastmod>2024-06-16T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/77_Al-Mursalat</loc>
+    <lastmod>2024-06-16T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/78_An-Naba'</loc>
+    <lastmod>2024-06-16T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/79_An-Nazi'at</loc>
+    <lastmod>2024-06-16T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/80_'Abasa</loc>
+    <lastmod>2024-06-16T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/81_At-Takwir</loc>
+    <lastmod>2024-06-17T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/82_Al-Infitar</loc>
+    <lastmod>2024-06-17T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/83_Al-Mutaffifin</loc>
+    <lastmod>2024-06-17T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/84_Al-Insyiqaq</loc>
+    <lastmod>2024-06-17T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/85_Al-Buruj</loc>
+    <lastmod>2024-06-17T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/86_At-Tariq</loc>
+    <lastmod>2024-06-18T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/87_Al-A'la</loc>
+    <lastmod>2024-06-18T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/88_Al-Gasyiyah</loc>
+    <lastmod>2024-06-18T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/89_Al-Fajr</loc>
+    <lastmod>2024-06-18T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/90_Al-Balad</loc>
+    <lastmod>2024-06-18T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/91_Asy-Syams</loc>
+    <lastmod>2024-06-19T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/92_Al-Lail</loc>
+    <lastmod>2024-06-19T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/93_Ad-Duha</loc>
+    <lastmod>2024-06-19T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/94_Asy-Syarh</loc>
+    <lastmod>2024-06-19T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/95_At-Tin</loc>
+    <lastmod>2024-06-19T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/96_Al-'Alaq</loc>
+    <lastmod>2024-06-20T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/97_Al-Qadr</loc>
+    <lastmod>2024-06-20T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/98_Al-Bayyinah</loc>
+    <lastmod>2024-06-20T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/99_Az-Zalzalah</loc>
+    <lastmod>2024-06-20T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/100_Al-'Adiyat</loc>
+    <lastmod>2024-06-20T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/101_Al-Qari'ah</loc>
+    <lastmod>2024-06-21T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/102_At-Takasur</loc>
+    <lastmod>2024-06-21T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/103_Al-'Asr</loc>
+    <lastmod>2024-06-21T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/104_Al-Humazah</loc>
+    <lastmod>2024-06-21T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/105_Al-Fil</loc>
+    <lastmod>2024-06-21T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/106_Quraisy</loc>
+    <lastmod>2024-06-22T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/107_Al-Ma'un</loc>
+    <lastmod>2024-06-22T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/108_Al-Kausar</loc>
+    <lastmod>2024-06-22T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/109_Al-Kafirun</loc>
+    <lastmod>2024-06-22T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/110_An-Nasr</loc>
+    <lastmod>2024-06-22T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/111_Al-Lahab</loc>
+    <lastmod>2024-06-23T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/112_Al-Ikhlas</loc>
+    <lastmod>2024-06-23T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/113_Al-Falaq</loc>
+    <lastmod>2024-06-23T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/quran/surah/114_An-Nas</loc>
+    <lastmod>2024-06-23T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Catatan HSI -->
+
+  <url>
+    <loc>https://bekhair.org/catatan-hsi/hsi-09-halaqah-01</loc>
+    <lastmod>2025-08-27T23:54:47.478Z</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/catatan-hsi/hsi-09-halaqah-02</loc>
+    <lastmod>2025-08-28T00:01:51.497Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/catatan-hsi/hsi-09-halaqah-03</loc>
+    <lastmod>2025-08-28T01:58:34.393Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
 
   <!-- Blog Posts -->
