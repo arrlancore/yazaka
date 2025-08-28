@@ -171,7 +171,7 @@ export default function QuickCreatePage() {
               <br />• Convert to proper Arabic text for Quran/Hadith
               <br />• Generate structured article with Markdown format
               <br />• Extract title, ustad, and series information
-              <br />• Follow HSI content guidelines and formatting
+              <br />• Follow content guidelines and formatting
             </CardDescription>
           </CardHeader>
           <CardContent>

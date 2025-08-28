@@ -62,7 +62,7 @@ export default function AdminDashboard() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600">Manage HSI content and track progress</p>
+            <p className="text-gray-600">Manage Bekhair content and track progress</p>
           </div>
           <div className="flex gap-2">
             <Button asChild>

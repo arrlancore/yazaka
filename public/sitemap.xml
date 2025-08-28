@@ -10,6 +10,13 @@
   </url>
 
   <url>
+    <loc>https://bekhair.org/admin</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
     <loc>https://bekhair.org/arah-kiblat</loc>
     <lastmod>2024-08-01T00:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -52,7 +59,56 @@
   </url>
 
   <url>
+    <loc>https://bekhair.org/unauthorized</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/admin/auth</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/admin/catatan-hsi</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
     <loc>https://bekhair.org/hafalan-quran/targets</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/admin/auth/callback</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/admin/catatan-hsi/create</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/admin/catatan-hsi/quick-create</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/admin/catatan-hsi/[id]/edit</loc>
     <lastmod>2024-08-01T00:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

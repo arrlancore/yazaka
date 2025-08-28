@@ -51,7 +51,7 @@ export default function AdminAuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle>HSI Admin Dashboard</CardTitle>
+          <CardTitle>Bekhair Admin Dashboard</CardTitle>
           <CardDescription>
             Sign in with your Google account to access the admin panel
           </CardDescription>

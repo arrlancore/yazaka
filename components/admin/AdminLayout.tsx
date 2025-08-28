@@ -80,7 +80,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Mobile menu button */}
       <div className="lg:hidden">
         <div className="flex items-center justify-between bg-white px-4 py-3 border-b">
-          <h1 className="text-xl font-semibold">HSI Admin</h1>
+          <h1 className="text-xl font-semibold">Bekhair Admin</h1>
           <Button
             variant="ghost"
             size="sm"
@@ -99,7 +99,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex h-full flex-col">
             {/* Logo */}
             <div className="px-6 py-4 border-b">
-              <h1 className="text-xl font-bold text-gray-900">HSI Admin</h1>
+              <h1 className="text-xl font-bold text-gray-900">Bekhair Admin</h1>
             </div>
 
             {/* Navigation */}

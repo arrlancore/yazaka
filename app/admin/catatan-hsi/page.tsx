@@ -18,7 +18,7 @@ export default function CatatanHSIListPage() {
   const [content, setContent] = useState<CatatanHSI[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | CatatanHSI['status']>('all');
   const [seriesFilter, setSeriesFilter] = useState<string>('all');
   const [availableSeries, setAvailableSeries] = useState<string[]>([]);
   const [publishing, setPublishing] = useState<string | null>(null);
@@ -119,7 +119,7 @@ export default function CatatanHSIListPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold">Catatan HSI</h1>
-            <p className="text-gray-600">Manage HSI content and transcriptions</p>
+            <p className="text-gray-600">Manage Catatan HSI content and transcriptions</p>
           </div>
           <div className="flex gap-2">
             <Button asChild>
@@ -152,7 +152,10 @@ export default function CatatanHSIListPage() {
               </div>
 
               {/* Status Filter */}
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => setStatusFilter(v as 'all' | CatatanHSI['status'])}
+              >
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>

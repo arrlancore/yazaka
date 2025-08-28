@@ -1,25 +1,55 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { AdminLayout } from '@/components/admin/AdminLayout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Save, Loader2, Sparkles, FileText, Eye, EyeOff } from 'lucide-react';
-import Link from 'next/link';
-import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/integrations/supabase/types';
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { AdminLayout } from "@/components/admin/AdminLayout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ArrowLeft,
+  Save,
+  Loader2,
+  Sparkles,
+  FileText,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import Link from "next/link";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
-type CatatanHSI = Database['public']['Tables']['catatan_hsi']['Row'];
+type CatatanHSI = Database["public"]["Tables"]["catatan_hsi"]["Row"];
+type FormData = {
+  title: string;
+  slug: string;
+  series: string;
+  ustad: string;
+  episode: number;
+  total_episodes: number;
+  published_at: string;
+  transcription: string;
+  content: string;
+  summary: string;
+  tags: string;
+  source: string;
+  audio_src: string;
+  status: CatatanHSI["status"]; // 'raw' | 'draft' | 'published'
+};
 
 export default function EditContentPage() {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const [content, setContent] = useState<CatatanHSI | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -27,21 +57,21 @@ export default function EditContentPage() {
   const [publishing, setPublishing] = useState(false);
   const [unpublishing, setUnpublishing] = useState(false);
 
-  const [formData, setFormData] = useState({
-    title: '',
-    slug: '',
-    series: '',
-    ustad: '',
+  const [formData, setFormData] = useState<FormData>({
+    title: "",
+    slug: "",
+    series: "",
+    ustad: "",
     episode: 1,
     total_episodes: 1,
-    published_at: '',
-    transcription: '',
-    content: '',
-    summary: '',
-    tags: '',
-    source: '',
-    audio_src: '',
-    status: 'raw' as const
+    published_at: "",
+    transcription: "",
+    content: "",
+    summary: "",
+    tags: "",
+    source: "",
+    audio_src: "",
+    status: "raw",
   });
 
   useEffect(() => {
@@ -53,13 +83,13 @@ export default function EditContentPage() {
   async function fetchContent(id: string) {
     try {
       const { data, error } = await supabase
-        .from('catatan_hsi')
-        .select('*')
-        .eq('id', id)
+        .from("catatan_hsi")
+        .select("*")
+        .eq("id", id)
         .single();
 
       if (error) throw error;
-      if (!data) throw new Error('Content not found');
+      if (!data) throw new Error("Content not found");
 
       setContent(data);
       setFormData({
@@ -71,72 +101,74 @@ export default function EditContentPage() {
         total_episodes: data.total_episodes,
         published_at: data.published_at,
         transcription: data.transcription,
-        content: data.content || '',
+        content: data.content || "",
         summary: data.summary,
-        tags: data.tags.join(', '),
+        tags: data.tags.join(", "),
         source: data.source,
-        audio_src: data.audio_src || '',
-        status: data.status
+        audio_src: data.audio_src || "",
+        status: data.status,
       });
     } catch (error) {
-      console.error('Error fetching content:', error);
-      alert('Error loading content');
-      router.push('/admin/catatan-hsi');
+      console.error("Error fetching content:", error);
+      alert("Error loading content");
+      router.push("/admin/catatan-hsi");
     } finally {
       setLoading(false);
     }
   }
 
-  function handleInputChange(field: string, value: string | number) {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  function handleInputChange(field: keyof FormData, value: string | number) {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
   async function enhanceWithAI() {
     if (!formData.transcription) {
-      alert('Please add transcription first');
+      alert("Please add transcription first");
       return;
     }
 
     if (!content) {
-      alert('Content not loaded');
+      alert("Content not loaded");
       return;
     }
 
     setEnhancing(true);
     try {
-      const response = await fetch('/api/admin/enhance-content', {
-        method: 'POST',
+      const response = await fetch("/api/admin/enhance-content", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: content.id,
           transcription: formData.transcription,
           title: formData.title,
           ustad: formData.ustad,
-          series: formData.series
-        })
+          series: formData.series,
+        }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Enhancement failed');
+        throw new Error(result.error || "Enhancement failed");
       }
 
       // Update form data with enhancement results
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         content: result.enhancement.enhanced_content,
         summary: result.enhancement.improved_summary,
-        tags: result.enhancement.suggested_tags.join(', '),
-        status: 'draft'
+        tags: result.enhancement.suggested_tags.join(", "),
+        status: "draft",
       }));
 
-      alert('Content enhanced successfully!');
+      alert("Content enhanced successfully!");
     } catch (error) {
-      console.error('Enhancement error:', error);
-      alert(`Error enhancing content: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Enhancement error:", error);
+      alert(
+        `Error enhancing content: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     } finally {
       setEnhancing(false);
     }
@@ -146,12 +178,12 @@ export default function EditContentPage() {
     setSaving(true);
     try {
       const tags = formData.tags
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
 
       const { error } = await supabase
-        .from('catatan_hsi')
+        .from("catatan_hsi")
         .update({
           title: formData.title,
           slug: formData.slug,
@@ -167,15 +199,15 @@ export default function EditContentPage() {
           source: formData.source,
           audio_src: formData.audio_src || null,
           status: formData.status,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', params.id);
+        .eq("id", params.id);
 
       if (error) throw error;
-      alert('Content saved successfully!');
+      alert("Content saved successfully!");
     } catch (error) {
-      console.error('Save error:', error);
-      alert('Error saving content');
+      console.error("Save error:", error);
+      alert("Error saving content");
     } finally {
       setSaving(false);
     }
@@ -183,41 +215,45 @@ export default function EditContentPage() {
 
   async function publishToMDX() {
     if (!content) {
-      alert('Content not loaded');
+      alert("Content not loaded");
       return;
     }
 
     if (!formData.content || formData.content.trim().length === 0) {
-      alert('Please enhance content with AI before publishing');
+      alert("Please enhance content with AI before publishing");
       return;
     }
 
     setPublishing(true);
     try {
-      const response = await fetch('/api/admin/publish-mdx', {
-        method: 'POST',
+      const response = await fetch("/api/admin/publish", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: content.id,
-          action: 'publish'
-        })
+          action: "publish",
+        }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Publishing failed');
+        throw new Error(result.error || "Publishing failed");
       }
 
       // Update form status
-      setFormData(prev => ({ ...prev, status: 'published' }));
-      
-      alert(`Content published successfully! Available at /catatan-hsi/${result.slug}`);
+      setFormData((prev) => ({ ...prev, status: "published" }));
+
+      alert(
+        `Content published successfully! Available at /catatan-hsi/${result.slug}`
+      );
     } catch (error) {
-      console.error('Publishing error:', error);
-      alert(`Error publishing content: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Publishing error:", error);
+      alert(
+        `Error publishing content: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     } finally {
       setPublishing(false);
     }
@@ -225,40 +261,46 @@ export default function EditContentPage() {
 
   async function unpublishFromMDX() {
     if (!content) {
-      alert('Content not loaded');
+      alert("Content not loaded");
       return;
     }
 
-    if (!confirm('Are you sure you want to unpublish this content? It will no longer be visible on the website.')) {
+    if (
+      !confirm(
+        "Are you sure you want to unpublish this content? It will no longer be visible on the website."
+      )
+    ) {
       return;
     }
 
     setUnpublishing(true);
     try {
-      const response = await fetch('/api/admin/publish-mdx', {
-        method: 'POST',
+      const response = await fetch("/api/admin/publish-mdx", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: content.id,
-          action: 'unpublish'
-        })
+          action: "unpublish",
+        }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Unpublishing failed');
+        throw new Error(result.error || "Unpublishing failed");
       }
 
       // Update form status
-      setFormData(prev => ({ ...prev, status: 'draft' }));
-      
-      alert('Content unpublished successfully!');
+      setFormData((prev) => ({ ...prev, status: "draft" }));
+
+      alert("Content unpublished successfully!");
     } catch (error) {
-      console.error('Unpublishing error:', error);
-      alert(`Error unpublishing content: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Unpublishing error:", error);
+      alert(
+        `Error unpublishing content: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     } finally {
       setUnpublishing(false);
     }
@@ -289,11 +331,15 @@ export default function EditContentPage() {
             <div>
               <h1 className="text-2xl font-bold">{formData.title}</h1>
               <div className="flex items-center space-x-2 mt-1">
-                <Badge className={
-                  formData.status === 'published' ? 'bg-green-100 text-green-800' :
-                  formData.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-red-100 text-red-800'
-                }>
+                <Badge
+                  className={
+                    formData.status === "published"
+                      ? "bg-green-100 text-green-800"
+                      : formData.status === "draft"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-red-100 text-red-800"
+                  }
+                >
                   {formData.status}
                 </Badge>
                 <span className="text-sm text-gray-500">
@@ -305,7 +351,7 @@ export default function EditContentPage() {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2">
-            {formData.status === 'raw' && (
+            {formData.status === "raw" && (
               <Button onClick={enhanceWithAI} disabled={enhancing}>
                 {enhancing ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -315,22 +361,22 @@ export default function EditContentPage() {
                 Enhance with AI
               </Button>
             )}
-            
-            {formData.status === 'draft' && (
+
+            {formData.status === "draft" && (
               <Button onClick={publishToMDX} disabled={publishing}>
                 {publishing ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   <FileText className="mr-2 h-4 w-4" />
                 )}
-                Publish to MDX
+                Publish
               </Button>
             )}
 
-            {formData.status === 'published' && (
-              <Button 
-                variant="destructive" 
-                onClick={unpublishFromMDX} 
+            {formData.status === "published" && (
+              <Button
+                variant="destructive"
+                onClick={unpublishFromMDX}
                 disabled={unpublishing}
               >
                 {unpublishing ? (
@@ -364,7 +410,9 @@ export default function EditContentPage() {
               <CardContent>
                 <Textarea
                   value={formData.transcription}
-                  onChange={(e) => handleInputChange('transcription', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("transcription", e.target.value)
+                  }
                   rows={10}
                   placeholder="Raw transcription..."
                 />
@@ -379,7 +427,7 @@ export default function EditContentPage() {
               <CardContent>
                 <Textarea
                   value={formData.content}
-                  onChange={(e) => handleInputChange('content', e.target.value)}
+                  onChange={(e) => handleInputChange("content", e.target.value)}
                   rows={15}
                   placeholder="AI-enhanced content will appear here..."
                 />
@@ -395,7 +443,12 @@ export default function EditContentPage() {
                 <CardTitle>Status</CardTitle>
               </CardHeader>
               <CardContent>
-                <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value)}>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value) =>
+                    handleInputChange("status", value as FormData["status"])
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -418,21 +471,23 @@ export default function EditContentPage() {
                   <Label>Title</Label>
                   <Input
                     value={formData.title}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    onChange={(e) => handleInputChange("title", e.target.value)}
                   />
                 </div>
                 <div>
                   <Label>Slug</Label>
                   <Input
                     value={formData.slug}
-                    onChange={(e) => handleInputChange('slug', e.target.value)}
+                    onChange={(e) => handleInputChange("slug", e.target.value)}
                   />
                 </div>
                 <div>
                   <Label>Summary</Label>
                   <Textarea
                     value={formData.summary}
-                    onChange={(e) => handleInputChange('summary', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("summary", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
@@ -449,14 +504,16 @@ export default function EditContentPage() {
                   <Label>Series</Label>
                   <Input
                     value={formData.series}
-                    onChange={(e) => handleInputChange('series', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("series", e.target.value)
+                    }
                   />
                 </div>
                 <div>
                   <Label>Ustad</Label>
                   <Input
                     value={formData.ustad}
-                    onChange={(e) => handleInputChange('ustad', e.target.value)}
+                    onChange={(e) => handleInputChange("ustad", e.target.value)}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -465,7 +522,12 @@ export default function EditContentPage() {
                     <Input
                       type="number"
                       value={formData.episode}
-                      onChange={(e) => handleInputChange('episode', parseInt(e.target.value) || 1)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "episode",
+                          parseInt(e.target.value) || 1
+                        )
+                      }
                     />
                   </div>
                   <div>
@@ -473,7 +535,12 @@ export default function EditContentPage() {
                     <Input
                       type="number"
                       value={formData.total_episodes}
-                      onChange={(e) => handleInputChange('total_episodes', parseInt(e.target.value) || 1)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "total_episodes",
+                          parseInt(e.target.value) || 1
+                        )
+                      }
                     />
                   </div>
                 </div>
@@ -482,14 +549,16 @@ export default function EditContentPage() {
                   <Input
                     type="date"
                     value={formData.published_at}
-                    onChange={(e) => handleInputChange('published_at', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("published_at", e.target.value)
+                    }
                   />
                 </div>
                 <div>
                   <Label>Tags</Label>
                   <Input
                     value={formData.tags}
-                    onChange={(e) => handleInputChange('tags', e.target.value)}
+                    onChange={(e) => handleInputChange("tags", e.target.value)}
                     placeholder="tag1, tag2, tag3"
                   />
                 </div>
@@ -497,14 +566,18 @@ export default function EditContentPage() {
                   <Label>Source</Label>
                   <Input
                     value={formData.source}
-                    onChange={(e) => handleInputChange('source', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("source", e.target.value)
+                    }
                   />
                 </div>
                 <div>
                   <Label>Audio URL</Label>
                   <Input
                     value={formData.audio_src}
-                    onChange={(e) => handleInputChange('audio_src', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("audio_src", e.target.value)
+                    }
                     placeholder="https://..."
                   />
                 </div>
