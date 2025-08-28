@@ -1,7 +1,7 @@
 import { TranscriptionSegment } from './types';
 
 export function parseTranscription(text: string): TranscriptionSegment[] {
-  const regex = /\((\d+):(\d+)\)\s*([^(]*?)(?=\(\d+:\d+\)|$)/g;
+  const regex = /\((\d+):(\d+)\)\s*([\s\S]*?)(?=\(\d+:\d+\)|$)/g;
   const segments: TranscriptionSegment[] = [];
   let match;
 
