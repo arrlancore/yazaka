@@ -24,6 +24,7 @@ import {
   FileText,
   Eye,
   EyeOff,
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,6 +57,7 @@ export default function EditContentPage() {
   const [enhancing, setEnhancing] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [unpublishing, setUnpublishing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -306,6 +308,50 @@ export default function EditContentPage() {
     }
   }
 
+  async function deleteContent() {
+    if (!content) {
+      alert("Content not loaded");
+      return;
+    }
+
+    if (
+      !confirm(
+        `Are you sure you want to permanently delete "${content.title}"? This action cannot be undone and will remove the content from both the database and GitHub repository.`
+      )
+    ) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      const response = await fetch("/api/admin/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: content.id,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Delete failed");
+      }
+
+      alert(`Content "${result.deletedTitle}" deleted successfully!`);
+      router.push("/admin/catatan-hsi");
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert(
+        `Error deleting content: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   if (loading) {
     return (
       <AdminLayout>
@@ -351,6 +397,19 @@ export default function EditContentPage() {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={deleteContent}
+              disabled={deleting}
+            >
+              {deleting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="mr-2 h-4 w-4" />
+              )}
+              Delete
+            </Button>
             {formData.status === "raw" && (
               <Button onClick={enhanceWithAI} disabled={enhancing}>
                 {enhancing ? (
