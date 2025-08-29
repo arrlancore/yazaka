@@ -17,8 +17,10 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const { metadata, transcription, content } = catatan;
-  
-  const audioSrc = `/audio/catatan-hsi/${metadata.audioSrc}`;
+
+  const audioSrc = metadata.audioSrc?.startsWith("https")
+    ? metadata.audioSrc
+    : `/audio/catatan-hsi/${metadata.audioSrc}`;
 
   const handleTimeUpdate = (time: number) => {
     setCurrentTime(time);
@@ -64,11 +66,13 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
             </div>
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
-              <span>{new Date(metadata.publishedAt).toLocaleDateString('id-ID', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}</span>
+              <span>
+                {new Date(metadata.publishedAt).toLocaleDateString("id-ID", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
             </div>
           </div>
 
@@ -107,7 +111,7 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
               <span className="font-medium">Sumber: </span>
-              <Link 
+              <Link
                 href={metadata.source}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -117,9 +121,10 @@ export function CatatanPage({ catatan }: CatatanPageProps) {
                 <ExternalLink className="w-3 h-3" />
               </Link>
             </div>
-            
+
             <div className="text-xs text-gray-500">
-              Terakhir diperbarui: {new Date(metadata.publishedAt).toLocaleDateString('id-ID')}
+              Terakhir diperbarui:{" "}
+              {new Date(metadata.publishedAt).toLocaleDateString("id-ID")}
             </div>
           </div>
         </div>

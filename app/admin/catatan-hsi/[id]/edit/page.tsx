@@ -29,6 +29,7 @@ import {
 import Link from "next/link";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { AudioUpload } from "@/components/upload/AudioUpload";
 
 type CatatanHSI = Database["public"]["Tables"]["catatan_hsi"]["Row"];
 type FormData = {
@@ -632,13 +633,19 @@ export default function EditContentPage() {
                 </div>
                 <div>
                   <Label>Audio URL</Label>
-                  <Input
-                    value={formData.audio_src}
-                    onChange={(e) =>
-                      handleInputChange("audio_src", e.target.value)
-                    }
-                    placeholder="https://..."
-                  />
+                  <div className="space-y-2">
+                    <AudioUpload
+                      onUploadSuccess={(url) => handleInputChange("audio_src", url)}
+                      disabled={saving || enhancing || publishing}
+                    />
+                    <Input
+                      value={formData.audio_src}
+                      onChange={(e) =>
+                        handleInputChange("audio_src", e.target.value)
+                      }
+                      placeholder="https://... or upload audio file above"
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
