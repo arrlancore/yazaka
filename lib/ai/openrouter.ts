@@ -30,6 +30,8 @@ interface EnhancementResponse {
   extracted_series: string;
 }
 
+const AI_MODEL = "google/gemini-2.5-pro";
+
 // Step 1: Combine multiple transcriptions
 export async function combineTranscriptions(
   request: CombineRequest
@@ -76,11 +78,11 @@ Please combine and clean up this transcription following the format specified.`;
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://bekhair.com",
-        "X-Title": "Bekhair HSI Transcription Combining",
+        "HTTP-Referer": "https://bekhair.org",
+        "X-Title": "Bekhair.org",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: AI_MODEL,
         messages: messages,
       }),
     });
@@ -207,11 +209,11 @@ Silakan perbaiki transkrip dan buat artikel sesuai dengan aturan yang telah dibe
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://bekhair.com",
-        "X-Title": "Bekhair HSI Content Enhancement",
+        "HTTP-Referer": "https://bekhair.org",
+        "X-Title": "Bekhair.org",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: AI_MODEL,
         messages: messages,
       }),
     });

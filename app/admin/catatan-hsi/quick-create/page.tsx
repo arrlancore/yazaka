@@ -49,44 +49,7 @@ export default function QuickCreatePage() {
         throw new Error(combineResult.error || 'Transcription combining failed');
       }
 
-      // Step 2: Save combined transcription as raw
-      const timestamp = Date.now();
-      const tempTitle = `Raw Content ${timestamp}`;
-      const tempSlug = `raw-${timestamp}`;
-      
-      const { data: existingContent } = await supabase
-        .from('catatan_hsi')
-        .select('episode')
-        .eq('series', 'Processing')
-        .order('episode', { ascending: false })
-        .limit(1);
-      
-      const nextEpisode = existingContent && existingContent.length > 0 
-        ? existingContent[0].episode + 1 
-        : 1;
-      
-      const { data: rawContent, error: insertError } = await supabase
-        .from('catatan_hsi')
-        .insert([{
-          title: tempTitle,
-          slug: tempSlug,
-          series: 'Processing',
-          ustad: 'TBD',
-          episode: nextEpisode,
-          total_episodes: 1,
-          published_at: new Date().toISOString().split('T')[0],
-          transcription: combineResult.combined_transcription,
-          summary: 'Processing...',
-          tags: [],
-          source: '',
-          audio_src: null, // Will be set in edit form
-          created_by: user.id,
-          status: 'raw'
-        }])
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
+      // Step 2: Skipped — we will write to DB after enhancement (in Step 4)
 
       // Step 3: AI enhances transcript and creates content
       const enhanceResponse = await fetch('/api/admin/enhance-only', {
@@ -104,12 +67,24 @@ export default function QuickCreatePage() {
         throw new Error(enhanceResult.error || 'AI enhancement failed');
       }
 
-      // Step 4: Update DB with enhanced content as draft
+      // Step 4: Insert enhanced content as draft
       const enhancement = enhanceResult.enhancement || enhanceResult;
-      
-      const { error: updateError } = await supabase
+      const seriesForEpisode = enhancement.extracted_series || 'Unknown Series';
+
+      const { data: seriesExisting } = await supabase
         .from('catatan_hsi')
-        .update({
+        .select('episode')
+        .eq('series', seriesForEpisode)
+        .order('episode', { ascending: false })
+        .limit(1);
+
+      const nextEpisodeForSeries = seriesExisting && seriesExisting.length > 0
+        ? seriesExisting[0].episode + 1
+        : 1;
+
+      const { data: insertedContent, error: insertDraftError } = await supabase
+        .from('catatan_hsi')
+        .insert([{
           title: enhancement.extracted_title,
           slug: enhancement.extracted_title
             .toLowerCase()
@@ -117,21 +92,27 @@ export default function QuickCreatePage() {
             .replace(/\s+/g, '-')
             .replace(/-+/g, '-')
             .trim() + `-${Date.now()}`,
-          transcription: enhancement.enhanced_transcription, // Correct field for transcription
-          content: enhancement.enhanced_content,           // Correct field for content
+          transcription: enhancement.enhanced_transcription,
+          content: enhancement.enhanced_content,
           summary: enhancement.improved_summary,
           tags: enhancement.suggested_tags,
           ustad: enhancement.extracted_ustad,
-          series: enhancement.extracted_series,
-          status: 'draft',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', rawContent.id);
+          series: seriesForEpisode,
+          episode: nextEpisodeForSeries,
+          total_episodes: 1,
+          published_at: new Date().toISOString().split('T')[0],
+          source: '',
+          audio_src: null,
+          created_by: user.id,
+          status: 'draft'
+        }])
+        .select()
+        .single();
 
-      if (updateError) throw updateError;
+      if (insertDraftError) throw insertDraftError;
 
       // Step 5: Redirect to edit page for review
-      router.push(`/admin/catatan-hsi/${rawContent.id}/edit?created=quick`);
+      router.push(`/admin/catatan-hsi/${insertedContent.id}/edit?created=quick`);
       
     } catch (error) {
       console.error('Quick create error:', error);
