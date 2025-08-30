@@ -1,7 +1,6 @@
 import TaskTracker from "@/components/task-tracker";
 import AppList from "@/components/app-list";
-import PrayerTimesCompact from "@/components/prayer-times/prayer-times-compact";
-import NextPrayer from "@/components/prayer-times/next-prayer";
+import EnhancedPrayerWidget from "@/components/prayer-times/enhanced-prayer-widget";
 import { Metadata } from "next";
 import {
   appDescription,
@@ -56,8 +55,9 @@ export default function LandingPage() {
   return (
     <HomepageWrapper>
       <main className="flex flex-col pb-4">
-        <NextPrayer />
-        <PrayerTimesCompact />
+        <div className="px-0 sm:container sm:px-4 mb-4">
+          <EnhancedPrayerWidget />
+        </div>
         <div className="px-4 space-y-4 sm:container sm:px-0">
           <InstallPrompt variant="card" />
           <AppList />

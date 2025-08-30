@@ -21,13 +21,15 @@ const EnhancedPrayerWidget = () => {
   const { location, locationName } = useLocationWithName({});
   const { prayerTimes, prayerNames, nextPrayer, hijriDate, currentTime } =
     usePrayerTimesGlobal(location);
-  
+
   const [timeRemaining, setTimeRemaining] = useState("--:--");
   const [progress, setProgress] = useState(0);
   const [urgencyLevel, setUrgencyLevel] = useState("normal");
 
   // Filter out sunrise for compact display
-  const compactPrayerNames: { [key: string]: string } = Object.entries(prayerNames)
+  const compactPrayerNames: { [key: string]: string } = Object.entries(
+    prayerNames
+  )
     .filter(([key]) => key !== "sunrise")
     .reduce((acc, [key, name]) => ({ ...acc, [key]: name }), {});
 
@@ -40,7 +42,7 @@ const EnhancedPrayerWidget = () => {
       .replace(/\s*\((WIB|WITA|WIT)\)\s*/, "")
       .trim();
     const [hours, minutes] = cleanTime.split(":").map(Number);
-    
+
     if (isNaN(hours) || isNaN(minutes)) {
       return { remaining: "--:--", progressValue: 0, urgency: "normal" };
     }
@@ -54,12 +56,17 @@ const EnhancedPrayerWidget = () => {
     }
 
     const hoursRemaining = Math.floor(diff / (1000 * 60 * 60));
-    const minutesRemaining = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const minutesRemaining = Math.floor(
+      (diff % (1000 * 60 * 60)) / (1000 * 60)
+    );
     const totalMinutes = hoursRemaining * 60 + minutesRemaining;
-    
+
     // Calculate progress (assume 4-hour intervals between prayers for progress)
     const maxMinutes = 4 * 60;
-    const progressValue = Math.max(0, Math.min(100, ((maxMinutes - totalMinutes) / maxMinutes) * 100));
+    const progressValue = Math.max(
+      0,
+      Math.min(100, ((maxMinutes - totalMinutes) / maxMinutes) * 100)
+    );
 
     let urgency = "normal";
     if (totalMinutes <= 5) urgency = "critical";
@@ -69,7 +76,7 @@ const EnhancedPrayerWidget = () => {
     return {
       remaining: `${hoursRemaining.toString().padStart(2, "0")}:${minutesRemaining.toString().padStart(2, "0")}`,
       progressValue,
-      urgency
+      urgency,
     };
   };
 
@@ -86,15 +93,22 @@ const EnhancedPrayerWidget = () => {
 
   const getPrayerIcon = (prayer: string, size = 20) => {
     const iconProps = { size, className: "text-primary-foreground/90" };
-    
+
     switch (prayer) {
-      case "fajr": return <FajrDawnIcon {...iconProps} />;
-      case "sunrise": return <SunriseIcon {...iconProps} />;
-      case "dhuhr": return <SunIcon {...iconProps} />;
-      case "asr": return <AfternoonSunIcon {...iconProps} />;
-      case "maghrib": return <MagrbIcon {...iconProps} />;
-      case "isha": return <IsyaIcon {...iconProps} />;
-      default: return <SunIcon {...iconProps} />;
+      case "fajr":
+        return <FajrDawnIcon {...iconProps} />;
+      case "sunrise":
+        return <SunriseIcon {...iconProps} />;
+      case "dhuhr":
+        return <SunIcon {...iconProps} />;
+      case "asr":
+        return <AfternoonSunIcon {...iconProps} />;
+      case "maghrib":
+        return <MagrbIcon {...iconProps} />;
+      case "isha":
+        return <IsyaIcon {...iconProps} />;
+      default:
+        return <SunIcon {...iconProps} />;
     }
   };
 
@@ -111,24 +125,34 @@ const EnhancedPrayerWidget = () => {
             exit={{ opacity: 0, y: -20, height: 0 }}
             className="mb-2"
           >
-            <Card className={cn(
-              "border-l-4 rounded-l-none overflow-hidden",
-              urgencyLevel === "warning" && "border-l-yellow-500 bg-yellow-50 dark:bg-yellow-900/20",
-              urgencyLevel === "urgent" && "border-l-orange-500 bg-orange-50 dark:bg-orange-900/20",
-              urgencyLevel === "critical" && "border-l-red-500 bg-red-50 dark:bg-red-900/20"
-            )}>
+            <Card
+              className={cn(
+                "border-l-4 rounded-l-none overflow-hidden",
+                urgencyLevel === "warning" &&
+                  "border-l-yellow-500 bg-yellow-50 dark:bg-yellow-900/20",
+                urgencyLevel === "urgent" &&
+                  "border-l-orange-500 bg-orange-50 dark:bg-orange-900/20",
+                urgencyLevel === "critical" &&
+                  "border-l-red-500 bg-red-50 dark:bg-red-900/20"
+              )}
+            >
               <CardContent className="px-4 py-3">
                 <div className="flex items-center gap-3">
                   <motion.div
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ repeat: Infinity, duration: 2 }}
                   >
-                    <Timer className={cn(
-                      "w-5 h-5",
-                      urgencyLevel === "warning" && "text-yellow-600 dark:text-yellow-400",
-                      urgencyLevel === "urgent" && "text-orange-600 dark:text-orange-400",
-                      urgencyLevel === "critical" && "text-red-600 dark:text-red-400"
-                    )} />
+                    <Timer
+                      className={cn(
+                        "w-5 h-5",
+                        urgencyLevel === "warning" &&
+                          "text-yellow-600 dark:text-yellow-400",
+                        urgencyLevel === "urgent" &&
+                          "text-orange-600 dark:text-orange-400",
+                        urgencyLevel === "critical" &&
+                          "text-red-600 dark:text-red-400"
+                      )}
+                    />
                   </motion.div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
@@ -139,12 +163,12 @@ const EnhancedPrayerWidget = () => {
                         {timeRemaining}
                       </span>
                     </div>
-                    <Progress 
-                      value={progress} 
+                    <Progress
+                      value={progress}
                       className={cn(
                         "h-1 mt-1",
                         urgencyLevel === "warning" && "[&>div]:bg-yellow-500",
-                        urgencyLevel === "urgent" && "[&>div]:bg-orange-500", 
+                        urgencyLevel === "urgent" && "[&>div]:bg-orange-500",
                         urgencyLevel === "critical" && "[&>div]:bg-red-500"
                       )}
                     />
@@ -157,7 +181,7 @@ const EnhancedPrayerWidget = () => {
       </AnimatePresence>
 
       {/* Main Prayer Times Widget */}
-      <Card className="overflow-hidden shadow-lg bg-gradient-to-br from-primary/5 via-background to-primary/5 border-0 sm:border rounded-none sm:rounded-3xl">
+      <Card className="overflow-hidden shadow-sm bg-gradient-to-br from-primary/5 via-background to-primary/5 border-0 sm:border rounded-none sm:rounded-3xl">
         <CardContent className="p-0">
           {/* Header with location */}
           <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
@@ -172,8 +196,9 @@ const EnhancedPrayerWidget = () => {
             <div className="grid grid-cols-5 gap-0">
               {Object.entries(compactPrayerNames).map(([key, name], index) => {
                 const isNext = nextPrayer?.name === name;
-                const prayerTime = prayerTimes?.[key.charAt(0).toUpperCase() + key.slice(1)];
-                
+                const prayerTime =
+                  prayerTimes?.[key.charAt(0).toUpperCase() + key.slice(1)];
+
                 return (
                   <motion.div
                     key={key}
@@ -193,25 +218,27 @@ const EnhancedPrayerWidget = () => {
                         transition={{ repeat: Infinity, duration: 2 }}
                       />
                     )}
-                    
-                    <div className="mb-2">
-                      {getPrayerIcon(key, 18)}
-                    </div>
-                    
-                    <span className={cn(
-                      "text-xs font-medium mb-1 text-center opacity-90",
-                      isNext && "font-bold opacity-100"
-                    )}>
+
+                    <div className="mb-2">{getPrayerIcon(key, 18)}</div>
+
+                    <span
+                      className={cn(
+                        "text-xs font-medium mb-1 text-center opacity-90",
+                        isNext && "font-bold opacity-100"
+                      )}
+                    >
                       {name}
                     </span>
-                    
-                    <span className={cn(
-                      "text-sm font-bold text-center font-mono",
-                      isNext && "text-lg"
-                    )}>
+
+                    <span
+                      className={cn(
+                        "text-sm font-bold text-center font-mono",
+                        isNext && "text-lg"
+                      )}
+                    >
                       {prayerTime?.substring(0, 5) ?? "--:--"}
                     </span>
-                    
+
                     {isNext && (
                       <motion.div
                         className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full"
@@ -233,7 +260,7 @@ const EnhancedPrayerWidget = () => {
                   {currentTime.toLocaleString("id-ID", {
                     weekday: "long",
                     day: "numeric",
-                    month: "short",
+                    month: "long",
                   })}
                 </span>
               )}
@@ -243,14 +270,14 @@ const EnhancedPrayerWidget = () => {
                 </span>
               )}
             </div>
-            
+
             <div className="flex gap-2">
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <Bell className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              {/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <Settings className="w-4 h-4" />
-              </Button>
+              </Button> */}
             </div>
           </div>
         </CardContent>
