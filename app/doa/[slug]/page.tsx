@@ -5,6 +5,10 @@ import { appLocale, appUrl, brandName } from "@/config";
 import { DoaItem } from "@/types/doa";
 // Import JSON directly for build-time access
 import doaData from "@/content/doa/doa-collection.json";
+import MobilePage from "@/components/ui/mobile-page";
+import HeaderMobilePage from "@/components/ui/header-mobile-page";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 interface PageProps {
   params: {
@@ -80,9 +84,26 @@ async function DoaDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
-      <DoaDetail doa={doa} />
-    </main>
+    <MobilePage>
+      <HeaderMobilePage
+        title={doa.nama}
+        backUrl="/doa"
+        rightContent={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full hover:bg-white/20"
+          >
+            <Search size={20} />
+          </Button>
+        }
+      />
+      <main className="flex flex-col pb-4">
+        <div className="px-4 space-y-4 sm:container sm:px-0 sm:max-w-2xl sm:mx-auto">
+          <DoaDetail doa={doa} />
+        </div>
+      </main>
+    </MobilePage>
   );
 }
 

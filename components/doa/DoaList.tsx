@@ -287,7 +287,7 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType, favori
       <div className="space-y-8">
         {mappedSections.map((section, idx) => (
           <div key={idx}>
-            <h2 className="font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
+            <h2 className="font-semibold mb-4">
               {displayTitle(section.title)}
             </h2>
             <ul className="space-y-2">
@@ -301,7 +301,7 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType, favori
                       >
                         <div className="flex items-center space-x-3 w-full">
                           <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:scale-125 transition-transform"></div>
-                          <span className="text-slate-700 text-sm group-hover:text-blue-700 transition-colors">
+                          <span className="text-sm group-hover:text-blue-700 transition-colors">
                             {item.name}
                           </span>
                           <span className="ml-auto text-xs font-medium text-slate-500 group-hover:text-blue-600 transition-colors">
@@ -320,7 +320,7 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType, favori
                     >
                       <div className="flex items-center space-x-3">
                         <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 group-hover:scale-125 transition-transform"></div>
-                        <span className="text-slate-700 text-sm group-hover:text-emerald-700 transition-colors">
+                        <span className="text-sm group-hover:text-emerald-700 transition-colors">
                           {item.data.nama}
                         </span>
                       </div>

@@ -32,7 +32,7 @@ const DoaTabs = () => {
   }, []);
 
   return (
-    <Card className="mx-4 mt-4 p-4">
+    <Card className="p-4 border-0 shadow-none">
       <SearchBar 
         value={searchQuery}
         onChange={setSearchQuery}

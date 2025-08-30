@@ -4,9 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Share2, Copy, Check, Heart } from "lucide-react";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
+import { Share2, Copy, Check, Heart } from "lucide-react";
 import { DoaGroup } from "@/types/doa";
 import DoaCard from "@/components/doa/DoaCard";
 import { isGroupFavorite, toggleFavoriteGroup } from "@/services/doaServices";
@@ -55,46 +53,8 @@ const DoaGroupDetail: React.FC<DoaGroupDetailProps> = ({ group }) => {
 
   return (
     <>
-      {/* Header */}
-      <div
-        className={cn(
-          "sticky top-0 z-10 bg-gradient-to-r from-primary to-primary-light text-primary-foreground",
-          "transition-all duration-300 px-4 py-3 shadow-md sm:rounded-t-[2rem]"
-        )}
-      >
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <Link href="/doa">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full hover:bg-white/20"
-              >
-                <ArrowLeft size={20} />
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-lg font-bold">{group.name}</h1>
-              <p className="text-sm text-primary-foreground/80">
-                {group.items.length} doa untuk dibaca berurutan
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full hover:bg-white/20"
-              onClick={handleShare}
-            >
-              <Share2 size={20} />
-            </Button>
-          </div>
-        </div>
-      </div>
-
       {/* Content - All Doa in Single Page */}
-      <div className="mx-4 mt-4 space-y-8">
+      <div className="space-y-8 mt-4">
         {/* Introduction */}
         <Card className="border-l-4 border-l-primary">
           <CardContent className="p-6">
@@ -107,18 +67,28 @@ const DoaGroupDetail: React.FC<DoaGroupDetailProps> = ({ group }) => {
                   Baca secara berurutan dari atas ke bawah
                 </span>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full"
-                aria-label={fav ? "Hapus grup dari favorit" : "Tambah grup ke favorit"}
-                onClick={() => {
-                  const res = toggleFavoriteGroup(group.slug);
-                  setFav(res);
-                }}
-              >
-                <Heart className={`h-5 w-5 ${fav ? 'text-red-500 fill-red-500' : ''}`} />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  onClick={handleShare}
+                >
+                  <Share2 size={18} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  aria-label={fav ? "Hapus grup dari favorit" : "Tambah grup ke favorit"}
+                  onClick={() => {
+                    const res = toggleFavoriteGroup(group.slug);
+                    setFav(res);
+                  }}
+                >
+                  <Heart className={`h-5 w-5 ${fav ? 'text-red-500 fill-red-500' : ''}`} />
+                </Button>
+              </div>
             </div>
             <p className="text-muted-foreground">
               {group.name.toLowerCase().includes('pagi') 

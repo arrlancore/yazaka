@@ -5,6 +5,10 @@ import { appLocale, appUrl, brandName } from "@/config";
 import { DoaItem, DoaGroup } from "@/types/doa";
 import doaData from "@/content/doa/doa-collection.json";
 import { generateGroupSlug } from "@/services/doaServices";
+import MobilePage from "@/components/ui/mobile-page";
+import HeaderMobilePage from "@/components/ui/header-mobile-page";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 interface PageProps {
   params: {
@@ -96,9 +100,26 @@ async function DoaGroupDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
-      <DoaGroupDetail group={group} />
-    </main>
+    <MobilePage>
+      <HeaderMobilePage
+        title={group.name}
+        backUrl="/doa"
+        rightContent={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full hover:bg-white/20"
+          >
+            <Search size={20} />
+          </Button>
+        }
+      />
+      <main className="flex flex-col pb-4">
+        <div className="px-4 space-y-4 sm:container sm:px-0 sm:max-w-2xl sm:mx-auto">
+          <DoaGroupDetail group={group} />
+        </div>
+      </main>
+    </MobilePage>
   );
 }
 

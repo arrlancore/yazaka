@@ -1,8 +1,11 @@
 import React from "react";
-import DoaHeader from "@/components/doa/DoaHeader";
 import DoaTabs from "@/components/doa/DoaTabs";
 import { Metadata } from "next";
 import { appLocale, appUrl, brandName } from "@/config";
+import MobilePage from "@/components/ui/mobile-page";
+import HeaderMobilePage from "@/components/ui/header-mobile-page";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Doa dan Dzikir | Kumpulan Doa Harian dan Situasional",
@@ -44,14 +47,25 @@ export const metadata: Metadata = {
 };
 
 const DoaPage = async () => {
-  
   return (
-    <main className="flex flex-col pb-4">
-      <DoaHeader />
-      <div className="px-4 space-y-4 sm:container sm:px-0 sm:max-w-2xl sm:mx-auto">
-        <DoaTabs />
-      </div>
-    </main>
+    <MobilePage>
+      <HeaderMobilePage
+        title="Doa & Dzikir"
+        backUrl="/"
+        rightContent={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full hover:bg-white/20"
+          >
+            <Search size={20} />
+          </Button>
+        }
+      />
+     
+          <DoaTabs />
+        
+    </MobilePage>
   );
 };
 
