@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import DoaHeader from "@/components/doa/DoaHeader";
 import DoaTabs from "@/components/doa/DoaTabs";
 import { Metadata } from "next";
@@ -48,14 +46,10 @@ export const metadata: Metadata = {
 const DoaPage = async () => {
   
   return (
-    <>
-      <Header />
-      <main className="max-w-2xl mx-auto mb-8">
-        <DoaHeader />
-        <DoaTabs />
-      </main>
-      <Footer />
-    </>
+    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
+      <DoaHeader />
+      <DoaTabs />
+    </main>
   );
 };
 

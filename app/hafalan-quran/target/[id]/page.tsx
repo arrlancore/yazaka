@@ -1,5 +1,3 @@
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import TargetHafalanDetail from "@/components/TargetHafalanDetail";
 
 interface PageProps {
@@ -12,12 +10,8 @@ export default async function TargetDetailPage({ params }: PageProps) {
   const targetId = params.id;
 
   return (
-    <>
-      <Header />
-      <main className="max-w-2xl mx-auto mb-8">
-        <TargetHafalanDetail targetId={targetId} />
-      </main>
-      <Footer />
-    </>
+    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
+      <TargetHafalanDetail targetId={targetId} />
+    </main>
   );
 }

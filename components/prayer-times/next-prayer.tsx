@@ -85,7 +85,7 @@ const NextPrayer = () => {
   return (
     <Card
       className={cn(
-        "overflow-hidden border-none sm:border bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg max-w-md w-full mx-auto rounded-[0] sm:rounded-[2rem] transition-all duration-300",
+        "overflow-hidden border-none w-full mx-auto shadow-none rounded-none bg-gradient-to-br from-primary/5 via-background to-primary/5 transition-all duration-300 sm:rounded-2xl sm:shadow-sm sm:border sm:max-w-md",
         urgencyLevel === "urgent" && "!bg-orange-100 dark:!bg-orange-900/30",
         urgencyLevel === "critical" && "!bg-red-100 dark:!bg-red-900/30"
       )}

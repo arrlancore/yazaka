@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import DoaDetail from "@/components/doa/DoaDetail";
 import { appLocale, appUrl, brandName } from "@/config";
 import { DoaItem } from "@/types/doa";
@@ -82,13 +80,9 @@ async function DoaDetailPage({ params }: PageProps) {
   }
 
   return (
-    <>
-      <Header />
-      <main className="max-w-2xl mx-auto mb-8">
-        <DoaDetail doa={doa} />
-      </main>
-      <Footer />
-    </>
+    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
+      <DoaDetail doa={doa} />
+    </main>
   );
 }
 

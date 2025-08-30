@@ -1,5 +1,3 @@
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import TaskTracker from "@/components/task-tracker";
 import AppList from "@/components/app-list";
 import PrayerTimesCompact from "@/components/prayer-times/prayer-times-compact";
@@ -54,16 +52,14 @@ export const metadata: Metadata = {
 
 export default function LandingPage() {
   return (
-    <>
-      <Header />
-      <main className="sm:container flex flex-col sm:gap-4">
-        <NextPrayer />
-        <PrayerTimesCompact />
+    <main className="flex flex-col pb-4">
+      <NextPrayer />
+      <PrayerTimesCompact />
+      <div className="px-4 space-y-4 sm:container sm:px-0">
         <AppList />
         <TaskTracker />
         <QuranLastRead />
-      </main>
-      <Footer />
-    </>
+      </div>
+    </main>
   );
 }

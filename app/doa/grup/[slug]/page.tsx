@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import DoaGroupDetail from "@/components/doa/DoaGroupDetail";
 import { appLocale, appUrl, brandName } from "@/config";
 import { DoaItem, DoaGroup } from "@/types/doa";
@@ -98,13 +96,9 @@ async function DoaGroupDetailPage({ params }: PageProps) {
   }
 
   return (
-    <>
-      <Header />
-      <main className="max-w-2xl mx-auto mb-8">
-        <DoaGroupDetail group={group} />
-      </main>
-      <Footer />
-    </>
+    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
+      <DoaGroupDetail group={group} />
+    </main>
   );
 }
 

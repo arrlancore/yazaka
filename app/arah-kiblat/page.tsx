@@ -1,6 +1,3 @@
-import PageContainer from "@/components/layout/page-container";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import { appLocale, appUrl, brandName } from "@/config";
 import { Metadata } from "next";
 import QiblaFinder from "@/components/QiblaFinder";
@@ -72,20 +69,16 @@ async function ArahKiblatPage() {
   const intro = await renderMd(introContent);
 
   return (
-    <>
-      <Header />
-      <main className="sm:container flex flex-col sm:gap-4 py-4">
-        <QiblaFinder />
-        {intro && (
-          <Card className="p-8 my-12 container max-w-md">
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              {intro}
-            </div>
-          </Card>
-        )}
-      </main>
-      <Footer />
-    </>
+    <main className="sm:container flex flex-col sm:gap-4 py-4 px-4 md:px-0">
+      <QiblaFinder />
+      {intro && (
+        <Card className="p-8 my-12 container max-w-md">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            {intro}
+          </div>
+        </Card>
+      )}
+    </main>
   );
 }
 

@@ -162,7 +162,7 @@ function TaskTracker() {
   );
 
   return (
-    <Card className="container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
+    <Card className="border-none w-full mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/5 via-background to-primary/5 shadow-none text-foreground rounded-none p-0 sm:border sm:max-w-md sm:rounded-2xl sm:shadow-sm">
       <CardHeader className="p-6 text-primary">
         <CardTitle className="text-xl font-bold text-primary">
           Kegiatan

@@ -16,7 +16,7 @@ interface SurahListProps {
 
 const SurahList: React.FC<SurahListProps> = ({ surahs }) => {
   return (
-    <Card className="border-none sm:border overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-none sm:shadow-lg text-foreground rounded-b-[2rem] p-0">
+    <Card className="border-none overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/5 via-background to-primary/5 shadow-none text-foreground rounded-none p-0 sm:border sm:shadow-sm sm:rounded-2xl">
       <CardContent className="p-0">
         <div className="bg-background">
           {surahs.map((surah) => (

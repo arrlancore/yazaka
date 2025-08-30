@@ -19,7 +19,7 @@ const PopularSurahsSection: React.FC<PopularSurahsSectionProps> = ({
   topSurahs,
 }) => {
   return (
-    <Card className="mb-4 bg-gradient-to-r from-primary/10 to-primary-light/10">
+    <Card className="mb-4 bg-gradient-to-r from-primary/5 to-primary-light/5 border-none shadow-none rounded-none sm:rounded-2xl sm:border sm:shadow-sm">
       <CardContent className="p-4">
         <h3 className="text-sm font-medium text-muted-foreground mb-2">
           Sering dibaca:

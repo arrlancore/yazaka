@@ -1,5 +1,3 @@
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import PrayerTimes from "@/components/prayer-times/prayer-times";
 import { Metadata } from "next";
 import { appLocale, appUrl, brandName } from "@/config";
@@ -71,19 +69,15 @@ export default async function JadwalShalatPage() {
   const intro = await renderMd(introContent);
 
   return (
-    <>
-      <Header />
-      <main className="sm:container flex flex-col sm:gap-4 py-4">
-        <PrayerTimes />
-        {intro && (
-          <Card className="p-8 my-12 container max-w-md">
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              {intro}
-            </div>
+    <main className="sm:container flex flex-col sm:gap-4 py-4 px-4 md:px-0">
+      <PrayerTimes />
+      {intro && (
+        <Card className="p-8 my-12 container max-w-md">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            {intro}
+          </div>
           </Card>
         )}
       </main>
-      <Footer />
-    </>
   );
 }

@@ -1,5 +1,3 @@
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import { Metadata } from "next";
 import { renderMd } from "@/hooks/common";
 import { Card } from "@/components/ui/card";
@@ -69,20 +67,16 @@ async function HafalanQuranPage() {
   const intro = await renderMd(introContent);
 
   return (
-    <>
-      <Header />
-      <main className="max-w-2xl mx-auto mb-8">
-        <HafalanQuran />
-        {intro && (
-          <Card className="p-8 my-12 container max-w-xl">
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              {intro}
-            </div>
-          </Card>
-        )}
-      </main>
-      <Footer />
-    </>
+    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
+      <HafalanQuran />
+      {intro && (
+        <Card className="p-8 my-12 container max-w-xl">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            {intro}
+          </div>
+        </Card>
+      )}
+    </main>
   );
 }
 

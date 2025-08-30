@@ -14,7 +14,7 @@ const LastReadSection = () => {
   }
 
   return (
-    <Card className="mb-4 bg-gradient-to-r rounded-t-none from-primary/10 to-primary-light/10">
+    <Card className="mb-4 bg-gradient-to-r rounded-none border-none shadow-none from-primary/5 to-primary-light/5 sm:rounded-2xl sm:border sm:shadow-sm">
       <CardContent className="p-4">
         <div className="mb-4">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">

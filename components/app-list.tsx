@@ -40,7 +40,7 @@ const apps: AppItem[] = [
 
 const AppList = () => {
   return (
-    <div className="container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-none text-foreground rounded-[0] sm:rounded-[2rem] p-0">
+    <div className="border-none w-full mx-auto overflow-hidden transition-all duration-300 bg-none text-foreground rounded-none p-0 sm:border sm:max-w-md sm:rounded-2xl">
       <CardContent className="px-6 py-3 sm:py-6">
         <div className="flex gap-2 justify-between">
           {apps.map((app) => (

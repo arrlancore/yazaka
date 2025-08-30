@@ -28,7 +28,7 @@ const PrayerTimesCompact = () => {
   if (!location) return null;
 
   return (
-    <Card className="p-0 shadow-sm container border-none sm:border max-w-md mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 text-foreground rounded-[0] sm:rounded-[2rem]">
+    <Card className="p-0 shadow-none border-none w-full mx-auto overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/5 via-background to-primary/5 text-foreground rounded-none sm:rounded-2xl sm:shadow-sm sm:border sm:max-w-md sm:mx-auto">
       <CardContent className="p-0">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary to-primary-light p-0 sm:p-1 text-primary-foreground">

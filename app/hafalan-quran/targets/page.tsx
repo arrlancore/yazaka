@@ -1,7 +1,5 @@
 import { Metadata } from "next";
-import Header from "@/components/header";
 import HafalanQuranTargets from "@/components/HafalanQuranTargets";
-import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "Daftar Target Hafalan Quran",
@@ -10,13 +8,9 @@ export const metadata: Metadata = {
 
 async function HafalanQuranTargetsPage() {
   return (
-    <>
-      <Header />
-      <main className="max-w-2xl mx-auto mb-8">
-        <HafalanQuranTargets />
-      </main>
-      <Footer />
-    </>
+    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
+      <HafalanQuranTargets />
+    </main>
   );
 }
 

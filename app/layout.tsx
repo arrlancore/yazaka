@@ -14,6 +14,7 @@ import {
 } from "@/config";
 import Providers from "@/components/providers";
 import GoogleAnalytics from "@/components/analytics/google-analytics";
+import ResponsiveLayout from "@/components/responsive-layout";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -87,7 +88,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Providers>{children}</Providers>
+          <Providers>
+            <ResponsiveLayout>
+              {children}
+            </ResponsiveLayout>
+          </Providers>
         </ThemeProvider>
       </body>
     </html>
