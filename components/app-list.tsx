@@ -42,7 +42,7 @@ const AppList = () => {
   return (
     <div className="border-none w-full mx-auto overflow-hidden transition-all duration-300 bg-none text-foreground rounded-none p-0 sm:border sm:max-w-md sm:rounded-2xl">
       <CardContent className="px-6 py-3 sm:py-6">
-        <div className="flex gap-2 justify-between">
+        <div className="grid grid-cols-3 gap-4 justify-items-center">
           {apps.map((app) => (
             <Link key={app.href} href={app.href}>
               <div className="flex flex-col gap-2 items-center justify-center hover:opacity-80">
