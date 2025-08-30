@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import localFont from "next/font/local";
@@ -20,6 +20,7 @@ import OfflineIndicator from "@/components/pwa/OfflineIndicator";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
+  manifest: "/manifest.json",
   title: {
     default: appTitle,
     template: `%s | ${brandName}`,
@@ -27,6 +28,11 @@ export const metadata: Metadata = {
   description: appDescription,
   authors: [{ name: defaultAuthor }],
   creator: defaultAuthor,
+  appleWebApp: {
+    capable: true,
+    title: "Bekhair",
+    statusBarStyle: "default",
+  },
   openGraph: {
     type: "website",
     locale: appLocale,
@@ -55,8 +61,14 @@ export const metadata: Metadata = {
   icons: {
     icon: "/images/icons/icon-192x192.png",
     shortcut: "/images/icons/icon-192x192.png",
-    apple: "/images/icons/icon-192x192.png",
+    apple: "/images/icons/apple-touch-icon-180.png",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 const scheherazade = Scheherazade_New({
