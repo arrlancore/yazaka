@@ -23,29 +23,29 @@ const navItems = [
     href: "/quran",
     label: "Quran",
     icon: BookOpen,
-    activeColor: "text-blue-600 dark:text-blue-400",
-    activeBg: "bg-blue-50 dark:bg-blue-900/20"
+    activeColor: "text-emerald-600 dark:text-emerald-400",
+    activeBg: "bg-emerald-50 dark:bg-emerald-900/20"
   },
   {
     href: "/",
     label: "Home",
     icon: Home,
-    activeColor: "text-primary",
-    activeBg: "bg-primary/10"
+    activeColor: "text-emerald-600 dark:text-emerald-400",
+    activeBg: "bg-emerald-50 dark:bg-emerald-900/20"
   },
   {
     href: "/doa",
     label: "Doa",
     icon: Heart,
-    activeColor: "text-rose-600 dark:text-rose-400", 
-    activeBg: "bg-rose-50 dark:bg-rose-900/20"
+    activeColor: "text-emerald-600 dark:text-emerald-400",
+    activeBg: "bg-emerald-50 dark:bg-emerald-900/20"
   },
   {
     href: "/hafalan-quran",
     label: "Hafalan",
     icon: GraduationCap,
-    activeColor: "text-purple-600 dark:text-purple-400",
-    activeBg: "bg-purple-50 dark:bg-purple-900/20"
+    activeColor: "text-emerald-600 dark:text-emerald-400",
+    activeBg: "bg-emerald-50 dark:bg-emerald-900/20"
   },
 ];
 
