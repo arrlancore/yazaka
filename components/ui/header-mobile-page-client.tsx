@@ -53,11 +53,11 @@ const HeaderMobilePageClient = ({
           >
             <ArrowLeft size={20} />
           </Button>
-          <div>
-            <h2 className="text-lg font-bold">{title}</h2>
-            {subtitle && (
-              <div className="text-xs opacity-80">{subtitle}</div>
-            )}
+          <div className="min-h-[2.5rem] flex flex-col justify-center">
+            <h2 className="text-lg font-bold leading-tight">{title}</h2>
+            <div className="text-xs opacity-80 leading-tight">
+              {subtitle || '\u00A0'}
+            </div>
           </div>
         </div>
         {rightContent && (

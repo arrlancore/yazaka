@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Footer from "@/components/footer";
 import SurahDetail, { SurahDetailProps } from "@/components/surah-detail";
 import { fetchQuranSuratByNumber } from "@/services/quranServices";
 import { appLocale, appUrl, brandName } from "@/config";
