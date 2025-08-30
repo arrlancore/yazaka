@@ -16,14 +16,12 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "./ui/badge";
 import { memorizationStatusLabels } from "@/types/hafalan";
 import { getSurahName } from "@/lib/quran-utils";
-import AppHeader from "./AppHeader";
 
 export default function HafalanQuranTargets() {
   const { targets, activeTargetId } = useHafalanStore();
 
   return (
     <Card className="border-none sm:border overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
-      <AppHeader title="Daftar Target Hafalan" backHref="/hafalan-quran" />
       <CardContent className="p-4">
         {targets.length === 0 ? (
           <div className="text-center py-8">

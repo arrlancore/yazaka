@@ -34,7 +34,6 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { PeerReview } from "@/types/hafalan";
 import TodayTargetCard from "./TodayTargetCard";
-import AppHeader from "./AppHeader";
 import {
   Select,
   SelectTrigger,
@@ -151,8 +150,6 @@ export default function HafalanPage() {
 
   return (
     <Card className="border-none sm:border overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
-      <AppHeader title="Hafalan Quran" />
-
       {/* Main Content */}
       <CardContent className="p-4 space-y-6">
         {/* Overview Cards */}

@@ -45,7 +45,6 @@ import {
   MINIMUM_MEMOIZATION_MINUTES,
   MINIMUM_READING_MINUTES,
 } from "@/lib/utils/hafalan";
-import AppHeader from "./AppHeader";
 import { Alert } from "./ui/alert";
 import { useRouter } from "next/navigation";
 
@@ -110,10 +109,6 @@ const TargetHafalanDetail: React.FC<TargetHafalanDetailProps> = ({
 
   return (
     <Card className="border-none sm:border overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-lg text-foreground rounded-[0] sm:rounded-[2rem] p-0">
-      <AppHeader
-        title="Detail Target Hafalan"
-        backHref="/hafalan-quran/targets"
-      />
       <CardContent className="p-6 space-y-6">
         <div className="flex justify-between">
           <div className="space-y-2">
