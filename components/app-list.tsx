@@ -35,7 +35,7 @@ const apps: AppItem[] = [
     icon: <MemorizationIcon size={40} />,
     href: "/hafalan-quran",
   },
-  // { name: "Doa", icon: <DuaIcon size={40} />, href: "/doa" },
+  { name: "Doa", icon: <DuaIcon size={40} />, href: "/doa" },
 ];
 
 const AppList = () => {
