@@ -89,6 +89,7 @@ export async function POST(request: NextRequest) {
         content: enhanceResult.enhanced_content,
         summary: enhanceResult.improved_summary,
         tags: enhanceResult.suggested_tags,
+        learning_objectives: enhanceResult.learning_objectives || [],
         
         // Set status to draft
         status: 'draft',

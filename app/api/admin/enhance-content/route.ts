@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
             .trim() + `-${Date.now()}`,
         ustad: enhancement.extracted_ustad,
         series: enhancement.extracted_series,
+        learning_objectives: enhancement.learning_objectives || [],
         status: "draft",
         updated_at: new Date().toISOString(),
       })

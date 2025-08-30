@@ -103,6 +103,7 @@ export default function QuickCreatePage() {
           published_at: new Date().toISOString().split('T')[0],
           source: '',
           audio_src: null,
+          learning_objectives: enhancement.learning_objectives || [],
           created_by: user.id,
           status: 'draft'
         }])

@@ -108,6 +108,7 @@ export type Database = {
           tags: string[]
           source: string
           status: 'raw' | 'draft' | 'published'
+          learning_objectives: string[]
           created_at: string
           updated_at: string
           created_by: string
@@ -128,6 +129,7 @@ export type Database = {
           tags: string[]
           source: string
           status?: 'raw' | 'draft' | 'published'
+          learning_objectives?: string[]
           created_at?: string
           updated_at?: string
           created_by: string
@@ -148,6 +150,7 @@ export type Database = {
           tags?: string[]
           source?: string
           status?: 'raw' | 'draft' | 'published'
+          learning_objectives?: string[]
           created_at?: string
           updated_at?: string
           created_by?: string

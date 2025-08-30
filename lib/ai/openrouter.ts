@@ -28,9 +28,10 @@ interface EnhancementResponse {
   extracted_title: string;
   extracted_ustad: string;
   extracted_series: string;
+  learning_objectives: string[];
 }
 
-const AI_MODEL = "google/gemini-2.5-pro";
+const AI_MODEL = "google/gemini-2.5-flash";
 
 // Step 1: Combine multiple transcriptions
 export async function combineTranscriptions(
@@ -163,7 +164,19 @@ Konten transkrip dan artikel harus sama persis dengan makna yang terkandung dala
         *   Daftar berpoin (*bullet points*) untuk ringkasan atau penjelasan.
         *   Teks tebal (\`**teks**\`) untuk menekankan istilah penting.
     *   **Penutup:** Akhiri artikel dengan kalimat penutup dari penceramah, nama, dan lokasi.
-    *   **Ringkasan Poin:** Buat bagian "Poin Penting untuk Diingat" di akhir atau setelah artikel untuk merangkum pelajaran utama dari kajian.  
+    *   **Ringkasan Poin:** Buat bagian "Poin Penting untuk Diingat" di akhir atau setelah artikel untuk merangkum pelajaran utama dari kajian.
+
+**5. Aturan Learning Objectives (Tujuan Pembelajaran Mendalam):**
+    *   **Ekstrak semua tujuan pembelajaran** dari konten kajian untuk siswa yang ingin belajar secara sistematis dan mendalam.
+    *   **WAJIB: PISAHKAN SETIAP DALIL MENJADI OBJECTIVE TERPISAH**
+    *   **Kategori objectives:**
+        *   **Conceptual objectives** - Pemahaman konsep utama (seperti poin penting)
+        *   **Quran verse objectives** - **SATU OBJECTIVE UNTUK SETIAP AYAT** yang disebutkan (contoh: "Mempelajari QS. Al-Baqarah: 255 tentang Ayat Kursi")
+        *   **Hadith objectives** - **SATU OBJECTIVE UNTUK SETIAP HADITS** yang disebutkan (contoh: "Memahami hadis tentang niat dalam beramal (HR. Bukhari-Muslim)")
+        *   **Scholar objectives** - **SATU OBJECTIVE UNTUK SETIAP RUJUKAN** ulama/kitab (contoh: "Mempelajari pendapat Imam An-Nawawi tentang shalat berjamaah")
+    *   **PENTING: JANGAN GABUNGKAN DALIL** - Jika ada 5 ayat Al-Quran, buat 5 objective terpisah. Jika ada 3 hadits, buat 3 objective terpisah.
+    *   **Format objectives:** Gunakan kata kerja pembelajaran seperti "Memahami", "Mempelajari", "Mendalami", "Merenungkan", "Menghayati"
+    *   **Sertakan referensi** dalam objectives untuk dalil (contoh: "QS. Al-Fatiha: 1-7", "HR. Bukhari", "Kitab Riyadhus Shalihin")  
 
 **WAJIB: Format response sebagai:**
 {
@@ -173,7 +186,8 @@ Konten transkrip dan artikel harus sama persis dengan makna yang terkandung dala
   "suggested_tags": ["tag1", "tag2", etc], // max 5
   "extracted_title": "judul yang diambil dari konten",
   "extracted_ustad": "nama ustad dari konten",
-  "extracted_series": "nama seri kajian"
+  "extracted_series": "nama seri kajian",
+  "learning_objectives": ["obj1", "obj2", etc] // objectives untuk deep learning
 }
 
 **Contoh Response:**
@@ -190,7 +204,19 @@ Konten transkrip dan artikel harus sama persis dengan makna yang terkandung dala
   
   "extracted_ustad": "Abdullah Roy",
   
-  "extracted_series": "Halaqah Silsilah Ilmiah Beriman dengan Takdir Allah"
+  "extracted_series": "Halaqah Silsilah Ilmiah Beriman dengan Takdir Allah",
+  
+  "learning_objectives": [
+    "Memahami kedudukan iman kepada takdir sebagai rukun iman",
+    "Menghayati pentingnya beriman dengan takdir dalam kehidupan Muslim",
+    "Mempelajari kaitan iman takdir dengan tauhid rububiyah dan asma' wa sifat",
+    "Merenungkan dampak keimanan takdir dalam kehidupan sehari-hari",
+    "Mempelajari QS. Al-Anbiya: 105 tentang penulisan di Zabur dan Lauh Mahfuz",
+    "Memahami QS. Yasin: 12 tentang pencatatan segala sesuatu di Imam Mubin",
+    "Mendalami QS. Al-Hajj: 70 tentang ilmu Allah yang tercatat dalam kitab",
+    "Memahami hadis tentang penulisan takdir 50.000 tahun sebelum penciptaan (HR. Muslim)",
+    "Merenungkan hadis tentang tempat setiap manusia di surga atau neraka (HR. Bukhari-Muslim)"
+  ]
 }`;
 
   const userPrompt = `**Combined Transcription:**
@@ -258,6 +284,7 @@ Silakan perbaiki transkrip dan buat artikel sesuai dengan aturan yang telah dibe
         extracted_ustad: parsed.extracted_ustad || parsed.ustad || "Unknown",
         extracted_series:
           parsed.extracted_series || parsed.series || "HSI Series",
+        learning_objectives: parsed.learning_objectives || [],
       };
     } catch (parseError) {
       // Try to extract JSON from within the content if it's wrapped in other text
@@ -352,6 +379,7 @@ Silakan perbaiki transkrip dan buat artikel sesuai dengan aturan yang telah dibe
             extracted_title: extractField("extracted_title", "HSI Content"),
             extracted_ustad: extractField("extracted_ustad", "Unknown"),
             extracted_series: extractField("extracted_series", "HSI Series"),
+            learning_objectives: extractArrayField("learning_objectives", []),
           };
 
           return result;
@@ -368,6 +396,7 @@ Silakan perbaiki transkrip dan buat artikel sesuai dengan aturan yang telah dibe
         extracted_title: "HSI Content",
         extracted_ustad: "Unknown",
         extracted_series: "HSI Series",
+        learning_objectives: [],
       };
     }
   } catch (error) {
