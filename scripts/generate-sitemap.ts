@@ -707,8 +707,16 @@ async function generateSitemap() {
       "!app/**/layout.tsx",
       "!app/**/loading.tsx",
       "!app/**/error.tsx",
+      // Exclude dynamic catch-alls handled separately
       "!app/**/[slug]/page.tsx",
       "!app/**/[id]/page.tsx",
+      // Exclude internal/system routes
+      "!app/offline/**",
+      "!app/style-guide/**",
+      "!app/unauthorized/**",
+      "!app/admin/**",
+      "!app/auth/**",
+      // Exclude editor and API route files
       "!app/editor/page.tsx",
       "!app/**/post/route.ts",
     ]);
@@ -785,6 +793,66 @@ async function generateSitemap() {
     `;
         }
       )
+      .join("");
+
+    // Doa: single and group pages
+    // Helpers copied from services to avoid runtime import issues
+    const generateDoaSlug = (name: string): string =>
+      name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    const generateGroupSlug = (groupName: string): string =>
+      groupName
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    // Load Doa data
+    const DOA_PATH = path.join(process.cwd(), "content/doa/doa-collection.json");
+    let doaItems: { nama: string; grup: string }[] = [];
+    try {
+      const raw = readFileSync(DOA_PATH, "utf8");
+      const json = JSON.parse(raw) as { data?: { nama: string; grup: string }[] };
+      doaItems = Array.isArray(json.data) ? json.data : [];
+    } catch (e) {
+      console.error("Error reading doa collection:", e);
+    }
+
+    // Single Doa URLs
+    const doaSingleUrls = doaItems
+      .map((d) => {
+        const slug = generateDoaSlug(d.nama);
+        return `
+      <url>
+        <loc>${domain}/doa/${slug}</loc>
+        <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+      </url>
+    `;
+      })
+      .join("");
+
+    // Group Doa URLs (unique groups)
+    const groupNames = Array.from(new Set(doaItems.map((d) => d.grup)));
+    const doaGroupUrls = groupNames
+      .map((name) => {
+        const slug = generateGroupSlug(name);
+        return `
+      <url>
+        <loc>${domain}/doa/grup/${slug}</loc>
+        <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+      </url>
+    `;
+      })
       .join("");
 
     // Catatan HSI pages  
@@ -880,6 +948,12 @@ async function generateSitemap() {
         <!-- Catatan HSI -->
         ${catatanUrls}
 
+        <!-- Doa Single Pages -->
+        ${doaSingleUrls}
+
+        <!-- Doa Group Pages -->
+        ${doaGroupUrls}
+
         <!-- Blog Posts -->
         ${posts
           .map(
@@ -908,7 +982,7 @@ async function generateSitemap() {
 
     console.log("✅ Sitemap generated successfully!");
     console.log(
-      `✅ Generated sitemap for ${pages.length + authors.length + surahsBahasa.length + catatanSlugs.length} pages, ${posts.length} blog posts, and ${catatanSlugs.length} catatan`
+      `✅ Generated sitemap for ${pages.length + authors.length + surahsBahasa.length + catatanSlugs.length + doaItems.length + groupNames.length} pages, including ${posts.length} blog posts, ${catatanSlugs.length} catatan HSI, ${doaItems.length} doa singles, and ${groupNames.length} doa groups.`
     );
   } catch (error) {
     console.error("Error generating sitemap:", error);
