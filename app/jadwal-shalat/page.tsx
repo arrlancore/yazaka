@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { appLocale, appUrl, brandName } from "@/config";
 import { renderMd } from "@/hooks/common";
 import { Card } from "@/components/ui/card";
+import NotificationSetup from "@/components/pwa/NotificationSetup";
 
 export const metadata: Metadata = {
   title: "Jadwal Shalat | Waktu Shalat Akurat untuk Kota Anda",
@@ -73,6 +74,11 @@ export default async function JadwalShalatPage() {
       <div className="px-0 sm:container sm:px-4">
         <PrayerTimes />
       </div>
+      
+      <div className="px-4 sm:container sm:px-0 sm:max-w-md sm:mx-auto mt-4">
+        <NotificationSetup />
+      </div>
+
       {intro && (
         <Card className="p-8 my-12 mx-4 border-none shadow-none rounded-none sm:container sm:mx-auto sm:max-w-md sm:border sm:shadow-sm sm:rounded-2xl">
           <div className="prose prose-lg dark:prose-invert max-w-none">

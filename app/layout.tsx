@@ -15,6 +15,8 @@ import {
 import Providers from "@/components/providers";
 import GoogleAnalytics from "@/components/analytics/google-analytics";
 import ResponsiveLayout from "@/components/responsive-layout";
+import ServiceWorkerProvider from "@/components/pwa/ServiceWorkerProvider";
+import OfflineIndicator from "@/components/pwa/OfflineIndicator";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -89,6 +91,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
+            <ServiceWorkerProvider />
+            <OfflineIndicator />
             <ResponsiveLayout>
               {children}
             </ResponsiveLayout>

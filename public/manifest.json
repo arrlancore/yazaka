@@ -1,12 +1,16 @@
 {
-  "name": "Bekhair",
+  "name": "Bekhair - Jangan Tunda Berbuat Baik",
   "short_name": "Bekhair",
+  "description": "Aplikasi yang memadukan spiritualitas Islam dengan produktivitas modern. Jadilah Muslim yang sukses di dunia dan akhirat.",
   "theme_color": "#00d1a0",
-  "background_color": "#fff",
-  "display": "fullScreen",
+  "background_color": "#ffffff",
+  "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
   "start_url": "/",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["lifestyle", "education", "productivity", "utilities"],
   "icons": [
     {
       "src": "images/icons/icon-72x72.png",
@@ -36,7 +40,14 @@
     {
       "src": "images/icons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "images/icons/icon-384x384.png",
@@ -46,7 +57,83 @@
     {
       "src": "images/icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Jadwal Shalat",
+      "short_name": "Shalat",
+      "description": "Lihat jadwal waktu shalat hari ini",
+      "url": "/jadwal-shalat",
+      "icons": [
+        {
+          "src": "images/icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Al-Qur'an",
+      "short_name": "Qur'an",
+      "description": "Baca Al-Qur'an online",
+      "url": "/quran",
+      "icons": [
+        {
+          "src": "images/icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Doa & Dzikir",
+      "short_name": "Doa",
+      "description": "Kumpulan doa harian dan dzikir",
+      "url": "/doa",
+      "icons": [
+        {
+          "src": "images/icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Arah Kiblat",
+      "short_name": "Kiblat",
+      "description": "Temukan arah kiblat dengan kompas",
+      "url": "/arah-kiblat",
+      "icons": [
+        {
+          "src": "images/icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "images/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "images/screenshots/mobile-quran.png",
+      "sizes": "390x844", 
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "edge_side_panel": {},
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

@@ -12,6 +12,7 @@ import {
 } from "@/config";
 import QuranLastRead from "@/components/quran-last-read";
 import HomepageWrapper from "@/components/homepage-wrapper";
+import InstallPrompt from "@/components/pwa/InstallPrompt";
 
 export const metadata: Metadata = {
   title: appSlogan + " | " + brandName,
@@ -58,6 +59,7 @@ export default function LandingPage() {
         <NextPrayer />
         <PrayerTimesCompact />
         <div className="px-4 space-y-4 sm:container sm:px-0">
+          <InstallPrompt variant="card" />
           <AppList />
           <TaskTracker />
           <QuranLastRead />
