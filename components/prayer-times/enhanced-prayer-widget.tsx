@@ -253,7 +253,7 @@ const EnhancedPrayerWidget = () => {
           </div>
 
           {/* Footer with date and actions */}
-          <div className="flex items-center justify-between px-4 py-3 bg-muted/30">
+          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-br from-primary/10 via-background to-primary/10">
             <div className="flex flex-col">
               {currentTime && (
                 <span className="text-xs text-muted-foreground">
