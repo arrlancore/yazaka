@@ -29,7 +29,7 @@ export const categorizeDoaForTabs = (): Record<DoaTabType, DoaItem[]> => {
     'keluar rumah', 'masuk rumah', 'kendaraan', 'perjalanan pendek'
   ];
 
-  // Situational doa - everything else
+  // Sehari-hari doa - based on keywords
   const seharihariDoa = allDoa.filter((doa) => {
     const lowerTags = doa.tag.map(tag => tag.toLowerCase());
     const lowerGrup = doa.grup.toLowerCase();
@@ -42,12 +42,10 @@ export const categorizeDoaForTabs = (): Record<DoaTabType, DoaItem[]> => {
     );
   });
 
-  const situasionalDoa = allDoa.filter((doa) => !seharihariDoa.includes(doa));
-
   return {
     'sehari-hari': seharihariDoa,
-    'situasional': situasionalDoa,
-    'favorit': [] // Will be populated from localStorage
+    'semua': allDoa,
+    'favorit': [] // Populated dynamically from localStorage via getFavoriteDoa()
   };
 };
 
@@ -273,4 +271,128 @@ export const organizeDoaByTimeline = (doaList: DoaItem[]) => {
   });
 
   return timelineMap;
+};
+
+// =============================
+// Favorites (localStorage)
+// =============================
+
+const FAVORITES_KEY = 'bekhair_doa_favorites_v1';
+
+const safeWindow = () => typeof window !== 'undefined' ? window : null;
+
+export const getFavoriteIds = (): number[] => {
+const win = safeWindow();
+if (!win) return [];
+try {
+const raw = win.localStorage.getItem(FAVORITES_KEY);
+if (!raw) return [];
+const parsed = JSON.parse(raw);
+return Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'number') : [];
+} catch {
+return [];
+}
+};
+
+export const setFavoriteIds = (ids: number[]) => {
+const win = safeWindow();
+if (!win) return;
+try {
+win.localStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.from(new Set(ids))));
+// Notify listeners within same tab
+if (typeof win.dispatchEvent === 'function') {
+win.dispatchEvent(new CustomEvent('doa-favorites-changed'));
+}
+} catch {}
+};
+
+export const isFavorite = (id: number): boolean => {
+const ids = getFavoriteIds();
+return ids.includes(id);
+};
+
+export const toggleFavorite = (id: number): boolean => {
+const ids = new Set(getFavoriteIds());
+if (ids.has(id)) {
+ids.delete(id);
+} else {
+ids.add(id);
+}
+setFavoriteIds(Array.from(ids));
+return ids.has(id);
+};
+
+export const getFavoriteDoa = (): DoaItem[] => {
+const ids = new Set(getFavoriteIds());
+if (ids.size === 0) return [];
+const all = getAllDoa();
+// Preserve the saved order by ids list
+const orderedIds = getFavoriteIds();
+const byId = new Map(all.map((d) => [d.id, d] as const));
+return orderedIds.map((id) => byId.get(id)).filter(Boolean) as DoaItem[];
+};
+
+// =============================
+// Group Favorites (localStorage)
+// =============================
+
+const GROUP_FAVORITES_KEY = 'bekhair_doa_group_favorites_v1';
+
+export const getFavoriteGroupSlugs = (): string[] => {
+  const win = safeWindow();
+  if (!win) return [];
+  try {
+    const raw = win.localStorage.getItem(GROUP_FAVORITES_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+};
+
+export const setFavoriteGroupSlugs = (slugs: string[]) => {
+  const win = safeWindow();
+  if (!win) return;
+  try {
+    win.localStorage.setItem(GROUP_FAVORITES_KEY, JSON.stringify(Array.from(new Set(slugs))));
+    if (typeof win.dispatchEvent === 'function') {
+      // Reuse same event so listeners refresh once
+      win.dispatchEvent(new CustomEvent('doa-favorites-changed'));
+    }
+  } catch {}
+};
+
+export const isGroupFavorite = (groupSlug: string): boolean => {
+  const slugs = getFavoriteGroupSlugs();
+  return slugs.includes(groupSlug);
+};
+
+export const toggleFavoriteGroup = (groupSlug: string): boolean => {
+  const set = new Set(getFavoriteGroupSlugs());
+  if (set.has(groupSlug)) {
+    set.delete(groupSlug);
+  } else {
+    set.add(groupSlug);
+  }
+  setFavoriteGroupSlugs(Array.from(set));
+  return set.has(groupSlug);
+};
+
+export const getAllGroups = (): import("@/types/doa").DoaGroup[] => {
+  const names = getDoaGroups();
+  return names.map((name) => ({
+    name,
+    items: getDoaByGroup(name),
+    slug: generateGroupSlug(name)
+  }));
+};
+
+export const getFavoriteGroups = (): import("@/types/doa").DoaGroup[] => {
+  const slugs = getFavoriteGroupSlugs();
+  if (slugs.length === 0) return [];
+  const allGroups = getAllGroups();
+  const bySlug = new Map(allGroups.map((g) => [g.slug, g] as const));
+  // Preserve saved order
+  return slugs.map((s) => bySlug.get(s)).filter(Boolean) as import("@/types/doa").DoaGroup[];
 };

@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Share2, Copy, Check } from "lucide-react";
+import { ArrowLeft, Share2, Copy, Check, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { DoaGroup } from "@/types/doa";
 import DoaCard from "@/components/doa/DoaCard";
+import { isGroupFavorite, toggleFavoriteGroup } from "@/services/doaServices";
 
 interface DoaGroupDetailProps {
   group: DoaGroup;
@@ -16,6 +17,11 @@ interface DoaGroupDetailProps {
 
 const DoaGroupDetail: React.FC<DoaGroupDetailProps> = ({ group }) => {
   const [copied, setCopied] = useState(false);
+  const [fav, setFav] = useState(false);
+
+  useEffect(() => {
+    setFav(isGroupFavorite(group.slug));
+  }, [group.slug]);
 
   const handleCopyAllDoa = async () => {
     const allDoaText = group.items.map((doa, index) => 
@@ -92,13 +98,27 @@ const DoaGroupDetail: React.FC<DoaGroupDetailProps> = ({ group }) => {
         {/* Introduction */}
         <Card className="border-l-4 border-l-primary">
           <CardContent className="p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <Badge variant="default" className="text-sm">
-                {group.items.length} Doa
-              </Badge>
-              <span className="text-sm text-muted-foreground">
-                Baca secara berurutan dari atas ke bawah
-              </span>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <Badge variant="default" className="text-sm">
+                  {group.items.length} Doa
+                </Badge>
+                <span className="text-sm text-muted-foreground">
+                  Baca secara berurutan dari atas ke bawah
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                aria-label={fav ? "Hapus grup dari favorit" : "Tambah grup ke favorit"}
+                onClick={() => {
+                  const res = toggleFavoriteGroup(group.slug);
+                  setFav(res);
+                }}
+              >
+                <Heart className={`h-5 w-5 ${fav ? 'text-red-500 fill-red-500' : ''}`} />
+              </Button>
             </div>
             <p className="text-muted-foreground">
               {group.name.toLowerCase().includes('pagi') 

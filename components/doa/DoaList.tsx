@@ -1,20 +1,22 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Heart, Star, Search, ChevronRight, BookOpen, Users } from "lucide-react";
 import { DoaItem, DoaTabType, DoaGroup } from "@/types/doa";
-import { searchDoa, generateDoaSlug, generateGroupSlug, getDoaById, getDoaByGroup } from "@/services/doaServices";
+import { searchDoa, generateDoaSlug, generateGroupSlug, getDoaById, getDoaByGroup, isFavorite, toggleFavorite } from "@/services/doaServices";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface DoaListProps {
   doaList: DoaItem[];
   searchQuery: string;
   tabType: DoaTabType;
+  favoriteGroups?: DoaGroup[];
 }
 
-const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
+const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType, favoriteGroups = [] }) => {
   // Mapping config for 'sehari-hari' tab
   const sehariHariMapping = useMemo(() => ([
     {
@@ -38,6 +40,8 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
       list: [
         276,
         277,
+        132,
+        133,
         134
       ]
     },
@@ -97,6 +101,20 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
     return searchedDoaItems.filter(doa => doaList.some(item => item.id === doa.id));
   }, [doaList, searchQuery]);
 
+  // Pagination state (25 per page)
+  const pageSize = 25;
+  const [page, setPage] = useState(1);
+
+  // Reset to first page when list context changes
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, tabType]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredDoa.length / pageSize));
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const pagedDoa = filteredDoa.slice(startIndex, endIndex);
+
   // Build UI data from mapping for 'sehari-hari' tab when no search
   const mappedSections = useMemo(() => {
     if (tabType !== "sehari-hari" || searchQuery.trim() !== "") return null;
@@ -131,6 +149,20 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
       };
     });
   }, [tabType, searchQuery, sehariHariMapping]);
+
+  // Listen to favorites change to refresh hearts in list
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    const handler = () => forceUpdate((v) => v + 1);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('doa-favorites-changed' as any, handler);
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('doa-favorites-changed' as any, handler);
+      }
+    };
+  }, []);
 
   const renderGroupCard = (group: DoaGroup) => (
     <Link key={group.slug} href={`/doa/grup/${group.slug}`}>
@@ -207,7 +239,21 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
               </div>
               
               <div className="flex items-center gap-2 ml-4">
-                <Heart className="h-4 w-4 text-gray-300 hover:text-red-500" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  aria-label={isFavorite(doa.id) ? "Hapus dari favorit" : "Tambah ke favorit"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleFavorite(doa.id);
+                    // forceUpdate will run via event listener, but also trigger now
+                    forceUpdate((v) => v + 1);
+                  }}
+                >
+                  <Heart className={`h-4 w-4 ${isFavorite(doa.id) ? 'text-red-500 fill-red-500' : ''}`} />
+                </Button>
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </div>
             </div>
@@ -217,7 +263,7 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
     );
   };
 
-  if (filteredDoa.length === 0) {
+  if (filteredDoa.length === 0 && !(tabType === 'favorit' && favoriteGroups.length > 0)) {
     return (
       <div className="text-center py-8">
         <div className="text-gray-400 mb-2">
@@ -241,22 +287,43 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
       <div className="space-y-8">
         {mappedSections.map((section, idx) => (
           <div key={idx}>
-            <h2 className="text-lg font-semibold mb-3">{displayTitle(section.title)}</h2>
-            <ul className="list-disc pl-6 space-y-1">
+            <h2 className="font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
+              {displayTitle(section.title)}
+            </h2>
+            <ul className="space-y-2">
               {section.items.map((item) => {
                 if (item.type === 'group') {
                   return (
-                    <li key={`g-${item.slug}`}>
-                      <Link href={`/doa/grup/${item.slug}`} className="hover:underline">
-                        {item.name} ({item.count})
+                    <li key={`g-${item.slug}`} className="group">
+                      <Link 
+                        href={`/doa/grup/${item.slug}`} 
+                        className="flex items-center py-2 px-1 hover:bg-blue-50/70 rounded-md transition-all duration-200"
+                      >
+                        <div className="flex items-center space-x-3 w-full">
+                          <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:scale-125 transition-transform"></div>
+                          <span className="text-slate-700 text-sm group-hover:text-blue-700 transition-colors">
+                            {item.name}
+                          </span>
+                          <span className="ml-auto text-xs font-medium text-slate-500 group-hover:text-blue-600 transition-colors">
+                            {item.count}
+                          </span>
+                        </div>
                       </Link>
                     </li>
                   );
                 }
                 return (
-                  <li key={`d-${item.data.id}`}>
-                    <Link href={`/doa/${item.slug}`} className="hover:underline">
-                      {item.data.nama}
+                  <li key={`d-${item.data.id}`} className="group">
+                    <Link 
+                      href={`/doa/${item.slug}`} 
+                      className="flex items-center py-2 px-1 hover:bg-emerald-50/70 rounded-md transition-all duration-200"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 group-hover:scale-125 transition-transform"></div>
+                        <span className="text-slate-700 text-sm group-hover:text-emerald-700 transition-colors">
+                          {item.data.nama}
+                        </span>
+                      </div>
                     </Link>
                   </li>
                 );
@@ -268,10 +335,40 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
     );
   }
 
-  // Render regular list
+  // Render regular list with optional favorite groups on Favorit tab
   return (
     <div className="space-y-4">
-      {filteredDoa.map(renderDoaCard)}
+      {tabType === 'favorit' && favoriteGroups.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-base font-semibold">Grup Favorit</h3>
+          {favoriteGroups.map((g) => renderGroupCard(g))}
+        </div>
+      )}
+
+      {pagedDoa.map(renderDoaCard)}
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-2">
+          <button
+            className="text-sm px-3 py-1 rounded border hover:bg-muted disabled:opacity-50"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            Sebelumnya
+          </button>
+          <div className="text-sm text-muted-foreground">
+            Halaman {page} dari {totalPages}
+          </div>
+          <button
+            className="text-sm px-3 py-1 rounded border hover:bg-muted disabled:opacity-50"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+          >
+            Berikutnya
+          </button>
+        </div>
+      )}
     </div>
   );
 };

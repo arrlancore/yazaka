@@ -31,7 +31,7 @@ export interface DoaSearchResult {
   score: number;
 }
 
-export type DoaTabType = 'sehari-hari' | 'situasional' | 'favorit';
+export type DoaTabType = 'sehari-hari' | 'semua' | 'favorit';
 
 export interface DoaFavorite {
   id: number;

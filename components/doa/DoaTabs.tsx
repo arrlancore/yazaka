@@ -1,18 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import DoaList from "./DoaList";
 import SearchBar from "./SearchBar";
 import { DoaTabType } from "@/types/doa";
-import { categorizeDoaForTabs } from "@/services/doaServices";
+import { categorizeDoaForTabs, getFavoriteDoa, getFavoriteGroups } from "@/services/doaServices";
 
 const DoaTabs = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<DoaTabType>("sehari-hari");
   
   const doaByTabs = categorizeDoaForTabs();
+  const [favorites, setFavorites] = useState(getFavoriteDoa());
+  const [favoriteGroups, setFavoriteGroups] = useState(getFavoriteGroups());
+
+  useEffect(() => {
+    const handler = () => {
+      setFavorites(getFavoriteDoa());
+      setFavoriteGroups(getFavoriteGroups());
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('doa-favorites-changed' as any, handler);
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('doa-favorites-changed' as any, handler);
+      }
+    };
+  }, []);
 
   return (
     <Card className="mx-4 mt-4 p-4">
@@ -29,7 +46,7 @@ const DoaTabs = () => {
       >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="sehari-hari">Sehari-hari</TabsTrigger>
-          <TabsTrigger value="situasional">Situasional</TabsTrigger>
+          <TabsTrigger value="semua">Semua</TabsTrigger>
           <TabsTrigger value="favorit">Favorit</TabsTrigger>
         </TabsList>
         
@@ -41,19 +58,20 @@ const DoaTabs = () => {
           />
         </TabsContent>
         
-        <TabsContent value="situasional" className="mt-4">
+        <TabsContent value="semua" className="mt-4">
           <DoaList 
-            doaList={doaByTabs.situasional} 
+            doaList={doaByTabs.semua} 
             searchQuery={searchQuery}
-            tabType="situasional"
+            tabType="semua"
           />
         </TabsContent>
         
         <TabsContent value="favorit" className="mt-4">
           <DoaList 
-            doaList={doaByTabs.favorit} 
+            doaList={favorites} 
             searchQuery={searchQuery}
             tabType="favorit"
+            favoriteGroups={favoriteGroups}
           />
         </TabsContent>
       </Tabs>

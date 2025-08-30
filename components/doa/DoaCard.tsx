@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Book, Share2, Copy, Check } from "lucide-react";
+import { ChevronDown, ChevronUp, Book, Share2, Copy, Check, Heart } from "lucide-react";
 import { DoaItem } from "@/types/doa";
+import { isFavorite, toggleFavorite } from "@/services/doaServices";
 
 interface DoaCardProps {
   index: number;
@@ -15,6 +16,20 @@ interface DoaCardProps {
 const DoaCard: React.FC<DoaCardProps> = ({ index, doa }) => {
   const [showSource, setShowSource] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [fav, setFav] = useState<boolean>(false);
+
+  useEffect(() => {
+    setFav(isFavorite(doa.id));
+    const handler = () => setFav(isFavorite(doa.id));
+    if (typeof window !== 'undefined') {
+      window.addEventListener('doa-favorites-changed' as any, handler);
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('doa-favorites-changed' as any, handler);
+      }
+    };
+  }, [doa.id]);
 
   const handleCopy = async () => {
     const text = `${doa.nama}\n\n${doa.ar}\n\n${doa.tr}\n\n${doa.idn}`;
@@ -67,6 +82,20 @@ const DoaCard: React.FC<DoaCardProps> = ({ index, doa }) => {
           </div>
 
           <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="rounded-full"
+              aria-label={fav ? "Hapus dari favorit" : "Tambah ke favorit"}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                const result = toggleFavorite(doa.id);
+                setFav(result);
+              }}
+            >
+              <Heart className={`h-4 w-4 ${fav ? 'text-red-500 fill-red-500' : ''}`} />
+            </Button>
             <Button variant="ghost" size="sm" className="rounded-full" onClick={handleShare}>
               <Share2 className="h-4 w-4" />
             </Button>
