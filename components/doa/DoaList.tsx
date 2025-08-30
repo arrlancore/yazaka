@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Heart, Star, Search, ChevronRight, BookOpen, Users } from "lucide-react";
 import { DoaItem, DoaTabType, DoaGroup } from "@/types/doa";
-import { searchDoa, organizeDoaByTimeline, generateDoaSlug, generateGroupSlug } from "@/services/doaServices";
+import { searchDoa, generateDoaSlug, generateGroupSlug, getDoaById, getDoaByGroup } from "@/services/doaServices";
 import Link from "next/link";
 
 interface DoaListProps {
@@ -15,6 +15,78 @@ interface DoaListProps {
 }
 
 const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
+  // Mapping config for 'sehari-hari' tab
+  const sehariHariMapping = useMemo(() => ([
+    {
+      category: "**DZIKIR PAGI DAN PETANG**",
+      list: [
+        "Dzikir Pagi",
+        "Dzikir Petang"
+      ]
+    },
+    {
+      category: "**DOA PAGI HARI**",
+      list: [
+        6,
+        11,
+        128,
+        48
+      ]
+    },
+    {
+      category: "**DOA BERKAITAN DENGAN MASJID**",
+      list: [
+        276,
+        277,
+        134
+      ]
+    },
+    {
+      category: "**DOA BERKAITAN DENGAN TOILET**",
+      list: [
+        8,
+        9
+      ]
+    },
+    {
+      category: "**DOA BERKAITAN DENGAN MAKAN**",
+      list: [
+        135,
+        139
+      ]
+    },
+    {
+      category: "**DOA KETIKA BERSIN**",
+      list: [
+        189
+      ]
+    },
+    {
+      category: "**DOA MALAM HARI**",
+      list: [
+        2,
+        278
+      ]
+    },
+    {
+      category: "**DOA-DOA KHUSUS**",
+      list: [
+        36,
+        250,
+        279,
+        227,
+        95,
+        13
+      ]
+    }
+  ]), []);
+
+  // Normalize section title for display
+  const displayTitle = (raw: string) => {
+    const plain = raw.replace(/\*/g, '').trim().toLowerCase();
+    return plain.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
+
   const filteredDoa = useMemo(() => {
     if (searchQuery.trim() === "") {
       return doaList;
@@ -25,12 +97,40 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
     return searchedDoaItems.filter(doa => doaList.some(item => item.id === doa.id));
   }, [doaList, searchQuery]);
 
-  const organizedDoa = useMemo(() => {
-    if (tabType === "sehari-hari" && searchQuery.trim() === "") {
-      return organizeDoaByTimeline(filteredDoa);
-    }
-    return null;
-  }, [filteredDoa, tabType, searchQuery]);
+  // Build UI data from mapping for 'sehari-hari' tab when no search
+  const mappedSections = useMemo(() => {
+    if (tabType !== "sehari-hari" || searchQuery.trim() !== "") return null;
+
+    return sehariHariMapping.map(section => {
+      const items = section.list.map((entry: string | number) => {
+        if (typeof entry === 'string') {
+          const groupItems = getDoaByGroup(entry);
+          return {
+            type: 'group' as const,
+            name: entry,
+            count: groupItems.length,
+            slug: generateGroupSlug(entry)
+          };
+        } else {
+          const doa = getDoaById(entry);
+          if (!doa) return null;
+          return {
+            type: 'doa' as const,
+            data: doa,
+            slug: generateDoaSlug(doa)
+          };
+        }
+      }).filter(Boolean) as Array<
+        | { type: 'group'; name: string; count: number; slug: string }
+        | { type: 'doa'; data: DoaItem; slug: string }
+      >;
+
+      return {
+        title: section.category,
+        items
+      };
+    });
+  }, [tabType, searchQuery, sehariHariMapping]);
 
   const renderGroupCard = (group: DoaGroup) => (
     <Link key={group.slug} href={`/doa/grup/${group.slug}`}>
@@ -50,7 +150,7 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
               <p 
                 className="text-right text-sm text-muted-foreground font-arabic" 
                 dir="rtl"
-                style={{ fontFamily: "'Uthmanic Hafs', Arial" }}
+                style={{ fontFamily: "var(--font-scheherazade), var(--font-noto-naskh), 'Uthmanic Hafs', serif" }}
               >
                 {group.items[0]?.ar.split(' ').slice(0, 3).join(' ')}...
               </p>
@@ -84,7 +184,7 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
                 <p 
                   className="text-right text-sm text-muted-foreground" 
                   dir="rtl"
-                  style={{ fontFamily: "'Uthmanic Hafs', Arial" }}
+                  style={{ fontFamily: "var(--font-scheherazade), var(--font-noto-naskh), 'Uthmanic Hafs', serif" }}
                 >
                   {doa.ar.split(' ').slice(0, 4).join(' ')}...
                 </p>
@@ -135,31 +235,34 @@ const DoaList: React.FC<DoaListProps> = ({ doaList, searchQuery, tabType }) => {
     );
   }
 
-  // Render timeline organization for daily doa
-  if (organizedDoa && tabType === "sehari-hari") {
+  // Render mapping-based list for daily doa
+  if (mappedSections && tabType === "sehari-hari") {
     return (
-      <div className="space-y-6">
-        {Object.values(organizedDoa).map((section) => (
-          (section.items.length > 0 || section.groups.length > 0) && (
-            <div key={section.key} className="space-y-4">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-2xl">{section.icon}</span>
-                <h2 className="text-xl font-semibold">{section.label}</h2>
-                <Badge variant="outline">
-                  {section.groups.length > 0 ? 
-                    `${section.groups.length} grup, ${section.items.length} doa` :
-                    `${section.items.length} doa`
-                  }
-                </Badge>
-              </div>
-              
-              {/* Render groups first */}
-              {section.groups.map(renderGroupCard)}
-              
-              {/* Then render individual doa */}
-              {section.items.map(renderDoaCard)}
-            </div>
-          )
+      <div className="space-y-8">
+        {mappedSections.map((section, idx) => (
+          <div key={idx}>
+            <h2 className="text-lg font-semibold mb-3">{displayTitle(section.title)}</h2>
+            <ul className="list-disc pl-6 space-y-1">
+              {section.items.map((item) => {
+                if (item.type === 'group') {
+                  return (
+                    <li key={`g-${item.slug}`}>
+                      <Link href={`/doa/grup/${item.slug}`} className="hover:underline">
+                        {item.name} ({item.count})
+                      </Link>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={`d-${item.data.id}`}>
+                    <Link href={`/doa/${item.slug}`} className="hover:underline">
+                      {item.data.nama}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         ))}
       </div>
     );

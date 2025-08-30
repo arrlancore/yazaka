@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, Share2, Copy, Check } from "lucide-react";
+import { ArrowLeft, Share2, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { DoaGroup } from "@/types/doa";
+import DoaCard from "@/components/doa/DoaCard";
 
 interface DoaGroupDetailProps {
   group: DoaGroup;
@@ -112,70 +113,7 @@ const DoaGroupDetail: React.FC<DoaGroupDetailProps> = ({ group }) => {
 
         {/* All Doa Items */}
         {group.items.map((doa, index) => (
-          <Card key={doa.id} className="border-l-4 border-l-muted">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Badge variant="outline" className="text-lg font-bold min-w-[40px] justify-center">
-                      {index + 1}
-                    </Badge>
-                    <h2 className="text-xl font-bold">{doa.nama}</h2>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {doa.tag.map((tag, tagIndex) => (
-                      <Badge key={tagIndex} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-6">
-              {/* Arabic Text */}
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <p 
-                  className="text-right text-3xl leading-loose" 
-                  dir="rtl"
-                  style={{ fontFamily: "'Uthmanic Hafs', Arial" }}
-                >
-                  {doa.ar}
-                </p>
-              </div>
-
-              {/* Transliteration */}
-              <div className="p-4 border rounded-lg">
-                <h4 className="text-sm font-semibold text-muted-foreground mb-2">Bacaan Latin:</h4>
-                <p className="text-lg italic leading-relaxed">
-                  {doa.tr}
-                </p>
-              </div>
-
-              {/* Indonesian Translation */}
-              <div className="p-4 bg-primary/5 rounded-lg">
-                <h4 className="text-sm font-semibold text-muted-foreground mb-2">Artinya:</h4>
-                <p className="text-lg leading-relaxed">
-                  {doa.idn}
-                </p>
-              </div>
-
-              {/* Source and Reference */}
-              {doa.tentang && (
-                <details className="p-4 border rounded-lg">
-                  <summary className="cursor-pointer font-semibold text-sm text-muted-foreground hover:text-foreground">
-                    Dalil & Keterangan
-                  </summary>
-                  <div className="mt-3 prose prose-sm dark:prose-invert max-w-none">
-                    <p className="leading-relaxed whitespace-pre-line text-sm">
-                      {doa.tentang}
-                    </p>
-                  </div>
-                </details>
-              )}
-            </CardContent>
-          </Card>
+          <DoaCard key={doa.id} index={index + 1} doa={doa} />
         ))}
 
         {/* Copy All Button */}

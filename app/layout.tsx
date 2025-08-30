@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import localFont from "next/font/local";
+import { Scheherazade_New, Noto_Naskh_Arabic } from "next/font/google";
 import "./globals.css";
 import {
   appTitle,
@@ -55,6 +56,20 @@ export const metadata: Metadata = {
   },
 };
 
+const scheherazade = Scheherazade_New({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  variable: "--font-scheherazade",
+  display: "swap",
+});
+
+const notoNaskh = Noto_Naskh_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  variable: "--font-noto-naskh",
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,7 +80,7 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
       </head>
-      <body>
+      <body className={`${scheherazade.variable} ${notoNaskh.variable}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

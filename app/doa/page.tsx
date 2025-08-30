@@ -5,8 +5,6 @@ import DoaHeader from "@/components/doa/DoaHeader";
 import DoaTabs from "@/components/doa/DoaTabs";
 import { Metadata } from "next";
 import { appLocale, appUrl, brandName } from "@/config";
-import { renderMd } from "@/hooks/common";
-import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Doa dan Dzikir | Kumpulan Doa Harian dan Situasional",
@@ -47,30 +45,7 @@ export const metadata: Metadata = {
   ],
 };
 
-const introContent = `
-    # Kumpulan Doa dan Dzikir 🤲
-
-    ## Bismillah, Assalamu'alaikum Warahmatullahi Wabarakatuh
-
-    Alhamdulillah, kami hadirkan kumpulan doa dan dzikir untuk membantu Anda dalam berbagai situasi kehidupan sehari-hari. Semoga dapat mendekatkan kita kepada Allah SWT dan memudahkan dalam mengamalkan sunnah Rasulullah SAW.
-
-    ## Fitur-fitur Doa
-
-    - 🤲 Kumpulan 227+ doa dan dzikir lengkap
-    - 📖 Teks Arab dengan harakat yang jelas
-    - 🔤 Transliterasi latin untuk memudahkan bacaan
-    - 📝 Terjemahan bahasa Indonesia
-    - 📚 Dalil hadith dan referensi yang shahih
-    - 🔍 Pencarian cerdas berdasarkan situasi
-    - ⭐ Favorit untuk doa yang sering dibaca
-
-    Mari kita perbanyak berdo'a dan berdzikir kepada Allah SWT. Semoga bermanfaat dan mendatangkan keberkahan dalam hidup kita.
-
-    Jazakumullahu Khairan.
-    `;
-
 const DoaPage = async () => {
-  const intro = await renderMd(introContent);
   
   return (
     <>
@@ -78,13 +53,6 @@ const DoaPage = async () => {
       <main className="max-w-2xl mx-auto mb-8">
         <DoaHeader />
         <DoaTabs />
-        {intro && (
-          <Card className="p-8 my-12 container max-w-3xl">
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              {intro}
-            </div>
-          </Card>
-        )}
       </main>
       <Footer />
     </>

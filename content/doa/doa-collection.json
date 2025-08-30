@@ -3327,6 +3327,62 @@
     "tag": [
       "petang"
     ]
-  }
+  },
+    {
+      "id": 276,
+      "grup": "Doa Berkaitan dengan Masjid",
+      "nama": "Doa Masuk Masjid",
+      "ar": "اللَّهُمَّ افْتَحْ لِى أَبْوَابَ رَحْمَتِكَ",
+      "tr": "Allahumma iftah li abwaba rahmatik",
+      "idn": "Ya Allah, bukakanlah untukku pintu-pintu rahmat-Mu.",
+      "tentang": "HR. Muslim 713",
+      "tag": [
+        "masjid",
+        "masuk masjid",
+        "ibadah"
+      ]
+    },
+    {
+      "id": 277,
+      "grup": "Doa Berkaitan dengan Masjid",
+      "nama": "Doa Keluar Masjid",
+      "ar": "اللَّهُمَّ إِنِّى أَسْأَلُكَ مِنْ فَضْلِكَ",
+      "tr": "Allahumma inni as'aluka min fadlik",
+      "idn": "Ya Allah, sesungguhnya aku memohon kepada-Mu sebagian dari karunia-Mu.",
+      "tentang": "HR. Muslim 713",
+      "tag": [
+        "masjid",
+        "keluar masjid",
+        "ibadah"
+      ]
+    },
+    {
+      "id": 278,
+      "grup": "Doa Malam Hari",
+      "nama": "Dzikir Sebelum Tidur",
+      "ar": "سُبْحَانَ اللَّهِ (33x)\nالْحَمْدُ لِلَّهِ (33x)\nاللَّهُ أَكْبَرُ (34x)",
+      "tr": "Subhanallah (33x)\nAlhamdulillah (33x)\nAllahu Akbar (34x)",
+      "idn": "Maha Suci Allah (33x)\nSegala puji bagi Allah (33x)\nAllah Maha Besar (34x)",
+      "tentang": "HR. Bukhari dan Muslim",
+      "tag": [
+        "malam",
+        "tidur",
+        "dzikir"
+      ]
+    },
+    {
+      "id": 279,
+      "grup": "Doa Khusus",
+      "nama": "Doa Saat Kesulitan & Kesedihan",
+      "ar": "لاَ إِلَهَ إِلاَّ اللَّهُ الْعَظِيمُ الْحَلِيمُ لاَ إِلَهَ إِلاَّ اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ لاَ إِلَهَ إِلاَّ اللَّهُ رَبُّ السَّمَوَاتِ وَرَبُّ الأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ",
+      "tr": "La ilaha illallahul 'azhimul halim, la ilaha illallahu robbul 'arsyil 'azhim, la ilaha illallahu robbus samawati wa robbul ardhi wa robbul 'arsyil karim",
+      "idn": "Tidak ada Tuhan yang berhak disembah selain Allah Yang Mahaagung lagi Maha Penyantun. Tidak ada Tuhan yang berhak disembah selain Allah, Tuhan pemilik Arsy yang agung. Tidak ada Tuhan yang berhak disembah selain Allah, Tuhan pemilik langit dan bumi dan Tuhan pemilik Arsy yang mulia.",
+      "tentang": "HR. Bukhari dan Muslim",
+      "tag": [
+        "kesulitan",
+        "kesedihan",
+        "masalah"
+      ]
+    }
   ]
 }
