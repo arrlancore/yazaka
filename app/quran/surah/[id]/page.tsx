@@ -3,6 +3,10 @@ import Footer from "@/components/footer";
 import SurahDetail, { SurahDetailProps } from "@/components/surah-detail";
 import { fetchQuranSuratByNumber } from "@/services/quranServices";
 import { appLocale, appUrl, brandName } from "@/config";
+import MobilePage from "@/components/ui/mobile-page";
+import HeaderMobilePage from "@/components/ui/header-mobile-page";
+import { Button } from "@/components/ui/button";
+import { Book } from "lucide-react";
 
 const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
   return {
@@ -76,12 +80,33 @@ async function SurahDetailPage({ params }: PageProps) {
   const surahDetail: SurahDetailResponse = await fetchQuranSuratByNumber(
     parseInt(number)
   );
+
+  const surah = surahDetail.data;
+
   return (
     <>
-      <main className="max-w-2xl mx-auto mb-8">
+      <MobilePage>
+        <HeaderMobilePage
+          title={`${surah.number}. ${surah.name.transliteration.id}`}
+          subtitle={`${surah.name.short} • ${surah.name.translation.id}`}
+          backUrl="/quran"
+          rightContent={
+            <>
+              <div className="text-xs opacity-80">
+                {surah.revelation.id} • {surah.numberOfVerses} Ayat
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full hover:bg-white/20"
+              >
+                <Book size={16} />
+              </Button>
+            </>
+          }
+        />
         <SurahDetail {...mapToSurahDetail(surahDetail.data)} />
-      </main>
-      <Footer />
+      </MobilePage>
     </>
   );
 }
