@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { typography } from "@/lib/typography";
 
 interface PopularSurahsSectionProps {
   topSurahs: {
@@ -21,7 +22,7 @@ const PopularSurahsSection: React.FC<PopularSurahsSectionProps> = ({
   return (
     <Card className="mb-4 bg-gradient-to-r from-primary/5 to-primary-light/5 border-none shadow-none rounded-none sm:rounded-2xl sm:border sm:shadow-sm">
       <CardContent className="p-4">
-        <h3 className="text-sm font-medium text-muted-foreground mb-2">
+        <h3 className={cn(typography.label, "text-muted-foreground mb-2")}>
           Sering dibaca:
         </h3>
         <div className="flex items-center justify-between p-3 rounded-lg bg-card hover:bg-primary/5 transition-all duration-300">

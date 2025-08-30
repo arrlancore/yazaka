@@ -13,6 +13,8 @@ import {
 } from "./prayer-icons";
 import { usePrayerTimesGlobal } from "@/hooks/usePrayerTimes";
 import { useLocationWithName } from "@/hooks/useLocationWithName";
+import { typography } from "@/lib/typography";
+import { iconSizes } from "@/lib/icons";
 
 const PrayerTimesCompact = () => {
   const { location, locationName } = useLocationWithName({});
@@ -33,9 +35,9 @@ const PrayerTimesCompact = () => {
         {/* Header */}
         <div className="bg-gradient-to-r from-primary to-primary-light p-0 sm:p-1 text-primary-foreground">
           {locationName && (
-            <div className="flex items-center justify-center text-xs space-x-1 py-1">
-              <MapPin size={10} className="text-secondary" />
-              <span className="text-center">{locationName}</span>
+            <div className="flex items-center justify-center space-x-1 py-1">
+              <MapPin size={iconSizes.xs} className="text-secondary" />
+              <span className={`${typography.caption} text-center text-secondary`}>{locationName}</span>
             </div>
           )}
 
@@ -49,7 +51,8 @@ const PrayerTimesCompact = () => {
               >
                 <span
                   className={cn(
-                    "text-xs font-normal text-center text-secondary",
+                    typography.caption.replace('text-muted-foreground', 'text-secondary'),
+                    "font-normal text-center",
                     nextPrayer?.name === name
                       ? "font-bold opacity-100"
                       : "opacity-80"
@@ -59,7 +62,8 @@ const PrayerTimesCompact = () => {
                 </span>
                 <span
                   className={cn(
-                    "text-sm text-center text-secondary",
+                    typography.bodySmall.replace('text-muted-foreground', 'text-secondary'),
+                    "text-center",
                     nextPrayer?.name === name
                       ? "font-bold opacity-100"
                       : "opacity-80"

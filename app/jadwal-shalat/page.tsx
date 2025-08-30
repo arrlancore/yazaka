@@ -69,15 +69,17 @@ export default async function JadwalShalatPage() {
   const intro = await renderMd(introContent);
 
   return (
-    <main className="sm:container flex flex-col sm:gap-4 py-4 px-4 md:px-0">
-      <PrayerTimes />
+    <main className="flex flex-col pb-4">
+      <div className="px-0 sm:container sm:px-4">
+        <PrayerTimes />
+      </div>
       {intro && (
-        <Card className="p-8 my-12 container max-w-md">
+        <Card className="p-8 my-12 mx-4 border-none shadow-none rounded-none sm:container sm:mx-auto sm:max-w-md sm:border sm:shadow-sm sm:rounded-2xl">
           <div className="prose prose-lg dark:prose-invert max-w-none">
             {intro}
           </div>
-          </Card>
-        )}
-      </main>
+        </Card>
+      )}
+    </main>
   );
 }

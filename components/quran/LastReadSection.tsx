@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Book } from "lucide-react";
 import { useQuranLastRead } from "@/hooks/useQuranLastRead";
 import Link from "next/link";
+import { typography } from "@/lib/typography";
+import { iconSizes } from "@/lib/icons";
 
 const LastReadSection = () => {
   const { lastRead } = useQuranLastRead();
@@ -17,17 +19,17 @@ const LastReadSection = () => {
     <Card className="mb-4 bg-gradient-to-r rounded-none border-none shadow-none from-primary/5 to-primary-light/5 sm:rounded-2xl sm:border sm:shadow-sm">
       <CardContent className="p-4">
         <div className="mb-4">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">
+          <h3 className={`${typography.label} text-muted-foreground mb-2`}>
             Terakhir dibaca:
           </h3>
           <div className="flex items-center justify-between p-3 rounded-lg bg-card hover:bg-primary/5 transition-all duration-300">
             <div className="flex items-center space-x-3">
-              <Book className="text-primary" size={24} />
+              <Book className="text-primary" size={iconSizes.card} />
               <div>
-                <div className="text-lg font-semibold">
+                <div className={typography.large}>
                   {lastRead.surahName}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className={typography.muted}>
                   Ayat {lastRead.ayatNumber}
                 </div>
               </div>

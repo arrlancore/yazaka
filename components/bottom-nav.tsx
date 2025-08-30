@@ -10,6 +10,7 @@ import {
   Heart,
   GraduationCap,
 } from "lucide-react";
+import { iconSizes } from "@/lib/icons";
 
 const navItems = [
   {
@@ -79,13 +80,23 @@ export default function BottomNav() {
             return (
               <Link key={item.href} href={item.href}>
                 <motion.div
-                  whileTap={{ scale: 0.95 }}
+                  whileTap={{ 
+                    scale: 0.9,
+                    transition: { duration: 0.1 }
+                  }}
+                  whileHover={{ scale: 1.05 }}
                   className={cn(
                     "flex flex-col items-center justify-center",
                     "px-3 py-2 rounded-xl min-w-[60px]",
                     "transition-all duration-200",
                     active ? item.activeBg : "hover:bg-muted/50"
                   )}
+                  onTap={() => {
+                    // Add haptic feedback for mobile devices
+                    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+                      navigator.vibrate(50);
+                    }
+                  }}
                 >
                   <motion.div
                     animate={{
@@ -99,8 +110,9 @@ export default function BottomNav() {
                     }}
                   >
                     <Icon 
+                      size={iconSizes.nav}
                       className={cn(
-                        "w-5 h-5 mb-1 transition-colors",
+                        "mb-1 transition-colors",
                         active 
                           ? item.activeColor 
                           : "text-muted-foreground"

@@ -46,9 +46,11 @@ export const metadata: Metadata = {
 const DoaPage = async () => {
   
   return (
-    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
+    <main className="flex flex-col pb-4">
       <DoaHeader />
-      <DoaTabs />
+      <div className="px-4 space-y-4 sm:container sm:px-0 sm:max-w-2xl sm:mx-auto">
+        <DoaTabs />
+      </div>
     </main>
   );
 };

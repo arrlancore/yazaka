@@ -11,6 +11,7 @@ import {
   brandName,
 } from "@/config";
 import QuranLastRead from "@/components/quran-last-read";
+import HomepageWrapper from "@/components/homepage-wrapper";
 
 export const metadata: Metadata = {
   title: appSlogan + " | " + brandName,
@@ -52,14 +53,16 @@ export const metadata: Metadata = {
 
 export default function LandingPage() {
   return (
-    <main className="flex flex-col pb-4">
-      <NextPrayer />
-      <PrayerTimesCompact />
-      <div className="px-4 space-y-4 sm:container sm:px-0">
-        <AppList />
-        <TaskTracker />
-        <QuranLastRead />
-      </div>
-    </main>
+    <HomepageWrapper>
+      <main className="flex flex-col pb-4">
+        <NextPrayer />
+        <PrayerTimesCompact />
+        <div className="px-4 space-y-4 sm:container sm:px-0">
+          <AppList />
+          <TaskTracker />
+          <QuranLastRead />
+        </div>
+      </main>
+    </HomepageWrapper>
   );
 }

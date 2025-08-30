@@ -2,6 +2,9 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import TapFeedback from "@/components/ui/tap-feedback";
+import { typography } from "@/lib/typography";
+import { iconSizes } from "@/lib/icons";
 
 interface Surah {
   number: number;
@@ -24,25 +27,25 @@ const SurahList: React.FC<SurahListProps> = ({ surahs }) => {
               href={`/quran/surah/${surah.number}_${encodeURIComponent(surah.name)}`}
               key={surah.number}
             >
-              <div className="flex justify-between items-center p-4 border-b border-border hover:bg-primary/5 transition-colors">
+              <TapFeedback className="flex justify-between items-center p-4 border-b border-border hover:bg-primary/5 transition-colors cursor-pointer">
                 <div className="flex items-center space-x-4">
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center font-semibold text-primary">
                     {surah.number}
                   </div>
                   <div>
-                    <h2 className="font-semibold">{surah.name}</h2>
-                    <p className="text-sm text-muted-foreground">
+                    <h2 className={typography.h5}>{surah.name}</h2>
+                    <p className={typography.muted}>
                       {surah.arabicName}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground">
+                  <span className={typography.muted}>
                     {surah.totalVerses} Ayat
                   </span>
-                  <ChevronRight size={16} className="text-primary" />
+                  <ChevronRight size={iconSizes.sm} className="text-primary" />
                 </div>
-              </div>
+              </TapFeedback>
             </Link>
           ))}
         </div>

@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { typography } from "@/lib/typography";
+import { iconSizes } from "@/lib/icons";
 
 const QuranHeader = () => {
   return (
@@ -20,17 +22,17 @@ const QuranHeader = () => {
               size="icon"
               className="rounded-full hover:bg-white/20"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={iconSizes.nav} />
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold">Al-Qur'an</h1>
+          <h1 className={typography.h2}>Al-Qur'an</h1>
         </div>
         <Button
           variant="ghost"
           size="icon"
           className="rounded-full hover:bg-white/20"
         >
-          <Search size={20} />
+          <Search size={iconSizes.nav} />
         </Button>
       </div>
     </div>

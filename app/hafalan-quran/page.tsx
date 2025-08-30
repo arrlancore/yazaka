@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { renderMd } from "@/hooks/common";
 import { Card } from "@/components/ui/card";
-import HafalanQuran from "@/components/HafalanQuran";
+import LazyHafalanQuran from "@/components/lazy/LazyHafalanQuran";
 import { appLocale, appUrl, brandName } from "@/config";
 
 export const metadata: Metadata = {
@@ -67,10 +67,10 @@ async function HafalanQuranPage() {
   const intro = await renderMd(introContent);
 
   return (
-    <main className="max-w-2xl mx-auto mb-8 px-4 md:px-0">
-      <HafalanQuran />
+    <main className="flex flex-col pb-4">
+      <LazyHafalanQuran />
       {intro && (
-        <Card className="p-8 my-12 container max-w-xl">
+        <Card className="p-8 my-12 mx-4 border-none shadow-none rounded-none sm:container sm:mx-auto sm:max-w-xl sm:border sm:shadow-sm sm:rounded-2xl">
           <div className="prose prose-lg dark:prose-invert max-w-none">
             {intro}
           </div>

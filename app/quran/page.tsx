@@ -8,6 +8,7 @@ import { Metadata } from "next";
 import { appLocale, appUrl, brandName } from "@/config";
 import { renderMd } from "@/hooks/common";
 import { Card } from "@/components/ui/card";
+import QuranPageWrapper from "@/components/quran/quran-page-wrapper";
 
 export const metadata: Metadata = {
   title: "Al-Quran Online | Baca dan Pelajari Al-Quran dengan Mudah",
@@ -73,21 +74,23 @@ const introContent = `
 const QuranPage = async () => {
   const intro = await renderMd(introContent);
   return (
-    <main className="flex flex-col pb-4">
-      <QuranHeader />
-      <div className="px-4 space-y-4 sm:container sm:px-0 sm:max-w-2xl sm:mx-auto">
-        <LastReadSection />
-        <PopularSurahsSection topSurahs={topSurahs} />
-        <SurahList surahs={surahsBahasa} />
-        {intro && (
-          <Card className="p-8 my-12 border-none shadow-none rounded-none sm:border sm:shadow-sm sm:rounded-2xl">
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              {intro}
-            </div>
-          </Card>
-        )}
-      </div>
-    </main>
+    <QuranPageWrapper>
+      <main className="flex flex-col pb-4">
+        <QuranHeader />
+        <div className="px-4 space-y-4 sm:container sm:px-0 sm:max-w-2xl sm:mx-auto">
+          <LastReadSection />
+          <PopularSurahsSection topSurahs={topSurahs} />
+          <SurahList surahs={surahsBahasa} />
+          {intro && (
+            <Card className="p-8 my-12 border-none shadow-none rounded-none sm:border sm:shadow-sm sm:rounded-2xl">
+              <div className="prose prose-lg dark:prose-invert max-w-none">
+                {intro}
+              </div>
+            </Card>
+          )}
+        </div>
+      </main>
+    </QuranPageWrapper>
   );
 };
 
