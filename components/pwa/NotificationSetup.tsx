@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bell, BellOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { Bell, BellOff, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { notificationManager, NotificationPreferences } from '@/lib/pwa/notifications';
+import { useOneSignal } from './OneSignalProvider';
 import { cn } from '@/lib/utils';
 
 interface NotificationSetupProps {
@@ -19,6 +20,16 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
   const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSyncingToServer, setIsSyncingToServer] = useState(false);
+  
+  const { 
+    isInitialized, 
+    playerId, 
+    isSubscribed, 
+    subscribeUser, 
+    unsubscribeUser, 
+    updateUserPreferences 
+  } = useOneSignal();
 
   useEffect(() => {
     if (notificationManager.isSupported()) {
@@ -29,20 +40,31 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
 
   const handleRequestPermission = async () => {
     setIsRequesting(true);
+    setIsSyncingToServer(true);
     
     try {
+      // First, request notification permission through the legacy manager
       const result = await notificationManager.requestPermission();
       setPermission(result);
       
       if (result === 'granted') {
-        setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 3000);
-        onPermissionChanged?.(true);
+        // Subscribe user to OneSignal
+        const oneSignalPlayerId = await subscribeUser();
+        
+        if (oneSignalPlayerId) {
+          // Sync to server with current preferences
+          await syncPreferencesToServer(oneSignalPlayerId, preferences);
+          
+          setShowSuccess(true);
+          setTimeout(() => setShowSuccess(false), 3000);
+          onPermissionChanged?.(true);
+        }
       }
     } catch (error) {
       console.error('Error requesting permission:', error);
     } finally {
       setIsRequesting(false);
+      setIsSyncingToServer(false);
     }
   };
 
@@ -54,11 +76,116 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
     }
   };
 
-  const updatePreference = (key: keyof NotificationPreferences, value: any) => {
+  // Get user location for prayer time calculation
+  const getUserLocation = async (): Promise<{ latitude: number; longitude: number } | null> => {
+    if (!navigator.geolocation) {
+      console.warn('Geolocation not supported');
+      return null;
+    }
+
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.warn('Error getting location:', error);
+          // Fallback to Jakarta coordinates
+          resolve({
+            latitude: -6.200000,
+            longitude: 106.816666
+          });
+        },
+        { timeout: 10000, enableHighAccuracy: false }
+      );
+    });
+  };
+
+  // Sync preferences to server
+  const syncPreferencesToServer = async (oneSignalPlayerId: string, prefs: NotificationPreferences | null) => {
+    if (!prefs) return;
+    
+    try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const location = await getUserLocation();
+      
+      if (!location) {
+        throw new Error('Unable to get user location for prayer time calculation');
+      }
+      
+      // Sync to server database with location
+      const response = await fetch('/api/notifications/onesignal/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          playerId: oneSignalPlayerId,
+          preferences: prefs,
+          timezone,
+          latitude: location.latitude,
+          longitude: location.longitude
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to sync preferences to server');
+      }
+
+      // Update OneSignal user properties
+      await updateUserPreferences({
+        ...prefs,
+        timezone
+      });
+      
+      console.log('Preferences synced to server successfully');
+    } catch (error) {
+      console.error('Error syncing preferences to server:', error);
+    }
+  };
+
+  const updatePreference = async (key: keyof NotificationPreferences, value: any) => {
     if (!preferences) return;
+    
     const newPreferences = { ...preferences, [key]: value };
     setPreferences(newPreferences);
     notificationManager.updatePreferences({ [key]: value });
+
+    // If OneSignal is subscribed, sync to server
+    if (playerId && isSubscribed) {
+      setIsSyncingToServer(true);
+      try {
+        await syncPreferencesToServer(playerId, newPreferences);
+      } catch (error) {
+        console.error('Error updating preferences on server:', error);
+      } finally {
+        setIsSyncingToServer(false);
+      }
+    }
+  };
+
+  const handleUnsubscribe = async () => {
+    if (!playerId) return;
+    
+    setIsSyncingToServer(true);
+    try {
+      // Unsubscribe from OneSignal
+      await unsubscribeUser();
+      
+      // Notify server
+      await fetch('/api/notifications/onesignal/unsubscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playerId })
+      });
+      
+      console.log('Successfully unsubscribed from prayer notifications');
+    } catch (error) {
+      console.error('Error unsubscribing:', error);
+    } finally {
+      setIsSyncingToServer(false);
+    }
   };
 
   if (!notificationManager.isSupported()) {
@@ -97,32 +224,53 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
               </p>
             </div>
             <div className="flex items-center gap-2">
+              {isSyncingToServer && (
+                <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+              )}
               {permission === 'granted' && (
                 <CheckCircle className="w-5 h-5 text-green-500" />
               )}
               {permission === 'denied' && (
                 <AlertCircle className="w-5 h-5 text-red-500" />
               )}
-              <span className={cn(
-                "text-sm font-medium",
-                permission === 'granted' && "text-green-600",
-                permission === 'denied' && "text-red-600",
-                permission === 'default' && "text-orange-600"
-              )}>
-                {permission === 'granted' && 'Diizinkan'}
-                {permission === 'denied' && 'Ditolak'}
-                {permission === 'default' && 'Belum Diatur'}
-              </span>
+              <div className="text-right">
+                <span className={cn(
+                  "text-sm font-medium block",
+                  permission === 'granted' && "text-green-600",
+                  permission === 'denied' && "text-red-600",
+                  permission === 'default' && "text-orange-600"
+                )}>
+                  {permission === 'granted' && 'Diizinkan'}
+                  {permission === 'denied' && 'Ditolak'}
+                  {permission === 'default' && 'Belum Diatur'}
+                </span>
+                {isSubscribed && playerId && (
+                  <span className="text-xs text-muted-foreground">
+                    OneSignal Aktif
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
           {permission !== 'granted' && (
             <Button 
               onClick={handleRequestPermission}
-              disabled={isRequesting}
+              disabled={isRequesting || isSyncingToServer}
               className="w-full"
             >
-              {isRequesting ? 'Meminta Izin...' : 'Izinkan Notifikasi'}
+              {isRequesting ? 'Mengatur Notifikasi...' : 'Izinkan Notifikasi'}
+            </Button>
+          )}
+
+          {permission === 'granted' && isSubscribed && playerId && (
+            <Button 
+              variant="outline"
+              onClick={handleUnsubscribe}
+              disabled={isSyncingToServer}
+              className="w-full"
+            >
+              {isSyncingToServer ? 'Menonaktifkan...' : 'Nonaktifkan Notifikasi Push'}
             </Button>
           )}
 

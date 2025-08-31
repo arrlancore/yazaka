@@ -1,6 +1,9 @@
 // Service Worker for Bekhair PWA
 // Provides offline functionality for Quran reading and prayer times
 
+// Import OneSignal SDK Worker for push notifications
+importScripts('https://cdn.onesignal.com/sdks/OneSignalSDKWorker.js');
+
 const CACHE_NAME = 'bekhair-v1.1.2';
 const STATIC_CACHE_NAME = 'bekhair-static-v1.1.2';
 const DYNAMIC_CACHE_NAME = 'bekhair-dynamic-v1.1.2';

@@ -22,6 +22,7 @@ export interface NotificationPreferences {
 export class PrayerNotificationManager {
   private storageKey = 'bekhair-notifications';
   private preferences: NotificationPreferences;
+  private oneSignalPlayerId: string | null = null;
 
   constructor() {
     this.preferences = this.loadPreferences();
@@ -319,6 +320,184 @@ export class PrayerNotificationManager {
         tag: 'test-notification'
       }
     );
+  }
+
+  /**
+   * Set OneSignal Player ID for server sync
+   */
+  setOneSignalPlayerId(playerId: string | null): void {
+    this.oneSignalPlayerId = playerId;
+  }
+
+  /**
+   * Get OneSignal Player ID
+   */
+  getOneSignalPlayerId(): string | null {
+    return this.oneSignalPlayerId;
+  }
+
+  /**
+   * Sync preferences to server (for OneSignal integration)
+   */
+  async syncPreferencesToDatabase(): Promise<boolean> {
+    if (!this.oneSignalPlayerId) {
+      console.warn('No OneSignal Player ID available for sync');
+      return false;
+    }
+
+    try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      
+      const response = await fetch('/api/notifications/onesignal/preferences', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          playerId: this.oneSignalPlayerId,
+          preferences: this.preferences,
+          timezone
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to sync preferences: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Preferences synced to database successfully:', result);
+      return true;
+    } catch (error) {
+      console.error('Error syncing preferences to database:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Load preferences from server (for OneSignal integration)
+   */
+  async loadPreferencesFromDatabase(): Promise<NotificationPreferences | null> {
+    if (!this.oneSignalPlayerId) {
+      console.warn('No OneSignal Player ID available for loading');
+      return null;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/notifications/onesignal/preferences?playerId=${this.oneSignalPlayerId}`,
+        { method: 'GET' }
+      );
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.log('No server preferences found, using local preferences');
+          return null;
+        }
+        throw new Error(`Failed to load preferences: ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (result.success && result.subscription) {
+        const serverPrefs = result.subscription.preferences;
+        
+        // Map server metadata to local preferences format
+        const loadedPreferences: NotificationPreferences = {
+          enabled: result.subscription.enabled,
+          prayerReminders: serverPrefs.reminderEnabled ?? true,
+          reminderMinutes: Math.abs(serverPrefs.prayerTimeScheduleAdjustment || 10),
+          sound: serverPrefs.playSound ?? true,
+          vibrate: serverPrefs.enableVibration ?? true
+        };
+
+        console.log('Preferences loaded from database:', loadedPreferences);
+        return loadedPreferences;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error loading preferences from database:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Subscribe to OneSignal Journey for prayer notifications
+   */
+  async subscribeToJourney(): Promise<boolean> {
+    if (!this.oneSignalPlayerId) {
+      console.warn('No OneSignal Player ID available for Journey subscription');
+      return false;
+    }
+
+    try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      
+      const response = await fetch('/api/notifications/onesignal/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          playerId: this.oneSignalPlayerId,
+          preferences: this.preferences,
+          timezone
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to subscribe to Journey: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Successfully subscribed to OneSignal Journey:', result);
+      return true;
+    } catch (error) {
+      console.error('Error subscribing to OneSignal Journey:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Unsubscribe from OneSignal Journey
+   */
+  async unsubscribeFromJourney(): Promise<boolean> {
+    if (!this.oneSignalPlayerId) {
+      console.warn('No OneSignal Player ID available for Journey unsubscription');
+      return false;
+    }
+
+    try {
+      const response = await fetch('/api/notifications/onesignal/unsubscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          playerId: this.oneSignalPlayerId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to unsubscribe from Journey: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Successfully unsubscribed from OneSignal Journey:', result);
+      return true;
+    } catch (error) {
+      console.error('Error unsubscribing from OneSignal Journey:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Enhanced schedule method that works with both local and OneSignal notifications
+   */
+  async scheduleEnhancedPrayerNotifications(
+    prayerTimes: PrayerTimeNotification[], 
+    useOneSignal: boolean = false
+  ): Promise<void> {
+    // Always schedule local notifications for active app
+    await this.schedulePrayerNotifications(prayerTimes);
+
+    // If OneSignal is enabled and available, ensure Journey subscription
+    if (useOneSignal && this.oneSignalPlayerId && this.preferences.enabled && this.preferences.prayerReminders) {
+      await this.subscribeToJourney();
+    }
   }
 
   /**
