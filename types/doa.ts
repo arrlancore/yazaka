@@ -1,7 +1,8 @@
 export interface DoaItem {
-  id: number;
-  grup: string;
+  slug: string;        // Primary key (filename-based)
   nama: string;
+  grup: string;
+  order: number;       // Position within group for consistent ordering
   ar: string;
   tr: string;
   idn: string;

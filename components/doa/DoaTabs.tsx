@@ -5,21 +5,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import DoaList from "./DoaList";
 import SearchBar from "./SearchBar";
-import { DoaTabType } from "@/types/doa";
-import { categorizeDoaForTabs, getFavoriteDoa, getFavoriteGroups } from "@/services/doaServices";
+import { DoaTabType, DoaItem } from "@/types/doa";
+import { getFavoriteIds } from "@/lib/doa-client-utils";
 
-const DoaTabs = () => {
+interface DoaTabsProps {
+  initialDoaByTabs: Record<DoaTabType, DoaItem[]>;
+}
+
+const DoaTabs: React.FC<DoaTabsProps> = ({ initialDoaByTabs }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<DoaTabType>("sehari-hari");
+  const [doaByTabs, setDoaByTabs] = useState(initialDoaByTabs);
   
-  const doaByTabs = categorizeDoaForTabs();
-  const [favorites, setFavorites] = useState(getFavoriteDoa());
-  const [favoriteGroups, setFavoriteGroups] = useState(getFavoriteGroups());
+  // Update favorites from localStorage
+  const updateFavorites = () => {
+    const favoriteSlugs = new Set(getFavoriteIds());
+    const updatedTabs = { ...initialDoaByTabs };
+    updatedTabs.favorit = initialDoaByTabs.semua.filter(doa => favoriteSlugs.has(doa.slug));
+    setDoaByTabs(updatedTabs);
+  };
 
   useEffect(() => {
+    // Initialize favorites on mount
+    updateFavorites();
+    
+    // Listen for favorite changes
     const handler = () => {
-      setFavorites(getFavoriteDoa());
-      setFavoriteGroups(getFavoriteGroups());
+      updateFavorites();
     };
     if (typeof window !== 'undefined') {
       window.addEventListener('doa-favorites-changed' as any, handler);
@@ -29,7 +41,7 @@ const DoaTabs = () => {
         window.removeEventListener('doa-favorites-changed' as any, handler);
       }
     };
-  }, []);
+  }, [initialDoaByTabs]);
 
   return (
     <Card className="p-4 border-0 shadow-none">
@@ -68,10 +80,9 @@ const DoaTabs = () => {
         
         <TabsContent value="favorit" className="mt-4">
           <DoaList 
-            doaList={favorites} 
+            doaList={doaByTabs.favorit} 
             searchQuery={searchQuery}
             tabType="favorit"
-            favoriteGroups={favoriteGroups}
           />
         </TabsContent>
       </Tabs>

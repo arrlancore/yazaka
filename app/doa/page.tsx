@@ -6,6 +6,7 @@ import MobilePage from "@/components/ui/mobile-page";
 import HeaderMobilePage from "@/components/ui/header-mobile-page";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { categorizeDoaForTabs } from "@/services/doaServices";
 
 export const metadata: Metadata = {
   title: "Doa dan Dzikir | Kumpulan Doa Harian dan Situasional",
@@ -47,6 +48,9 @@ export const metadata: Metadata = {
 };
 
 const DoaPage = async () => {
+  // Fetch data on server side
+  const doaByTabs = await categorizeDoaForTabs();
+
   return (
     <MobilePage>
       <HeaderMobilePage
@@ -63,7 +67,7 @@ const DoaPage = async () => {
         }
       />
      
-          <DoaTabs />
+      <DoaTabs initialDoaByTabs={doaByTabs} />
         
     </MobilePage>
   );

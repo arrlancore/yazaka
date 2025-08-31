@@ -1,45 +1,57 @@
 import { DoaApiResponse, DoaItem, DoaCategory, DoaTabType, DoaSearchResult, DoaTimelineSection } from "@/types/doa";
-import doaData from "@/content/doa/doa-collection.json";
-import Fuse from "fuse.js";
-import { populateContextMap, naturalLanguageKeywords } from "@/lib/doaContextMap";
+import { 
+  getAllDoa as getAllDoaFromMDX,
+  getDoaByGroup as getDoaByGroupFromMDX,
+  searchDoa as searchDoaFromMDX,
+  getDoaGroups as getDoaGroupsFromMDX,
+  generateDoaSlug,
+  generateGroupSlug,
+  getDoaBySlug as getDoaBySlugFromMDX
+} from "@/lib/doa-utils";
+import { 
+  getFavoriteIds, 
+  setFavoriteIds,
+  getFavoriteGroupSlugs,
+  setFavoriteGroupSlugs,
+  isGroupFavorite,
+  toggleFavoriteGroup
+} from "@/lib/doa-client-utils";
+import { sehariHariMapping } from "@/lib/doa-mapping";
+// Removed unused imports: Fuse, populateContextMap, naturalLanguageKeywords
 
-// Static data access - no API calls needed
-export const getAllDoa = (): DoaItem[] => {
-  const data = doaData as DoaApiResponse;
-  return data.data;
+// MDX-based data access
+export const getAllDoa = async (): Promise<DoaItem[]> => {
+  return await getAllDoaFromMDX();
 };
 
-export const getDoaById = (id: number): DoaItem | undefined => {
-  const allDoa = getAllDoa();
-  return allDoa.find((doa) => doa.id === id);
+
+export const getDoaByGroup = async (groupName: string): Promise<DoaItem[]> => {
+  return await getDoaByGroupFromMDX(groupName);
 };
 
-export const getDoaByGroup = (groupName: string): DoaItem[] => {
-  const allDoa = getAllDoa();
-  return allDoa.filter((doa) => doa.grup === groupName);
-};
 
 // Categorize doa for different tabs
-export const categorizeDoaForTabs = (): Record<DoaTabType, DoaItem[]> => {
-  const allDoa = getAllDoa();
+export const categorizeDoaForTabs = async (): Promise<Record<DoaTabType, DoaItem[]>> => {
+  const allDoa = await getAllDoa();
 
-  // Daily routine doa (sehari-hari) - based on common daily activities
-  const dailyKeywords = [
-    'tidur', 'bangun', 'pagi', 'malam', 'makan', 'minum', 'wc', 'wudhu', 
-    'keluar rumah', 'masuk rumah', 'kendaraan', 'perjalanan pendek'
-  ];
-
-  // Sehari-hari doa - based on keywords
-  const seharihariDoa = allDoa.filter((doa) => {
-    const lowerTags = doa.tag.map(tag => tag.toLowerCase());
-    const lowerGrup = doa.grup.toLowerCase();
-    const lowerNama = doa.nama.toLowerCase();
+  // Get all slugs and group names from sehari-hari mapping
+  const sehariHariItems = sehariHariMapping.flatMap(section => section.list);
+  
+  // Filter doa based on the mapping (includes both individual slugs and group names)
+  const seharihariDoa = allDoa.filter(doa => {
+    // Check if it's in the list as an individual slug
+    if (sehariHariItems.includes(doa.slug)) {
+      return true;
+    }
     
-    return dailyKeywords.some(keyword => 
-      lowerTags.some(tag => tag.includes(keyword)) ||
-      lowerGrup.includes(keyword) ||
-      lowerNama.includes(keyword)
-    );
+    // Check if it belongs to a group that's in the list
+    return sehariHariItems.some(item => {
+      // If item contains spaces and starts with uppercase, it's likely a group name
+      if (item.includes(" ") && item[0] === item[0].toUpperCase()) {
+        return doa.grup === item;
+      }
+      return false;
+    });
   });
 
   return {
@@ -50,150 +62,33 @@ export const categorizeDoaForTabs = (): Record<DoaTabType, DoaItem[]> => {
 };
 
 // Get unique groups for categorization
-export const getDoaGroups = (): string[] => {
-  const allDoa = getAllDoa();
-  const groups = [...new Set(allDoa.map((doa) => doa.grup))];
-  return groups.sort();
+export const getDoaGroups = async (): Promise<string[]> => {
+  return await getDoaGroupsFromMDX();
 };
 
-// Enhanced search functionality with Fuse.js and context mapping
-let fuseInstance: Fuse<DoaItem> | null = null;
-let contextMapPopulated: any = null;
-
-const initializeSearch = () => {
-  if (!fuseInstance) {
-    const allDoa = getAllDoa();
-    
-    // Fuse.js configuration for fuzzy search
-    const fuseOptions = {
-      keys: [
-        { name: 'nama', weight: 1.0 },
-        { name: 'idn', weight: 0.8 },
-        { name: 'grup', weight: 0.6 },
-        { name: 'tag', weight: 0.4 },
-        { name: 'ar', weight: 0.3 },
-        { name: 'tr', weight: 0.5 }
-      ],
-      threshold: 0.4, // Lower = more strict matching
-      includeScore: true,
-      minMatchCharLength: 2
-    };
-    
-    fuseInstance = new Fuse(allDoa, fuseOptions);
-    
-    // Populate context map
-    contextMapPopulated = populateContextMap(allDoa);
-  }
+// Simplified search functionality using MDX-based search
+export const searchDoa = async (query: string): Promise<DoaSearchResult[]> => {
+  if (!query || query.length < 2) return [];
   
-  return { fuse: fuseInstance, contextMap: contextMapPopulated };
-};
-
-// Context-aware search
-const getContextualDoa = (query: string): number[] => {
-  const { contextMap } = initializeSearch();
-  const lowerQuery = query.toLowerCase();
-  const matchedIds: Set<number> = new Set();
+  const results = await searchDoaFromMDX(query);
   
-  // Check against context patterns
-  Object.values(contextMap as Record<string, Record<string, number[]>>).forEach((category) => {
-    Object.entries(category).forEach(([pattern, ids]) => {
-      const keywords = pattern.split('|');
-      
-      if (keywords.some(keyword => lowerQuery.includes(keyword.replace('_', ' ')))) {
-        ids.forEach(id => matchedIds.add(id));
-      }
-    });
-  });
-  
-  // Check natural language keywords
-  Object.entries(naturalLanguageKeywords).forEach(([key, synonyms]) => {
-    if (lowerQuery.includes(key) || synonyms.some(syn => lowerQuery.includes(syn))) {
-      // Find related doa based on the context
-      Object.values(contextMap as Record<string, Record<string, number[]>>).forEach((category) => {
-        Object.entries(category).forEach(([pattern, ids]) => {
-          if (pattern.includes(key)) {
-            ids.forEach(id => matchedIds.add(id));
-          }
-        });
-      });
-    }
-  });
-  
-  return Array.from(matchedIds);
-};
-
-export const searchDoa = (query: string): DoaSearchResult[] => {
-  if (!query || query.length < 3) return [];
-  
-  const { fuse } = initializeSearch();
-  const allDoa = getAllDoa();
-  
-  // Get contextual matches
-  const contextualIds = getContextualDoa(query);
-  
-  // Get Fuse.js fuzzy search results
-  const fuseResults = fuse.search(query);
-  
-  // Combine and score results
-  const combinedResults = new Map<number, DoaSearchResult>();
-  
-  // Add contextual matches with high score
-  contextualIds.forEach(id => {
-    const doa = allDoa.find(d => d.id === id);
-    if (doa && !combinedResults.has(id)) {
-      combinedResults.set(id, {
-        item: doa,
-        score: 0.1 // High relevance for contextual matches
-      });
-    }
-  });
-  
-  // Add fuzzy search results
-  fuseResults.forEach(result => {
-    const id = result.item.id;
-    if (!combinedResults.has(id)) {
-      combinedResults.set(id, {
-        item: result.item,
-        score: result.score || 1
-      });
-    } else {
-      // Boost score for items that match both contextual and fuzzy
-      const existing = combinedResults.get(id)!;
-      existing.score = Math.min(existing.score * 0.5, 0.05);
-    }
-  });
-  
-  // Sort by score (lower score = better match) and limit results
-  return Array.from(combinedResults.values())
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 20); // Limit to top 20 results
-};
-
-// Generate URL-friendly slug for doa
-export const generateDoaSlug = (doa: DoaItem): string => {
-  return doa.nama
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single
-    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+  // Convert to DoaSearchResult format for compatibility
+  return results.map(item => ({
+    item,
+    score: 0.1 // Default good score since MDX search is already filtered
+  }));
 };
 
 // Get doa by slug
-export const getDoaBySlug = (slug: string): DoaItem | undefined => {
-  const allDoa = getAllDoa();
-  return allDoa.find(doa => generateDoaSlug(doa) === slug);
+export const getDoaBySlug = async (slug: string): Promise<DoaItem | undefined> => {
+  return await getDoaBySlugFromMDX(slug);
 };
 
-// Generate slug for groups
-export const generateGroupSlug = (groupName: string): string => {
-  return groupName
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-};
+// Export slug generators from doa-utils
+export { generateDoaSlug, generateGroupSlug };
+
+// Export mapping for external use
+export { sehariHariMapping };
 
 // Timeline organization for daily doa with group support
 export const organizeDoaByTimeline = (doaList: DoaItem[]) => {
@@ -273,125 +168,34 @@ export const organizeDoaByTimeline = (doaList: DoaItem[]) => {
   return timelineMap;
 };
 
-// =============================
-// Favorites (localStorage)
-// =============================
 
-const FAVORITES_KEY = 'bekhair_doa_favorites_v1';
-
-const safeWindow = () => typeof window !== 'undefined' ? window : null;
-
-export const getFavoriteIds = (): number[] => {
-const win = safeWindow();
-if (!win) return [];
-try {
-const raw = win.localStorage.getItem(FAVORITES_KEY);
-if (!raw) return [];
-const parsed = JSON.parse(raw);
-return Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'number') : [];
-} catch {
-return [];
-}
+export const getFavoriteDoa = async (): Promise<DoaItem[]> => {
+  const slugs = new Set(getFavoriteIds());
+  if (slugs.size === 0) return [];
+  const all = await getAllDoa();
+  // Preserve the saved order by slugs list
+  const orderedSlugs = getFavoriteIds();
+  const bySlug = new Map(all.map((d) => [d.slug, d] as const));
+  return orderedSlugs.map((slug) => bySlug.get(slug)).filter(Boolean) as DoaItem[];
 };
 
-export const setFavoriteIds = (ids: number[]) => {
-const win = safeWindow();
-if (!win) return;
-try {
-win.localStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.from(new Set(ids))));
-// Notify listeners within same tab
-if (typeof win.dispatchEvent === 'function') {
-win.dispatchEvent(new CustomEvent('doa-favorites-changed'));
-}
-} catch {}
+
+export const getAllGroups = async (): Promise<import("@/types/doa").DoaGroup[]> => {
+  const names = await getDoaGroups();
+  const groups = await Promise.all(
+    names.map(async (name) => ({
+      name,
+      items: await getDoaByGroup(name),
+      slug: generateGroupSlug(name)
+    }))
+  );
+  return groups;
 };
 
-export const isFavorite = (id: number): boolean => {
-const ids = getFavoriteIds();
-return ids.includes(id);
-};
-
-export const toggleFavorite = (id: number): boolean => {
-const ids = new Set(getFavoriteIds());
-if (ids.has(id)) {
-ids.delete(id);
-} else {
-ids.add(id);
-}
-setFavoriteIds(Array.from(ids));
-return ids.has(id);
-};
-
-export const getFavoriteDoa = (): DoaItem[] => {
-const ids = new Set(getFavoriteIds());
-if (ids.size === 0) return [];
-const all = getAllDoa();
-// Preserve the saved order by ids list
-const orderedIds = getFavoriteIds();
-const byId = new Map(all.map((d) => [d.id, d] as const));
-return orderedIds.map((id) => byId.get(id)).filter(Boolean) as DoaItem[];
-};
-
-// =============================
-// Group Favorites (localStorage)
-// =============================
-
-const GROUP_FAVORITES_KEY = 'bekhair_doa_group_favorites_v1';
-
-export const getFavoriteGroupSlugs = (): string[] => {
-  const win = safeWindow();
-  if (!win) return [];
-  try {
-    const raw = win.localStorage.getItem(GROUP_FAVORITES_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'string') : [];
-  } catch {
-    return [];
-  }
-};
-
-export const setFavoriteGroupSlugs = (slugs: string[]) => {
-  const win = safeWindow();
-  if (!win) return;
-  try {
-    win.localStorage.setItem(GROUP_FAVORITES_KEY, JSON.stringify(Array.from(new Set(slugs))));
-    if (typeof win.dispatchEvent === 'function') {
-      // Reuse same event so listeners refresh once
-      win.dispatchEvent(new CustomEvent('doa-favorites-changed'));
-    }
-  } catch {}
-};
-
-export const isGroupFavorite = (groupSlug: string): boolean => {
-  const slugs = getFavoriteGroupSlugs();
-  return slugs.includes(groupSlug);
-};
-
-export const toggleFavoriteGroup = (groupSlug: string): boolean => {
-  const set = new Set(getFavoriteGroupSlugs());
-  if (set.has(groupSlug)) {
-    set.delete(groupSlug);
-  } else {
-    set.add(groupSlug);
-  }
-  setFavoriteGroupSlugs(Array.from(set));
-  return set.has(groupSlug);
-};
-
-export const getAllGroups = (): import("@/types/doa").DoaGroup[] => {
-  const names = getDoaGroups();
-  return names.map((name) => ({
-    name,
-    items: getDoaByGroup(name),
-    slug: generateGroupSlug(name)
-  }));
-};
-
-export const getFavoriteGroups = (): import("@/types/doa").DoaGroup[] => {
+export const getFavoriteGroups = async (): Promise<import("@/types/doa").DoaGroup[]> => {
   const slugs = getFavoriteGroupSlugs();
   if (slugs.length === 0) return [];
-  const allGroups = getAllGroups();
+  const allGroups = await getAllGroups();
   const bySlug = new Map(allGroups.map((g) => [g.slug, g] as const));
   // Preserve saved order
   return slugs.map((s) => bySlug.get(s)).filter(Boolean) as import("@/types/doa").DoaGroup[];

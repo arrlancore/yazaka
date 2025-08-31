@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Share2, Copy, Check, Heart } from "lucide-react";
 import { DoaGroup } from "@/types/doa";
 import DoaCard from "@/components/doa/DoaCard";
-import { isGroupFavorite, toggleFavoriteGroup } from "@/services/doaServices";
+import { isGroupFavorite, toggleFavoriteGroup } from "@/lib/doa-client-utils";
 
 interface DoaGroupDetailProps {
   group: DoaGroup;
@@ -103,7 +103,7 @@ const DoaGroupDetail: React.FC<DoaGroupDetailProps> = ({ group }) => {
 
         {/* All Doa Items */}
         {group.items.map((doa, index) => (
-          <DoaCard key={doa.id} index={index + 1} doa={doa} />
+          <DoaCard key={doa.slug} index={index + 1} doa={doa} />
         ))}
 
         {/* Copy All Button */}

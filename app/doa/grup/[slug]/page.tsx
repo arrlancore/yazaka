@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import DoaGroupDetail from "@/components/doa/DoaGroupDetail";
 import { appLocale, appUrl, brandName } from "@/config";
 import { DoaItem, DoaGroup } from "@/types/doa";
-import doaData from "@/content/doa/doa-collection.json";
-import { generateGroupSlug } from "@/services/doaServices";
+import { getAllGroups, generateGroupSlug } from "@/lib/doa-utils";
 import MobilePage from "@/components/ui/mobile-page";
 import HeaderMobilePage from "@/components/ui/header-mobile-page";
 import { Button } from "@/components/ui/button";
@@ -16,34 +15,13 @@ interface PageProps {
   };
 }
 
-// Build-time utility functions for group handling
-const getDoaGroups = (): DoaGroup[] => {
-  const typedData = doaData as { status: string; total: number; data: DoaItem[] };
-  
-  // Group doa by grup name
-  const groupedDoa = typedData.data.reduce((acc, doa) => {
-    if (!acc[doa.grup]) {
-      acc[doa.grup] = [];
-    }
-    acc[doa.grup].push(doa);
-    return acc;
-  }, {} as Record<string, DoaItem[]>);
-
-  // Convert to DoaGroup array
-  return Object.entries(groupedDoa).map(([name, items]) => ({
-    name,
-    items,
-    slug: generateGroupSlug(name)
-  }));
-};
-
-const getGroupBySlug = (slug: string): DoaGroup | undefined => {
-  const groups = getDoaGroups();
+const getGroupBySlug = async (slug: string): Promise<DoaGroup | undefined> => {
+  const groups = await getAllGroups();
   return groups.find(group => group.slug === slug);
 };
 
 export async function generateStaticParams() {
-  const groups = getDoaGroups();
+  const groups = await getAllGroups();
   
   // Only generate params for dzikir groups (and other groups that have multiple items)
   return groups
@@ -59,7 +37,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const group = getGroupBySlug(params.slug);
+  const group = await getGroupBySlug(params.slug);
   
   if (!group) {
     return {
@@ -93,7 +71,7 @@ export async function generateMetadata({
 }
 
 async function DoaGroupDetailPage({ params }: PageProps) {
-  const group = getGroupBySlug(params.slug);
+  const group = await getGroupBySlug(params.slug);
   
   if (!group) {
     notFound();

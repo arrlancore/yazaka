@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Book, Share2, Copy, Check, Heart } from "lucide-react";
 import { DoaItem } from "@/types/doa";
-import { isFavorite, toggleFavorite } from "@/services/doaServices";
+import { isFavorite, toggleFavorite } from "@/lib/doa-client-utils";
 
 interface DoaCardProps {
   index: number;
@@ -19,8 +19,8 @@ const DoaCard: React.FC<DoaCardProps> = ({ index, doa }) => {
   const [fav, setFav] = useState<boolean>(false);
 
   useEffect(() => {
-    setFav(isFavorite(doa.id));
-    const handler = () => setFav(isFavorite(doa.id));
+    setFav(isFavorite(doa.slug));
+    const handler = () => setFav(isFavorite(doa.slug));
     if (typeof window !== 'undefined') {
       window.addEventListener('doa-favorites-changed' as any, handler);
     }
@@ -29,7 +29,7 @@ const DoaCard: React.FC<DoaCardProps> = ({ index, doa }) => {
         window.removeEventListener('doa-favorites-changed' as any, handler);
       }
     };
-  }, [doa.id]);
+  }, [doa.slug]);
 
   const handleCopy = async () => {
     const text = `${doa.nama}\n\n${doa.ar}\n\n${doa.tr}\n\n${doa.idn}`;
@@ -90,7 +90,7 @@ const DoaCard: React.FC<DoaCardProps> = ({ index, doa }) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                const result = toggleFavorite(doa.id);
+                const result = toggleFavorite(doa.slug);
                 setFav(result);
               }}
             >

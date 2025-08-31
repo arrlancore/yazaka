@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import DoaDetail from "@/components/doa/DoaDetail";
 import { appLocale, appUrl, brandName } from "@/config";
 import { DoaItem } from "@/types/doa";
-// Import JSON directly for build-time access
-import doaData from "@/content/doa/doa-collection.json";
+import { getAllDoa, getDoaBySlug } from "@/lib/doa-utils";
 import MobilePage from "@/components/ui/mobile-page";
 import HeaderMobilePage from "@/components/ui/header-mobile-page";
 import { Button } from "@/components/ui/button";
@@ -16,33 +15,18 @@ interface PageProps {
   };
 }
 
-// Utility functions for build-time use
-const generateDoaSlugBuildTime = (doa: DoaItem): string => {
-  return doa.nama
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-};
-
-const getDoaBySlugBuildTime = (slug: string): DoaItem | undefined => {
-  const typedData = doaData as { status: string; total: number; data: DoaItem[] };
-  return typedData.data.find(doa => generateDoaSlugBuildTime(doa) === slug);
-};
-
 export async function generateStaticParams() {
-  const typedData = doaData as { status: string; total: number; data: DoaItem[] };
+  const allDoa = await getAllDoa();
   
-  return typedData.data.map((doa) => ({
-    slug: generateDoaSlugBuildTime(doa),
+  return allDoa.map((doa) => ({
+    slug: doa.slug,
   }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const doa = getDoaBySlugBuildTime(params.slug);
+  const doa = await getDoaBySlug(params.slug);
   
   if (!doa) {
     return {
@@ -77,7 +61,7 @@ export async function generateMetadata({
 }
 
 async function DoaDetailPage({ params }: PageProps) {
-  const doa = getDoaBySlugBuildTime(params.slug);
+  const doa = await getDoaBySlug(params.slug);
   
   if (!doa) {
     notFound();
