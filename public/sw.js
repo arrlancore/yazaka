@@ -4,9 +4,11 @@
 // Import OneSignal SDK Worker for push notifications
 importScripts('https://cdn.onesignal.com/sdks/OneSignalSDKWorker.js');
 
-const CACHE_NAME = 'bekhair-v1.1.2';
-const STATIC_CACHE_NAME = 'bekhair-static-v1.1.2';
-const DYNAMIC_CACHE_NAME = 'bekhair-dynamic-v1.1.2';
+// Dynamic cache versioning based on build timestamp
+const CACHE_VERSION = '0.1.0.1756638168'; // Update this with each deploy
+const CACHE_NAME = `bekhair-v${CACHE_VERSION}`;
+const STATIC_CACHE_NAME = `bekhair-static-v${CACHE_VERSION}`;
+const DYNAMIC_CACHE_NAME = `bekhair-dynamic-v${CACHE_VERSION}`;
 
 // Assets to cache immediately (app shell)
 const STATIC_ASSETS = [
@@ -51,7 +53,7 @@ self.addEventListener('activate', (event) => {
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (!cacheName.includes('v1.1.2')) {
+            if (cacheName.includes('bekhair-') && !cacheName.includes(`v${CACHE_VERSION}`)) {
               console.log('[SW] Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }

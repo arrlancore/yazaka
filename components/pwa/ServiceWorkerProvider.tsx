@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { swManager } from '@/lib/pwa/sw-registration';
+import UpdateToast from './UpdateToast';
 
 /**
  * Service Worker Provider Component
@@ -25,6 +26,6 @@ export default function ServiceWorkerProvider() {
     };
   }, []);
 
-  // This component doesn't render anything visible
-  return null;
+  // Return UpdateToast component to handle update notifications
+  return <UpdateToast />;
 }

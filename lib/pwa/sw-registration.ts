@@ -8,6 +8,8 @@
 export class ServiceWorkerManager {
   private registration: ServiceWorkerRegistration | null = null;
   private isUpdateAvailable = false;
+  private updateNotificationShown = false;
+  private waitingWorker: ServiceWorker | null = null;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -36,10 +38,9 @@ export class ServiceWorkerManager {
         this.handleUpdateFound();
       });
 
-      // Listen for controller changes
+      // Listen for controller changes (don't auto-reload)
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('Service Worker controller changed');
-        window.location.reload();
+        console.log('Service Worker controller changed - ready for manual reload');
       });
 
       // Listen for messages from service worker
@@ -69,7 +70,13 @@ export class ServiceWorkerManager {
           // New service worker is available
           console.log('New service worker available');
           this.isUpdateAvailable = true;
-          this.showUpdateNotification();
+          this.waitingWorker = newWorker;
+          
+          // Only show notification once
+          if (!this.updateNotificationShown) {
+            this.showUpdateNotification();
+            this.updateNotificationShown = true;
+          }
         }
       }
     });
@@ -79,19 +86,34 @@ export class ServiceWorkerManager {
    * Show update notification to user
    */
   private showUpdateNotification() {
-    // You can customize this to show a toast or modal
-    if (confirm('New version available. Restart app to update?')) {
-      this.skipWaiting();
-    }
+    // Dispatch custom event for toast notification
+    window.dispatchEvent(new CustomEvent('pwa-update-available', {
+      detail: {
+        updateAvailable: true,
+        applyUpdate: () => this.applyUpdate()
+      }
+    }));
   }
 
   /**
-   * Skip waiting and activate new service worker
+   * Apply update and reload app
+   */
+  applyUpdate() {
+    if (!this.waitingWorker) return;
+
+    this.waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    
+    // Wait a moment for service worker to activate, then reload
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  }
+
+  /**
+   * Skip waiting and activate new service worker (legacy method)
    */
   skipWaiting() {
-    if (!this.registration || !this.registration.waiting) return;
-
-    this.registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    this.applyUpdate();
   }
 
   /**
@@ -234,6 +256,33 @@ export class ServiceWorkerManager {
     } catch (error) {
       console.error('Error clearing caches:', error);
     }
+  }
+
+  /**
+   * Manually check for updates
+   */
+  async checkForUpdates(): Promise<boolean> {
+    if (!this.registration) return false;
+
+    try {
+      await this.registration.update();
+      return this.isUpdateAvailable;
+    } catch (error) {
+      console.error('Error checking for updates:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get update status for debugging
+   */
+  getUpdateStatus() {
+    return {
+      updateAvailable: this.isUpdateAvailable,
+      notificationShown: this.updateNotificationShown,
+      waitingWorker: !!this.waitingWorker,
+      registration: !!this.registration
+    };
   }
 }
 
