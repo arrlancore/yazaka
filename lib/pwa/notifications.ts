@@ -330,6 +330,27 @@ export class PrayerNotificationManager {
   }
 
   /**
+   * Check if subscription exists in database for non-logged-in users
+   */
+  async checkSubscriptionExists(): Promise<boolean> {
+    if (!this.oneSignalPlayerId) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/notifications/onesignal/preferences?playerId=${this.oneSignalPlayerId}`,
+        { method: 'GET' }
+      );
+
+      return response.ok && response.status !== 404;
+    } catch (error) {
+      console.error('Error checking subscription existence:', error);
+      return false;
+    }
+  }
+
+  /**
    * Get OneSignal Player ID
    */
   getOneSignalPlayerId(): string | null {

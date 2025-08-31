@@ -216,7 +216,7 @@ async function syncPrayerTimes() {
     if (clients.length > 0) {
       clients[0].postMessage({
         type: 'SYNC_PRAYER_TIMES',
-        timestamp: Date.now()
+        data: { timestamp: Date.now() }
       });
     }
   } catch (error) {
@@ -284,7 +284,7 @@ self.addEventListener('notificationclick', (event) => {
         existingClient.focus();
         existingClient.postMessage({
           type: 'NAVIGATE',
-          url: url
+          data: { url: url }
         });
       } else {
         // Open new window

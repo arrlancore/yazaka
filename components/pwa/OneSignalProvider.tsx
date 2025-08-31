@@ -41,7 +41,10 @@ export function OneSignalProvider({ children, appId }: OneSignalProviderProps) {
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const ONESIGNAL_APP_ID = appId || process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID;
+  const ONESIGNAL_APP_ID = appId || 
+    (process.env.NODE_ENV === 'development' 
+      ? process.env.NEXT_PUBLIC_ONESIGNAL_DEV_APP_ID 
+      : process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID);
 
   const initializeOneSignal = async (): Promise<void> => {
     if (!ONESIGNAL_APP_ID) {
@@ -67,6 +70,11 @@ export function OneSignalProvider({ children, appId }: OneSignalProviderProps) {
         serviceWorkerParam: { scope: "/" },
         notificationClickHandlerMatch: "origin",
         notificationClickHandlerAction: "navigate",
+        // Allow testing on different domains in development
+        ...(process.env.NODE_ENV === 'development' && {
+          persistNotification: false,
+          autoResubscribe: true
+        })
       });
 
       // Immediately read current subscription state after init
@@ -161,30 +169,41 @@ export function OneSignalProvider({ children, appId }: OneSignalProviderProps) {
   };
 
   const updateUserPreferences = async (preferences: any): Promise<void> => {
-    if (!isInitialized || !playerId) return;
+    if (!isInitialized || !playerId) {
+      console.log("OneSignal not initialized or no player ID, skipping tag update");
+      return;
+    }
 
     try {
-      OneSignal.User.addTags({
+      // Add a small delay to prevent rapid-fire updates that cause conflicts
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const tags = {
         timezone: preferences.timezone || "Asia/Jakarta",
         reminderMinutes: preferences.reminderMinutes?.toString() || "10",
         playSound: preferences.sound ? "true" : "false",
         enableVibration: preferences.vibrate ? "true" : "false",
         prayerReminders: preferences.prayerReminders ? "true" : "false",
-      });
+      };
 
-      console.log("OneSignal user preferences updated:", preferences);
+      console.log("Updating OneSignal tags:", tags);
+      OneSignal.User.addTags(tags);
+
+      console.log("OneSignal user preferences updated successfully");
     } catch (error) {
-      console.error("Error updating OneSignal user preferences:", error);
+      // Don't throw error for tag update failures - they're not critical
+      console.warn("Error updating OneSignal user preferences (non-critical):", error);
     }
   };
 
   useEffect(() => {
-    // Only initialize OneSignal when explicitly needed, not automatically
-    // This prevents double initialization issues
+    // Auto-initialize OneSignal to check for existing subscriptions
     if (typeof window !== "undefined" && ONESIGNAL_APP_ID) {
       console.log(
-        "OneSignal provider mounted, ready for manual initialization"
+        "OneSignal provider mounted, checking for existing subscription..."
       );
+      // Auto-initialize to detect existing subscriptions
+      initializeOneSignal().catch(console.error);
     }
   }, [ONESIGNAL_APP_ID]);
 

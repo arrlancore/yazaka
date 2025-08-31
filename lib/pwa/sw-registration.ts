@@ -98,6 +98,12 @@ export class ServiceWorkerManager {
    * Handle messages from service worker
    */
   private handleMessage(event: MessageEvent) {
+    // Safely extract data from event
+    if (!event.data) {
+      console.log('Received empty message from service worker');
+      return;
+    }
+
     const { type, data } = event.data;
 
     switch (type) {
@@ -108,8 +114,23 @@ export class ServiceWorkerManager {
         break;
 
       case 'NAVIGATE':
-        if (data.url) {
+        if (data && data.url) {
+          console.log('Navigating to:', data.url);
           window.location.href = data.url;
+        } else {
+          console.log('Navigate message received but no URL provided');
+        }
+        break;
+
+      case 'NOTIFICATION_CLICK':
+        // Handle OneSignal notification clicks
+        if (data && data.url) {
+          console.log('Notification clicked, navigating to:', data.url);
+          window.location.href = data.url;
+        } else {
+          console.log('Notification clicked, navigating to default page');
+          // Default to prayer times page for prayer notifications
+          window.location.href = '/jadwal-shalat';
         }
         break;
 

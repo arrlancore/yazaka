@@ -21,6 +21,9 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
   const [isRequesting, setIsRequesting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSyncingToServer, setIsSyncingToServer] = useState(false);
+  const [isPrayerReminderLoading, setIsPrayerReminderLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdateTime, setLastUpdateTime] = useState<number>(0);
   
   const { 
     isInitialized, 
@@ -38,9 +41,60 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
     setPreferences(notificationManager.getPreferences());
   }, []);
 
+  // Auto-sync existing OneSignal subscription with database
+  useEffect(() => {
+    const syncExistingSubscription = async () => {
+      // Only sync if we have an existing OneSignal subscription but haven't synced to server yet
+      if (isInitialized && playerId && isSubscribed && permission === 'granted' && preferences) {
+        try {
+          console.log('Found existing OneSignal subscription, checking database sync...');
+          
+          // Check if this subscription already exists in our database
+          const response = await fetch(`/api/notifications/onesignal/preferences?playerId=${playerId}`);
+          
+          if (response.status === 404) {
+            // Subscription doesn't exist in database, sync it
+            console.log('Subscription not found in database, syncing...');
+            await syncPreferencesToServer(playerId, preferences);
+            console.log('Existing subscription synced to database');
+          } else if (response.ok) {
+            console.log('Subscription already exists in database');
+            
+            // Load server preferences but don't update OneSignal tags automatically to avoid conflicts
+            const data = await response.json();
+            if (data.success && data.subscription) {
+              const serverPrefs = data.subscription.preferences;
+              console.log('Server preferences:', serverPrefs);
+              
+              // Only merge critical preferences, don't trigger OneSignal updates
+              // This prevents the rapid-fire tag updates that cause conflicts
+            }
+          }
+        } catch (error) {
+          console.error('Error syncing existing subscription:', error);
+        }
+      }
+    };
+
+    // Longer delay to ensure OneSignal is fully initialized and stable
+    const timer = setTimeout(syncExistingSubscription, 2000);
+    return () => clearTimeout(timer);
+  }, [isInitialized, playerId, isSubscribed, permission, preferences]);
+
+  // Auto-dismiss errors after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const handleRequestPermission = async () => {
     setIsRequesting(true);
     setIsSyncingToServer(true);
+    setError(null);
     
     try {
       // First, request notification permission through the legacy manager
@@ -58,10 +112,15 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 3000);
           onPermissionChanged?.(true);
+        } else {
+          throw new Error('Failed to subscribe to OneSignal');
         }
+      } else if (result === 'denied') {
+        setError('Notification permission was denied. Please check your browser settings.');
       }
     } catch (error) {
       console.error('Error requesting permission:', error);
+      setError(error instanceof Error ? error.message : 'Failed to setup notifications');
     } finally {
       setIsRequesting(false);
       setIsSyncingToServer(false);
@@ -130,18 +189,25 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
       });
 
       if (!response.ok) {
-        throw new Error('Failed to sync preferences to server');
+        const errorText = await response.text();
+        throw new Error(`Server error: ${response.status} - ${errorText}`);
       }
 
-      // Update OneSignal user properties
-      await updateUserPreferences({
-        ...prefs,
-        timezone
-      });
+      // Update OneSignal user properties with error handling
+      try {
+        await updateUserPreferences({
+          ...prefs,
+          timezone
+        });
+      } catch (tagError) {
+        // Tag update failures are non-critical, don't fail the entire sync
+        console.warn('OneSignal tag update failed (non-critical):', tagError);
+      }
       
       console.log('Preferences synced to server successfully');
     } catch (error) {
       console.error('Error syncing preferences to server:', error);
+      throw error; // Re-throw so caller can handle it
     }
   };
 
@@ -160,7 +226,8 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update preferences on server');
+        const errorText = await response.text();
+        throw new Error(`Server error: ${response.status} - ${errorText}`);
       }
 
       // Also update OneSignal tags
@@ -172,11 +239,66 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
       console.log('Preferences updated on server successfully');
     } catch (error) {
       console.error('Error updating preferences on server:', error);
+      throw error; // Re-throw so caller can handle it
+    }
+  };
+
+  // Handle prayer reminder toggle with proper UX flow
+  const handlePrayerReminderToggle = async (enabled: boolean) => {
+    if (!preferences) return;
+
+    setIsPrayerReminderLoading(true);
+    setError(null);
+
+    try {
+      if (enabled) {
+        // Enabling prayer reminders - ensure full subscription flow
+        if (!playerId || !isSubscribed) {
+          throw new Error('OneSignal subscription not active. Please enable notifications first.');
+        }
+
+        // Update server first
+        const newPreferences = { ...preferences, prayerReminders: true };
+        await updatePreferencesOnServer(playerId, newPreferences);
+
+        // Only update local state after successful server update
+        setPreferences(newPreferences);
+        notificationManager.updatePreferences({ prayerReminders: true });
+      } else {
+        // Disabling prayer reminders - simple update to database only
+        const newPreferences = { ...preferences, prayerReminders: false };
+        
+        if (playerId && isSubscribed) {
+          await updatePreferencesOnServer(playerId, newPreferences);
+        }
+        
+        // Update local state
+        setPreferences(newPreferences);
+        notificationManager.updatePreferences({ prayerReminders: false });
+      }
+    } catch (error) {
+      console.error('Error toggling prayer reminders:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update prayer reminder settings');
+    } finally {
+      setIsPrayerReminderLoading(false);
     }
   };
 
   const updatePreference = async (key: keyof NotificationPreferences, value: any) => {
     if (!preferences) return;
+
+    // Handle prayer reminder toggle specially with proper UX flow
+    if (key === 'prayerReminders') {
+      return handlePrayerReminderToggle(value);
+    }
+    
+    // Throttle OneSignal updates to prevent conflicts
+    const now = Date.now();
+    if (now - lastUpdateTime < 500) {
+      console.log('Throttling preference update to prevent conflicts');
+      return;
+    }
+    setLastUpdateTime(now);
     
     const newPreferences = { ...preferences, [key]: value };
     setPreferences(newPreferences);
@@ -188,8 +310,16 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
       try {
         // Use lightweight preferences update endpoint
         await updatePreferencesOnServer(playerId, newPreferences);
+        
+        // Update OneSignal tags after successful server update
+        // All non-prayerReminders preferences can update OneSignal tags
+        await updateUserPreferences({
+          ...newPreferences,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        });
       } catch (error) {
         console.error('Error updating preferences on server:', error);
+        setError('Failed to update preferences. Please try again.');
       } finally {
         setIsSyncingToServer(false);
       }
@@ -326,14 +456,39 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
                     Notifikasi ketika tiba waktu shalat
                   </p>
                 </div>
-                <Switch
-                  id="prayer-reminders"
-                  checked={preferences.prayerReminders}
-                  onCheckedChange={(checked) => 
-                    updatePreference('prayerReminders', checked)
-                  }
-                />
+                <div className="flex items-center gap-2">
+                  {isPrayerReminderLoading && (
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                  )}
+                  <Switch
+                    id="prayer-reminders"
+                    checked={preferences.prayerReminders}
+                    disabled={isPrayerReminderLoading}
+                    onCheckedChange={(checked) => 
+                      updatePreference('prayerReminders', checked)
+                    }
+                  />
+                </div>
               </div>
+
+              {/* Error Display */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-start justify-between">
+                    <p className="text-sm text-red-800 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4" />
+                      {error}
+                    </p>
+                    <button
+                      onClick={() => setError(null)}
+                      className="text-red-500 hover:text-red-700 ml-2"
+                      aria-label="Dismiss error"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {preferences.prayerReminders && (
                 <div className="space-y-4">
