@@ -21,6 +21,7 @@ import {
   generateGroupSlug,
 } from "@/lib/doa-client-utils";
 import { sehariHariMapping } from "@/lib/doa-mapping";
+import { DoaSearchEngine } from "@/lib/doa-search-engine";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -47,28 +48,43 @@ const DoaList: React.FC<DoaListProps> = ({
       .join(" ");
   };
 
+  const [searchEngine, setSearchEngine] = useState<DoaSearchEngine | null>(null);
+
+  // Initialize search engine
+  useEffect(() => {
+    if (doaList.length > 0 && !searchEngine) {
+      const engine = new DoaSearchEngine(doaList);
+      setSearchEngine(engine);
+    }
+  }, [doaList, searchEngine]);
+
   const filteredDoa = useMemo(() => {
     if (searchQuery.trim() === "") {
       return doaList;
     }
 
-    // Simple client-side search filtering
-    const lowerQuery = searchQuery.toLowerCase();
-    return doaList.filter((doa) => {
-      const searchableText = [
-        doa.nama,
-        doa.idn,
-        doa.grup,
-        doa.ar,
-        doa.tr,
-        ...(doa.tag || []),
-      ]
-        .join(" ")
-        .toLowerCase();
+    if (!searchEngine) {
+      return doaList;
+    }
 
-      return searchableText.includes(lowerQuery);
-    });
-  }, [doaList, searchQuery]);
+    try {
+      const results = searchEngine.search(searchQuery);
+      return results.map(r => r.item);
+    } catch (error) {
+      console.error('Search error:', error);
+      // Fallback to simple search
+      const lowerQuery = searchQuery.toLowerCase();
+      return doaList.filter((doa) => {
+        const searchableText = [
+          doa.nama,
+          doa.idn,
+          doa.grup,
+          ...(doa.tag || []),
+        ].join(" ").toLowerCase();
+        return searchableText.includes(lowerQuery);
+      });
+    }
+  }, [doaList, searchQuery, searchEngine]);
 
   // Pagination state (25 per page)
   const pageSize = 25;
@@ -265,6 +281,7 @@ const DoaList: React.FC<DoaListProps> = ({
       </Link>
     );
   };
+
 
   if (
     filteredDoa.length === 0 &&

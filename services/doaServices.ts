@@ -1,8 +1,7 @@
-import { DoaApiResponse, DoaItem, DoaCategory, DoaTabType, DoaSearchResult, DoaTimelineSection } from "@/types/doa";
+import { DoaItem, DoaTabType, DoaSearchResult, DoaTimelineSection } from "@/types/doa";
 import { 
   getAllDoa as getAllDoaFromMDX,
   getDoaByGroup as getDoaByGroupFromMDX,
-  searchDoa as searchDoaFromMDX,
   getDoaGroups as getDoaGroupsFromMDX,
   generateDoaSlug,
   generateGroupSlug,
@@ -10,14 +9,10 @@ import {
 } from "@/lib/doa-utils";
 import { 
   getFavoriteIds, 
-  setFavoriteIds,
-  getFavoriteGroupSlugs,
-  setFavoriteGroupSlugs,
-  isGroupFavorite,
-  toggleFavoriteGroup
+  getFavoriteGroupSlugs
 } from "@/lib/doa-client-utils";
 import { sehariHariMapping } from "@/lib/doa-mapping";
-// Removed unused imports: Fuse, populateContextMap, naturalLanguageKeywords
+import { DoaSearchEngine } from "@/lib/doa-search-engine";
 
 // MDX-based data access
 export const getAllDoa = async (): Promise<DoaItem[]> => {
@@ -66,17 +61,30 @@ export const getDoaGroups = async (): Promise<string[]> => {
   return await getDoaGroupsFromMDX();
 };
 
-// Simplified search functionality using MDX-based search
+// Enhanced search functionality with semantic understanding
+let searchEngine: DoaSearchEngine | null = null;
+
+const getSearchEngine = async (): Promise<DoaSearchEngine> => {
+  if (!searchEngine) {
+    const allDoa = await getAllDoa();
+    searchEngine = new DoaSearchEngine(allDoa);
+  }
+  return searchEngine;
+};
+
 export const searchDoa = async (query: string): Promise<DoaSearchResult[]> => {
   if (!query || query.length < 2) return [];
   
-  const results = await searchDoaFromMDX(query);
+  const engine = await getSearchEngine();
+  return engine.search(query);
+};
+
+// New function for search suggestions
+export const getSearchSuggestions = async (partialQuery: string, limit: number = 5): Promise<string[]> => {
+  if (!partialQuery || partialQuery.length < 1) return [];
   
-  // Convert to DoaSearchResult format for compatibility
-  return results.map(item => ({
-    item,
-    score: 0.1 // Default good score since MDX search is already filtered
-  }));
+  const engine = await getSearchEngine();
+  return engine.getSuggestions(partialQuery, limit);
 };
 
 // Get doa by slug
