@@ -49,18 +49,38 @@ export function OneSignalProvider({ children, appId }: OneSignalProviderProps) {
       return;
     }
 
-    if (isInitialized) return;
+    if (isInitialized) {
+      console.log("OneSignal already initialized, skipping");
+      return;
+    }
+
+    // Always perform OneSignal.init; the SDK is idempotent and will handle re-inits safely.
 
     try {
+
       await OneSignal.init({
         appId: ONESIGNAL_APP_ID,
         safari_web_id: process.env.NEXT_PUBLIC_ONESIGNAL_SAFARI_WEB_ID,
-        allowLocalhostAsSecureOrigin: process.env.NODE_ENV === "development",
+        allowLocalhostAsSecureOrigin:
+          (process.env.NODE_ENV as string) === "development",
         serviceWorkerPath: "/sw.js",
         serviceWorkerParam: { scope: "/" },
         notificationClickHandlerMatch: "origin",
         notificationClickHandlerAction: "navigate",
       });
+
+      // Immediately read current subscription state after init
+      try {
+        const optedIn = OneSignal.User.PushSubscription.optedIn;
+        const subscriptionId = OneSignal.User.PushSubscription.id;
+        setIsSubscribed(!!optedIn);
+        setPlayerId(subscriptionId ?? null);
+        if (optedIn && subscriptionId) {
+          console.log("OneSignal initialized; existing Subscription ID:", subscriptionId);
+        }
+      } catch (e) {
+        console.warn("Unable to read OneSignal subscription state after init", e);
+      }
 
       setIsInitialized(true);
 
@@ -102,19 +122,23 @@ export function OneSignalProvider({ children, appId }: OneSignalProviderProps) {
       // Request notification permission
       await OneSignal.Notifications.requestPermission();
 
-      // The 'change' event listener in initializeOneSignal will handle setting state.
-      // We can directly check the current state after permission is granted.
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Allow time for state to settle
-
-      const optedIn = OneSignal.User.PushSubscription.optedIn;
-      if (optedIn) {
-        const subscriptionId = OneSignal.User.PushSubscription.id;
-        setPlayerId(subscriptionId ?? null);
-        setIsSubscribed(true);
-        console.log("User subscribed with Subscription ID:", subscriptionId);
-        return subscriptionId ?? null;
+      // Wait up to ~5 seconds for OneSignal to assign a subscription ID
+      const maxAttempts = 25;
+      for (let i = 0; i < maxAttempts; i++) {
+        const optedInNow = OneSignal.User.PushSubscription.optedIn;
+        const idNow = OneSignal.User.PushSubscription.id;
+        if (optedInNow && idNow) {
+          setPlayerId(idNow);
+          setIsSubscribed(true);
+          console.log("User subscribed with Subscription ID:", idNow);
+          return idNow;
+        }
+        // small delay between polls
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, 200));
       }
 
+      console.warn("Subscription ID not available after waiting");
       return null;
     } catch (error) {
       console.error("Error subscribing user to OneSignal:", error);
@@ -155,14 +179,12 @@ export function OneSignalProvider({ children, appId }: OneSignalProviderProps) {
   };
 
   useEffect(() => {
+    // Only initialize OneSignal when explicitly needed, not automatically
+    // This prevents double initialization issues
     if (typeof window !== "undefined" && ONESIGNAL_APP_ID) {
-      const checkAndInit = async () => {
-        if ("Notification" in window && Notification.permission === "granted") {
-          await initializeOneSignal();
-        }
-      };
-
-      checkAndInit();
+      console.log(
+        "OneSignal provider mounted, ready for manual initialization"
+      );
     }
   }, [ONESIGNAL_APP_ID]);
 

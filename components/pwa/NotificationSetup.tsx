@@ -145,6 +145,36 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
     }
   };
 
+  // Update preferences only (no location required)
+  const updatePreferencesOnServer = async (oneSignalPlayerId: string, prefs: NotificationPreferences) => {
+    try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const response = await fetch('/api/notifications/onesignal/preferences', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          playerId: oneSignalPlayerId,
+          preferences: prefs,
+          timezone
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update preferences on server');
+      }
+
+      // Also update OneSignal tags
+      await updateUserPreferences({
+        ...prefs,
+        timezone
+      });
+
+      console.log('Preferences updated on server successfully');
+    } catch (error) {
+      console.error('Error updating preferences on server:', error);
+    }
+  };
+
   const updatePreference = async (key: keyof NotificationPreferences, value: any) => {
     if (!preferences) return;
     
@@ -156,7 +186,8 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
     if (playerId && isSubscribed) {
       setIsSyncingToServer(true);
       try {
-        await syncPreferencesToServer(playerId, newPreferences);
+        // Use lightweight preferences update endpoint
+        await updatePreferencesOnServer(playerId, newPreferences);
       } catch (error) {
         console.error('Error updating preferences on server:', error);
       } finally {
