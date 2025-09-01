@@ -17,13 +17,6 @@
   </url>
 
   <url>
-    <loc>https://bekhair.org/catatan-hsi</loc>
-    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <url>
     <loc>https://bekhair.org/blog</loc>
     <lastmod>2024-08-01T00:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -32,6 +25,13 @@
 
   <url>
     <loc>https://bekhair.org/doa</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://bekhair.org/catatan-hsi</loc>
     <lastmod>2024-08-01T00:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

@@ -86,6 +86,9 @@ export class ServiceWorkerManager {
    * Show update notification to user
    */
   private showUpdateNotification() {
+    // Only show if not already shown for this session
+    if (this.updateNotificationShown) return;
+    
     // Dispatch custom event for toast notification
     window.dispatchEvent(new CustomEvent('pwa-update-available', {
       detail: {
@@ -93,14 +96,18 @@ export class ServiceWorkerManager {
         applyUpdate: () => this.applyUpdate()
       }
     }));
+    
+    this.updateNotificationShown = true;
   }
+
 
   /**
    * Apply update and reload app
    */
-  applyUpdate() {
+  async applyUpdate() {
     if (!this.waitingWorker) return;
 
+    console.log('SW Manager: Applying update...');
     this.waitingWorker.postMessage({ type: 'SKIP_WAITING' });
     
     // Wait a moment for service worker to activate, then reload
@@ -108,6 +115,7 @@ export class ServiceWorkerManager {
       window.location.reload();
     }, 100);
   }
+
 
   /**
    * Skip waiting and activate new service worker (legacy method)
@@ -270,6 +278,44 @@ export class ServiceWorkerManager {
     } catch (error) {
       console.error('Error checking for updates:', error);
       return false;
+    }
+  }
+
+  /**
+   * Check for updates on homepage visit using service worker registration
+   * This works reliably on mobile PWAs without cache issues
+   */
+  async checkForHomepageUpdate(): Promise<void> {
+    if (!this.registration) return;
+
+    try {
+      console.log('SW Manager: Checking for homepage updates...');
+      
+      // Force check for updates using SW registration API
+      await this.registration.update();
+      
+      // Wait a moment for update detection
+      setTimeout(() => {
+        if (!this.registration) return;
+        
+        // Check if there's a waiting worker (new version ready)
+        if (this.registration.waiting && !this.updateNotificationShown) {
+          console.log('SW Manager: Update available via waiting worker');
+          this.waitingWorker = this.registration.waiting;
+          this.showUpdateNotification();
+        }
+        // Check if there's an installing worker (new version downloading)
+        else if (this.registration.installing && !this.updateNotificationShown) {
+          console.log('SW Manager: Update installing, will show notification when ready');
+          // The handleUpdateFound will trigger when installation completes
+        }
+        else {
+          console.log('SW Manager: No updates available');
+        }
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error checking homepage update:', error);
     }
   }
 

@@ -17,6 +17,7 @@ import GoogleAnalytics from "@/components/analytics/google-analytics";
 import ResponsiveLayout from "@/components/responsive-layout";
 import ServiceWorkerProvider from "@/components/pwa/ServiceWorkerProvider";
 import OfflineIndicator from "@/components/pwa/OfflineIndicator";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -108,6 +109,7 @@ export default function RootLayout({
             <ResponsiveLayout>
               {children}
             </ResponsiveLayout>
+            <Toaster />
           </Providers>
         </ThemeProvider>
       </body>
