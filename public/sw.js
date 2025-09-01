@@ -5,7 +5,7 @@
 importScripts('https://cdn.onesignal.com/sdks/OneSignalSDKWorker.js');
 
 // Dynamic cache versioning based on build timestamp
-const CACHE_VERSION = '0.1.0.1756649416'; // Update this with each deploy
+const CACHE_VERSION = '0.1.0.1756680194'; // Update this with each deploy
 const CACHE_NAME = `bekhair-v${CACHE_VERSION}`;
 const STATIC_CACHE_NAME = `bekhair-static-v${CACHE_VERSION}`;
 const DYNAMIC_CACHE_NAME = `bekhair-dynamic-v${CACHE_VERSION}`;
