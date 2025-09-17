@@ -13,6 +13,9 @@ interface PageProps {
   params: {
     slug: string;
   };
+  searchParams: {
+    back_q?: string;
+  };
 }
 
 export async function generateStaticParams() {
@@ -60,18 +63,22 @@ export async function generateMetadata({
   };
 }
 
-async function DoaDetailPage({ params }: PageProps) {
+async function DoaDetailPage({ params, searchParams }: PageProps) {
   const doa = await getDoaBySlug(params.slug);
   
   if (!doa) {
     notFound();
   }
 
+  // Generate backUrl with search params if available
+  const backQuery = searchParams.back_q;
+  const backUrl = backQuery ? `/doa?q=${encodeURIComponent(backQuery)}` : "/doa";
+
   return (
     <MobilePage>
       <HeaderMobilePage
         title={doa.nama}
-        backUrl="/doa"
+        backUrl={backUrl}
         rightContent={
           <Button
             variant="ghost"

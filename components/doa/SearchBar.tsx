@@ -34,6 +34,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleExampleClick = (example: string) => {
     onChange(example);
+    setIsFocused(false); // Hide suggestions after selection
   };
 
   return (
@@ -46,7 +47,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 100)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           className="pl-10 pr-10 py-3 w-full text-base"
         />
         {value && (
@@ -75,7 +76,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 variant="outline"
                 size="sm"
                 className="text-xs h-7"
-                onClick={() => handleExampleClick(example)}
+                onMouseDown={(e) => {
+                  // Use onMouseDown instead of onClick to prevent onBlur from interfering
+                  e.preventDefault();
+                  handleExampleClick(example);
+                }}
               >
                 {example}
               </Button>

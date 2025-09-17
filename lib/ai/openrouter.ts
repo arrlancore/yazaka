@@ -163,8 +163,8 @@ Konten transkrip dan artikel harus sama persis dengan makna yang terkandung dala
         *   *Blockquote* (\`>\`) untuk mengutip ayat, hadits, dan terjemahannya.
         *   Daftar berpoin (*bullet points*) untuk ringkasan atau penjelasan.
         *   Teks tebal (\`**teks**\`) untuk menekankan istilah penting.
-    *   **Penutup:** Akhiri artikel dengan kalimat penutup dari penceramah, nama, dan lokasi.
-    *   **Ringkasan Poin:** Buat bagian "Poin Penting untuk Diingat" di akhir atau setelah artikel untuk merangkum pelajaran utama dari kajian.
+    *   **Penutup:** Akhiri artikel dengan kalimat penutup dari penceramah, nama, dan lokasi(jika ada).
+    *   **Membuat Ringkasan Poin:** Buat bagian "Poin Penting untuk Diingat" di akhir atau setelah artikel untuk merangkum pelajaran utama dari kajian.
 
 **5. Aturan Learning Objectives (Tujuan Pembelajaran Mendalam):**
     *   **Ekstrak semua tujuan pembelajaran** dari konten kajian untuk siswa yang ingin belajar secara sistematis dan mendalam.
