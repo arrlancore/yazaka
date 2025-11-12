@@ -27,7 +27,7 @@ function Header() {
     { href: "/doa", label: "Doa" },
     { href: "/catatan-hsi", label: "Catatan HSI" },
     { href: "/arah-kiblat", label: "Arah Kiblat" },
-    // { href: "#contact", label: "Contact" },
+    { href: "/contact", label: "Kontak" },
   ];
 
   return (
