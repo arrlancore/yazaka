@@ -67,8 +67,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: Home },
-    { name: 'Catatan HSI', href: '/admin/catatan-hsi', icon: FileText },
-    { name: 'Quick Create', href: '/admin/catatan-hsi/quick-create', icon: Plus },
   ];
 
   if (loading) {
