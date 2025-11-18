@@ -855,53 +855,6 @@ async function generateSitemap() {
       })
       .join("");
 
-    // Catatan HSI pages  
-    const CATATAN_PATH = path.join(process.cwd(), "content/catatan-hsi");
-    
-    const getCatatanSlugs = (): string[] => {
-      try {
-        return readdirSync(CATATAN_PATH).filter(item => {
-          const fullPath = path.join(CATATAN_PATH, item);
-          const stat = statSync(fullPath);
-          return stat.isDirectory();
-        });
-      } catch (error) {
-        console.error("Error reading catatan directory:", error);
-        return [];
-      }
-    };
-
-    const catatanSlugs = getCatatanSlugs();
-    const catatanUrls = catatanSlugs
-      .map(
-        (slug) => {
-          // Get actual file modification time
-          try {
-            const indexPath = path.join(CATATAN_PATH, slug, 'index.mdx');
-            const stats = statSync(indexPath);
-            const lastmod = stats.mtime.toISOString();
-            
-            return `
-      <url>
-        <loc>${domain}/catatan-hsi/${slug}</loc>
-        <lastmod>${lastmod}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-      </url>
-    `;
-          } catch {
-            return `
-      <url>
-        <loc>${domain}/catatan-hsi/${slug}</loc>
-        <lastmod>2024-08-01T00:00:00.000Z</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-      </url>
-    `;
-          }
-        }
-      )
-      .join("");
 
     const sitemap = `
       <?xml version="1.0" encoding="UTF-8"?>
@@ -945,9 +898,6 @@ async function generateSitemap() {
         <!-- Quran Surahs -->
         ${quranSurahUrls}
 
-        <!-- Catatan HSI -->
-        ${catatanUrls}
-
         <!-- Doa Single Pages -->
         ${doaSingleUrls}
 
@@ -982,7 +932,7 @@ async function generateSitemap() {
 
     console.log("✅ Sitemap generated successfully!");
     console.log(
-      `✅ Generated sitemap for ${pages.length + authors.length + surahsBahasa.length + catatanSlugs.length + doaItems.length + groupNames.length} pages, including ${posts.length} blog posts, ${catatanSlugs.length} catatan HSI, ${doaItems.length} doa singles, and ${groupNames.length} doa groups.`
+      `✅ Generated sitemap for ${pages.length + authors.length + surahsBahasa.length + doaItems.length + groupNames.length} pages, including ${posts.length} blog posts, ${doaItems.length} doa singles, and ${groupNames.length} doa groups.`
     );
   } catch (error) {
     console.error("Error generating sitemap:", error);
