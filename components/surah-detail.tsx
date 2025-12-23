@@ -65,7 +65,7 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
   }, []);
 
   return (
-    <Card className="border-none sm:border overflow-hidden transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-none sm:shadow-lg text-foreground rounded-b-[2rem] p-0">
+    <Card className="border-none sm:border transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-none sm:shadow-lg text-foreground rounded-b-[2rem] p-0">
         <CardContent className="p-0">
           {/* pre bismillah */}
           {surah.preBismillah && (
