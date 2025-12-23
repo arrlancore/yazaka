@@ -17,19 +17,22 @@ const AyatNavigation: React.FC<AyatNavigationProps> = ({
   currentAyatNumber,
   totalVerses,
 }) => {
-  const hasPrev = currentAyatNumber < totalVerses;
-  const hasNext = currentAyatNumber > 1;
+  // Following Arabic reading order (RTL):
+  // Next (higher ayat number) on the left
+  // Previous (lower ayat number) on the right
+  const hasNext = currentAyatNumber < totalVerses;
+  const hasPrev = currentAyatNumber > 1;
 
   return (
     <div className="bg-card p-4 flex justify-between items-center">
       {hasNext ? (
         <Link
-          href={`/quran/surah/${surahNumber}_${surahName}/ayat/${currentAyatNumber - 1}`}
+          href={`/quran/surah/${surahNumber}_${surahName}/ayat/${currentAyatNumber + 1}`}
           passHref
         >
           <Button variant="outline" className="flex items-center space-x-2">
             <ChevronLeft size={16} />
-            <span>Ayat {currentAyatNumber - 1}</span>
+            <span>Ayat {currentAyatNumber + 1}</span>
           </Button>
         </Link>
       ) : (
@@ -45,11 +48,11 @@ const AyatNavigation: React.FC<AyatNavigationProps> = ({
 
       {hasPrev ? (
         <Link
-          href={`/quran/surah/${surahNumber}_${surahName}/ayat/${currentAyatNumber + 1}`}
+          href={`/quran/surah/${surahNumber}_${surahName}/ayat/${currentAyatNumber - 1}`}
           passHref
         >
           <Button variant="outline" className="flex items-center space-x-2">
-            <span>Ayat {currentAyatNumber + 1}</span>
+            <span>Ayat {currentAyatNumber - 1}</span>
             <ChevronRight size={16} />
           </Button>
         </Link>
