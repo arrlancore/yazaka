@@ -7,8 +7,8 @@ export default function AyatLoading() {
   return (
     <MobilePage>
       <HeaderMobilePage
-        title={<Skeleton className="h-6 w-32" />}
-        subtitle={<Skeleton className="h-4 w-48" />}
+        title="Memuat..."
+        subtitle="Mohon tunggu"
         backUrl="/quran"
       />
       <Card className="border-none sm:border transition-all duration-300 bg-gradient-to-br from-primary/10 via-background to-primary/10 shadow-none sm:shadow-lg text-foreground rounded-b-[2rem] p-0">
