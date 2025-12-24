@@ -123,6 +123,8 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
                       handleSetLastRead(ayatNumber)
                     }
                     isWebKit={isWebKit}
+                    surahNumber={surah.number}
+                    surahName={surah.name}
                   />
                   {shouldRenderInfo && (
                     <div className="my-0 p-3 bg-primary/10 text-muted-foreground flex justify-between items-center">
