@@ -1,10 +1,11 @@
-import { getPostBySlug } from "@/lib/mdx/mdx-utils";
+import { getPostBySlug, getAllPosts } from "@/lib/mdx/mdx-utils";
 import { BlogHeader } from "@/components/blog/blog-header";
 import { BlogFooter } from "@/components/blog/blog-footer";
 import { Metadata } from "next";
 import { appLocale, appUrl, blogUrl, brandName } from "@/config";
 import { format } from "date-fns";
 import BlogPost from "@/components/blog/BlogPost";
+import { getSeriesNavigation, isSeriesPost, isSeriesHub } from "@/lib/mdx/series-utils";
 
 interface PageProps {
   params: {
@@ -60,14 +61,41 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps) {
   const post = await getPostBySlug(params.slug);
+  
+  // Get all posts for series functionality
+  let allPosts = null;
+  let seriesNavigation = null;
+  
+  if (post && (isSeriesPost(post) || isSeriesHub(post))) {
+    allPosts = await getAllPosts();
+    if (isSeriesPost(post)) {
+      seriesNavigation = getSeriesNavigation(allPosts, post);
+    }
+  }
 
   return (
-    <article className="max-w-screen-md mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      <BlogHeader />
+    <article className="max-w-[680px] mx-auto px-6 sm:px-8 lg:px-6 pb-12">
+      {/* Mobile-only blog header */}
+      <div className="md:hidden">
+        <BlogHeader />
+        <div className="pt-12" />
+      </div>
+      
+      {/* Desktop spacing (since main header is handled by ResponsiveLayout) */}
+      <div className="hidden md:block pt-12" />
+      
+      <BlogPost 
+        post={post} 
+        seriesNavigation={seriesNavigation} 
+        allPosts={allPosts}
+      />
+      
       <div className="pt-12" />
-      <BlogPost post={post} />
-      <div className="pt-12" />
-      <BlogFooter />
+      
+      {/* Mobile-only blog footer */}
+      <div className="md:hidden">
+        <BlogFooter />
+      </div>
     </article>
   );
 }

@@ -146,6 +146,154 @@ body {
   animation: criticalPulseGlow 1s infinite;
 }
 
+/* Optimized Reading Experience - Based on Medium, Ghost, Substack best practices */
+.prose-reading {
+  /* Base typography optimized for Indonesian readers */
+  font-size: 19px;
+  line-height: 1.58;
+  font-weight: 400;
+  color: hsl(var(--foreground));
+  letter-spacing: -0.003em;
+}
+
+.prose-reading h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: hsl(var(--foreground));
+}
+
+.prose-reading h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: hsl(var(--foreground));
+}
+
+.prose-reading h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: hsl(var(--foreground));
+}
+
+.prose-reading h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: hsl(var(--foreground));
+}
+
+.prose-reading p {
+  margin-bottom: 1.5rem;
+  color: hsl(var(--foreground));
+}
+
+.prose-reading ul, .prose-reading ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.prose-reading li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.prose-reading blockquote {
+  border-left: 4px solid hsl(var(--primary));
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+.prose-reading code {
+  background-color: hsl(var(--muted));
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.prose-reading pre {
+  background-color: hsl(var(--muted));
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.prose-reading pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.prose-reading strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.prose-reading a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.prose-reading a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Reading content container */
+.reading-content {
+  background-color: transparent;
+  padding: 2rem 0;
+}
+
+/* Dark mode optimizations */
+.dark .prose-reading {
+  color: hsl(var(--foreground));
+}
+
+.dark .prose-reading h1,
+.dark .prose-reading h2,
+.dark .prose-reading h3,
+.dark .prose-reading h4 {
+  color: hsl(var(--foreground));
+}
+
+.dark .prose-reading blockquote {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .prose-reading {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  
+  .prose-reading h1 {
+    font-size: 1.75rem;
+  }
+  
+  .prose-reading h2 {
+    font-size: 1.5rem;
+  }
+  
+  .prose-reading h3 {
+    font-size: 1.25rem;
+  }
+}
+
 
 :root {
   --ham-wasl-color: #aaaaaa;
