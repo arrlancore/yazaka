@@ -1,23 +1,50 @@
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Post } from "@/types/blog";
+import {
+  Post,
+  SeriesNavigation as SeriesNavigationData,
+  PostMeta,
+} from "@/types/blog";
 import ShareButtons from "../share-button";
 import { extractDomain } from "@/lib/utils";
 import Link from "next/link";
-import { Github, Linkedin, Twitter } from "lucide-react";
+import { Github, Linkedin, Twitter, BookOpen } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "../ui/button";
+import { SeriesNavigation } from "./SeriesNavigation";
+import { SeriesHub } from "./SeriesHub";
+import { isSeriesHub } from "@/lib/mdx/series-utils";
 
-export default async function BlogPost(props: { post: Post }) {
-  const { post } = props;
+export default async function BlogPost(props: {
+  post: Post;
+  seriesNavigation?: SeriesNavigationData | null;
+  allPosts?: PostMeta[] | null;
+}) {
+  const { post, seriesNavigation, allPosts } = props;
 
   return (
     <div>
       <div className="mb-12 text-center">
+        {/* Series context badge */}
+        {seriesNavigation && (
+          <div className="mb-6">
+            <Link href={`/blog/${seriesNavigation.seriesHub?.slug}`}>
+              <Badge
+                variant="outline"
+                className="text-sm px-3 py-1 hover:bg-muted"
+              >
+                <BookOpen className="h-3 w-3 mr-1" />
+                {seriesNavigation.seriesHub?.title} • Bagian{" "}
+                {seriesNavigation.currentPosition} dari{" "}
+                {seriesNavigation.totalPosts}
+              </Badge>
+            </Link>
+          </div>
+        )}
+
         <div className="flex justify-center gap-2 mb-4">
           {post.tags?.map((tag) => (
             <Badge key={tag} variant="secondary">
@@ -46,11 +73,19 @@ export default async function BlogPost(props: { post: Post }) {
           />
         </div>
       )}
-      <Card className="p-8">
-        <div className="prose prose-lg dark:prose-invert max-w-none">
+      {/* Optimized reading container - no card wrapper for better flow */}
+      <div className="reading-content">
+        <div className="prose prose-reading dark:prose-invert max-w-none">
           {post.content}
         </div>
-      </Card>
+      </div>
+
+      {/* Series Hub - Auto-generated series structure */}
+      {isSeriesHub(post) && allPosts && (
+        <SeriesHub hubPost={post} allPosts={allPosts} />
+      )}
+      {/* Series Navigation */}
+      {seriesNavigation && <SeriesNavigation navigation={seriesNavigation} />}
 
       <ShareButtons
         title={post.title}

@@ -24,6 +24,11 @@ export interface PostMeta {
   tags?: string[];
   image?: string;
   readingTime?: string;
+  // Series fields
+  isSeriesHub?: boolean;
+  seriesSlug?: string;
+  series?: string;
+  seriesOrder?: number;
 }
 
 export interface Post extends PostMeta {
@@ -35,4 +40,13 @@ export interface TableOfContents {
   level: number;
   text: string;
   slug: string;
+}
+
+export interface SeriesNavigation {
+  seriesHub: PostMeta | null;
+  previousPost: PostMeta | null;
+  nextPost: PostMeta | null;
+  currentPosition: number;
+  totalPosts: number;
+  allSeriesPosts: PostMeta[];
 }

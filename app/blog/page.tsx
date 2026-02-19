@@ -34,8 +34,15 @@ export default async function BlogPage() {
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      <BlogHeader />
-      <div className="pt-12" />
+      {/* Mobile-only blog header */}
+      <div className="md:hidden">
+        <BlogHeader />
+        <div className="pt-12" />
+      </div>
+      
+      {/* Desktop spacing (since main header is handled by ResponsiveLayout) */}
+      <div className="hidden md:block pt-12" />
+      
       <h1 className="text-4xl font-bold mb-12 text-center">Blog</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post) => (
@@ -89,8 +96,13 @@ export default async function BlogPage() {
           </Card>
         ))}
       </div>
+      
       <div className="pt-12" />
-      <BlogFooter />
+      
+      {/* Mobile-only blog footer */}
+      <div className="md:hidden">
+        <BlogFooter />
+      </div>
     </div>
   );
 }
