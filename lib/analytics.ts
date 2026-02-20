@@ -29,31 +29,6 @@ export const trackEvent = {
     });
   },
 
-  // Catatan HSI interactions
-  catatanView: (title: string, series: string) => {
-    event({
-      action: 'catatan_view',
-      category: 'catatan_hsi',
-      label: `${series}_${title}`,
-    });
-  },
-
-  audioPlay: (title: string, series: string) => {
-    event({
-      action: 'audio_play',
-      category: 'catatan_hsi',
-      label: `${series}_${title}`,
-    });
-  },
-
-  textJump: (timestamp: string, title: string) => {
-    event({
-      action: 'text_jump',
-      category: 'catatan_hsi',
-      label: `${title}_${timestamp}`,
-    });
-  },
-
   // Hafalan (memorization) interactions
   hafalanStart: (surahName: string, targetType: string) => {
     event({

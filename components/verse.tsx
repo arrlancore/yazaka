@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Tooltip,
@@ -17,6 +18,7 @@ import {
   ChevronDown,
   ChevronUp,
   MoreVertical,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -41,6 +43,8 @@ interface VerseProps {
   isLastRead?: boolean;
   onPlaying?: (isPlaying: boolean) => void;
   isWebKit: boolean;
+  surahNumber?: number;
+  surahName?: string;
 }
 
 const Verse = ({
@@ -57,6 +61,8 @@ const Verse = ({
   isBookmarked = false,
   isLastRead = false,
   isWebKit = false,
+  surahNumber,
+  surahName,
 }: VerseProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTafsir, setShowTafsir] = useState(false);
@@ -201,6 +207,17 @@ const Verse = ({
                       <DropdownMenuItem onClick={handleSetLastRead}>
                         Tandai Terakhir Dibaca
                       </DropdownMenuItem>
+                      {surahNumber && surahName && (
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href={`/quran/surah/${surahNumber}_${surahName}/ayat/${number}`}
+                            className="flex items-center gap-2"
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                            Lihat Detail Ayat
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TooltipTrigger>

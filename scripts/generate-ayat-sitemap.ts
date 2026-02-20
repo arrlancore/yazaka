@@ -1,10 +1,7 @@
-// scripts/generate-sitemap.ts
-import { readdirSync, readFileSync, statSync } from "fs";
+// scripts/generate-ayat-sitemap.ts
 import { writeFile } from "fs/promises";
 import path from "path";
 import prettier from "prettier";
-import matter from "gray-matter";
-// Remove import to avoid module resolution issues in build script
 
 const surahsBahasa = [
   {
@@ -695,228 +692,40 @@ const surahsBahasa = [
 
 const domain = "https://bekhair.org";
 
-async function generateSitemap() {
+async function generateAyatSitemap() {
   try {
-    // Dynamic import for globby
-    const { globby } = await import("globby");
+    console.log("🚀 Generating ayat sitemap...");
 
-    // Get all static pages
-    const pages = await globby([
-      "app/**/*.tsx",
-      "!app/**/_*.tsx",
-      "!app/**/layout.tsx",
-      "!app/**/loading.tsx",
-      "!app/**/error.tsx",
-      // Exclude dynamic catch-alls handled separately
-      "!app/**/[slug]/page.tsx",
-      "!app/**/[id]/page.tsx",
-      // Exclude internal/system routes
-      "!app/offline/**",
-      "!app/style-guide/**",
-      "!app/unauthorized/**",
-      "!app/admin/**",
-      "!app/auth/**",
-      // Exclude editor and API route files
-      "!app/editor/page.tsx",
-      "!app/**/post/route.ts",
-    ]);
+    // Use older date to make it look natural
+    const quranBaseDate = new Date("2024-06-01");
 
-    const POSTS_PATH = path.join(process.cwd(), "content/posts");
+    // Generate URLs for all ayat pages
+    const ayatUrls: string[] = [];
+    let totalAyat = 0;
 
-    const getPostFilePaths = (): string[] => {
-      try {
-        return readdirSync(POSTS_PATH).filter((path) => /\.mdx?$/.test(path));
-      } catch (error) {
-        console.error("Error reading posts directory:", error);
-        return [];
-      }
-    };
+    for (const surah of surahsBahasa) {
+      for (let ayatNum = 1; ayatNum <= surah.totalVerses; ayatNum++) {
+        // Stagger dates to look natural - different date for each ~100 ayats
+        const ayatDate = new Date(quranBaseDate);
+        ayatDate.setDate(quranBaseDate.getDate() + Math.floor(totalAyat / 100));
 
-    const postFiles = getPostFilePaths();
-    const currentDate = new Date();
-    const posts = postFiles
-      .map((fileName) => {
-        const filePath = path.join(POSTS_PATH, fileName);
-        const fileContents = readFileSync(filePath, "utf8");
-        const { data } = matter(fileContents);
-        return {
-          slug: fileName.replace(/\.mdx?$/, ""),
-          publishedAt:
-            data.publishedAt.length === 10
-              ? data.publishedAt + "T07:00:00+07:00"
-              : data.publishedAt,
-          draft: data.draft || false,
-        };
-      })
-      .filter((post) => !post.draft)
-      .filter((post) => new Date(post.publishedAt) <= currentDate);
-
-    // Authors
-    const AUTHORS_PATH = path.join(process.cwd(), "content/authors");
-
-    const getAuthorFilePaths = (): string[] => {
-      try {
-        return readdirSync(AUTHORS_PATH).filter((path) => /\.mdx?$/.test(path));
-      } catch (error) {
-        console.error("Error reading authors directory:", error);
-        return [];
-      }
-    };
-
-    const authorFiles = getAuthorFilePaths();
-    const authors = authorFiles.map((fileName) => {
-      const filePath = path.join(AUTHORS_PATH, fileName);
-      const fileContents = readFileSync(filePath, "utf8");
-      const { data } = matter(fileContents);
-      return {
-        slug: fileName.replace(/\.mdx?$/, ""),
-        name: data.name,
-      };
-    });
-
-    // add quran surah by number - use older date to make it look natural
-    const quranBaseDate = new Date('2024-06-01');
-    const quranSurahUrls = surahsBahasa
-      .map(
-        (surah, index) => {
-          // Stagger dates to look natural
-          const surahDate = new Date(quranBaseDate);
-          surahDate.setDate(quranBaseDate.getDate() + Math.floor(index / 5));
-          
-          return `
+        ayatUrls.push(`
       <url>
-        <loc>${domain}/quran/surah/${surah.number}_${encodeURIComponent(surah.name)}</loc>
-        <lastmod>${surahDate.toISOString()}</lastmod>
+        <loc>${domain}/quran/surah/${surah.number}_${encodeURIComponent(surah.name)}/ayat/${ayatNum}</loc>
+        <lastmod>${ayatDate.toISOString()}</lastmod>
         <changefreq>yearly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
       </url>
-    `;
-        }
-      )
-      .join("");
-
-    // Doa: single and group pages
-    // Helpers copied from services to avoid runtime import issues
-    const generateDoaSlug = (name: string): string =>
-      name
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-
-    const generateGroupSlug = (groupName: string): string =>
-      groupName
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-
-    // Load Doa data
-    const DOA_PATH = path.join(process.cwd(), "content/doa/doa-collection.json");
-    let doaItems: { nama: string; grup: string }[] = [];
-    try {
-      const raw = readFileSync(DOA_PATH, "utf8");
-      const json = JSON.parse(raw) as { data?: { nama: string; grup: string }[] };
-      doaItems = Array.isArray(json.data) ? json.data : [];
-    } catch (e) {
-      console.error("Error reading doa collection:", e);
+    `);
+        totalAyat++;
+      }
     }
-
-    // Single Doa URLs
-    const doaSingleUrls = doaItems
-      .map((d) => {
-        const slug = generateDoaSlug(d.nama);
-        return `
-      <url>
-        <loc>${domain}/doa/${slug}</loc>
-        <lastmod>2024-08-01T00:00:00.000Z</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-      </url>
-    `;
-      })
-      .join("");
-
-    // Group Doa URLs (unique groups)
-    const groupNames = Array.from(new Set(doaItems.map((d) => d.grup)));
-    const doaGroupUrls = groupNames
-      .map((name) => {
-        const slug = generateGroupSlug(name);
-        return `
-      <url>
-        <loc>${domain}/doa/grup/${slug}</loc>
-        <lastmod>2024-08-01T00:00:00.000Z</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-      </url>
-    `;
-      })
-      .join("");
-
 
     const sitemap = `
       <?xml version="1.0" encoding="UTF-8"?>
       <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        <!-- Static Pages -->
-        ${pages
-          .map((page) => {
-            const pagePath = page
-              .replace("app", "")
-              .replace(/\.tsx?$/, "")
-              .replace(/\/page$/, "")
-              .replace(/\/index$/, "");
-
-            const route = pagePath.replace(/$.*$/, "");
-
-            return `
-              <url>
-                <loc>${domain}${route}</loc>
-                <lastmod>2024-08-01T00:00:00.000Z</lastmod>
-                <changefreq>weekly</changefreq>
-                <priority>${route === "" ? "1.0" : "0.5"}</priority>
-              </url>
-            `;
-          })
-          .join("")}
-
-              <!-- Author Pages -->
-            ${authors
-              .map(
-                (author) => `
-        <url>
-          <loc>${domain}/authors/${author.slug}</loc>
-          <lastmod>2024-07-01T00:00:00.000Z</lastmod>
-          <changefreq>yearly</changefreq>
-          <priority>0.3</priority>
-        </url>
-      `
-              )
-              .join("")}
-
-        <!-- Quran Surahs -->
-        ${quranSurahUrls}
-
-        <!-- Doa Single Pages -->
-        ${doaSingleUrls}
-
-        <!-- Doa Group Pages -->
-        ${doaGroupUrls}
-
-        <!-- Blog Posts -->
-        ${posts
-          .map(
-            (post) => `
-            <url>
-              <loc>${domain}/blog/${post.slug}</loc>
-              <lastmod>${post.publishedAt}</lastmod>
-              <changefreq>weekly</changefreq>
-              <priority>0.6</priority>
-            </url>
-          `
-          )
-          .join("")}
+        <!-- Individual Ayat Pages -->
+        ${ayatUrls.join("")}
       </urlset>
     `;
 
@@ -924,18 +733,16 @@ async function generateSitemap() {
       parser: "html",
     });
 
-    // Write the sitemap
+    // Write the ayat sitemap
     await writeFile(
-      path.join(process.cwd(), "public", "sitemap.xml"),
+      path.join(process.cwd(), "public", "all-ayat-sitemap.xml"),
       formatted
     );
 
-    console.log("✅ Sitemap generated successfully!");
-    console.log(
-      `✅ Generated sitemap for ${pages.length + authors.length + surahsBahasa.length + doaItems.length + groupNames.length} pages, including ${posts.length} blog posts, ${doaItems.length} doa singles, and ${groupNames.length} doa groups.`
-    );
+    console.log("✅ Ayat sitemap generated successfully!");
+    console.log(`✅ Generated sitemap for ${totalAyat} individual ayat pages.`);
   } catch (error) {
-    console.error("Error generating sitemap:", error);
+    console.error("Error generating ayat sitemap:", error);
     if (error instanceof Error) {
       console.error("Error details:", error.message);
     }
@@ -943,4 +750,4 @@ async function generateSitemap() {
   }
 }
 
-generateSitemap();
+generateAyatSitemap();

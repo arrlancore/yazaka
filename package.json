@@ -7,7 +7,7 @@
     "dev": "next dev",
     "prebuild": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" ts-node --project tsconfig.scripts.json scripts/update-sw-version.ts",
     "build": "next build",
-    "postbuild": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" ts-node --project tsconfig.scripts.json scripts/generate-sitemap.ts",
+    "postbuild": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" ts-node --project tsconfig.scripts.json scripts/generate-sitemap.ts && cross-env NODE_OPTIONS=\"--loader ts-node/esm\" ts-node --project tsconfig.scripts.json scripts/generate-ayat-sitemap.ts && cross-env NODE_OPTIONS=\"--loader ts-node/esm\" ts-node --project tsconfig.scripts.json scripts/generate-sitemap-index.ts",
     "start": "next start",
     "lint": "next lint",
     "update:supabase:types": "supabase gen types typescript --linked > integrations/supabase/types.ts"

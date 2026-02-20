@@ -25,10 +25,9 @@ function Header() {
     { href: "/jadwal-shalat", label: "Jadwal Shalat" },
     { href: "/quran", label: "Quran" },
     { href: "/doa", label: "Doa" },
-    { href: "/catatan-hsi", label: "Catatan HSI" },
     { href: "/arah-kiblat", label: "Arah Kiblat" },
     { href: "/panduan", label: "Panduan" },
-    // { href: "#contact", label: "Contact" },
+    { href: "/contact", label: "Kontak" },
   ];
 
   return (
