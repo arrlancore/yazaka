@@ -10,9 +10,14 @@ export class ServiceWorkerManager {
   private isUpdateAvailable = false;
   private updateNotificationShown = false;
   private waitingWorker: ServiceWorker | null = null;
+  private processedWorkerScriptURL: string | null = null;
 
   constructor() {
     if (typeof window !== 'undefined') {
+      // Check if notification was already shown in this session
+      const shown = sessionStorage.getItem('sw-update-notification-shown');
+      this.updateNotificationShown = shown === 'true';
+
       this.init();
     }
   }
@@ -88,7 +93,7 @@ export class ServiceWorkerManager {
   private showUpdateNotification() {
     // Only show if not already shown for this session
     if (this.updateNotificationShown) return;
-    
+
     // Dispatch custom event for toast notification
     window.dispatchEvent(new CustomEvent('pwa-update-available', {
       detail: {
@@ -96,8 +101,14 @@ export class ServiceWorkerManager {
         applyUpdate: () => this.applyUpdate()
       }
     }));
-    
+
     this.updateNotificationShown = true;
+    sessionStorage.setItem('sw-update-notification-shown', 'true');
+
+    // Store the worker script URL to avoid re-showing for the same worker
+    if (this.waitingWorker) {
+      this.processedWorkerScriptURL = this.waitingWorker.scriptURL;
+    }
   }
 
 
@@ -109,7 +120,10 @@ export class ServiceWorkerManager {
 
     console.log('SW Manager: Applying update...');
     this.waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-    
+
+    // Clear the notification flag so we can show it again for future updates
+    sessionStorage.removeItem('sw-update-notification-shown');
+
     // Wait a moment for service worker to activate, then reload
     setTimeout(() => {
       window.location.reload();
@@ -290,19 +304,26 @@ export class ServiceWorkerManager {
 
     try {
       console.log('SW Manager: Checking for homepage updates...');
-      
+
       // Force check for updates using SW registration API
       await this.registration.update();
-      
+
       // Wait a moment for update detection
       setTimeout(() => {
         if (!this.registration) return;
-        
+
         // Check if there's a waiting worker (new version ready)
         if (this.registration.waiting && !this.updateNotificationShown) {
-          console.log('SW Manager: Update available via waiting worker');
-          this.waitingWorker = this.registration.waiting;
-          this.showUpdateNotification();
+          const waitingWorkerURL = this.registration.waiting.scriptURL;
+
+          // Only show notification if this is a NEW waiting worker we haven't processed
+          if (waitingWorkerURL !== this.processedWorkerScriptURL) {
+            console.log('SW Manager: Update available via waiting worker');
+            this.waitingWorker = this.registration.waiting;
+            this.showUpdateNotification();
+          } else {
+            console.log('SW Manager: Waiting worker already processed, skipping notification');
+          }
         }
         // Check if there's an installing worker (new version downloading)
         else if (this.registration.installing && !this.updateNotificationShown) {
@@ -313,7 +334,7 @@ export class ServiceWorkerManager {
           console.log('SW Manager: No updates available');
         }
       }, 1000);
-      
+
     } catch (error) {
       console.error('Error checking homepage update:', error);
     }
