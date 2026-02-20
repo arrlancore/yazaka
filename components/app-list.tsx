@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   DuaIcon,
   MemorizationIcon,
+  PanduanIcon,
   PrayerScheduleIcon,
   QiblaCompassIcon,
   QuranIcon,
@@ -36,6 +37,7 @@ const apps: AppItem[] = [
     href: "/hafalan-quran",
   },
   { name: "Doa", icon: <DuaIcon size={40} />, href: "/doa" },
+  { name: "Panduan", icon: <PanduanIcon size={40} />, href: "/panduan" },
 ];
 
 const AppList = () => {
