@@ -94,7 +94,7 @@ export const doaRamadan: DoaItem[] = [
     tr: "Allahumma sallimni ilaa Ramadhan, wa sallim lii Ramadhan, wa tasallamhu minni mutaqabbalan.",
     idn: "Ya Allah, antarkanlah aku kepada Ramadan, antarkanlah Ramadan kepadaku, dan terimalah amalanku di bulan Ramadan.",
     tentang:
-      "Doa salaf — diriwayatkan dari Yahya bin Abi Katsir\n\nPara salaf sangat bersemangat menyambut Ramadan dan berdoa 6 bulan sebelumnya agar dipertemukan dengan Ramadan. (Lathaif Ma'arif: 148)",
+      "Doa yang diriwayatkan dari Yahya bin Abi Katsir (tabi'in).\n\nIbnu Rajab dalam Lathaif Ma'arif (148) menyebutkan:\n\"Mereka (para salaf) berdoa kepada Allah 6 bulan agar diberi umur hingga Ramadan, dan 6 bulan sesudahnya agar amal mereka diterima.\"\n\nBetapa mulianya semangat mereka menyambut Ramadan!",
     tag: ["ramadan", "menyambut", "salaf"],
   },
 ];

@@ -7,7 +7,7 @@ import RamadanTabs from "@/components/panduan/ramadan/RamadanTabs";
 export const metadata: Metadata = {
   title: "Panduan Ramadan | Checklist Harian, Fikih Puasa & Doa Shahih",
   description:
-    "Panduan Ramadan lengkap sesuai manhaj salafus shalih: checklist ibadah harian, fikih puasa praktis, dalil & doa shahih, keutamaan Ramadan, dan 30 ayat pilihan untuk tadabbur.",
+    "Panduan Ramadan lengkap berdasarkan Al-Qur'an dan Hadits Shahih: checklist ibadah harian, fikih puasa praktis, dalil terpercaya, keutamaan Ramadan, dan 30 ayat pilihan untuk tadabbur.",
   openGraph: {
     title: "Panduan Ramadan | Checklist Harian, Fikih Puasa & Doa Shahih",
     description:
@@ -34,7 +34,7 @@ export default function PanduanRamadanPage() {
     <MobilePage>
       <HeaderMobilePage
         title="Panduan Ramadan"
-        subtitle="Sesuai Manhaj Salafus Shalih"
+        subtitle="Berdasarkan Al-Qur'an & Hadits Shahih"
         backUrl="/panduan"
       />
       <RamadanTabs />

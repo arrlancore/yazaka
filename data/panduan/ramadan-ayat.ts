@@ -201,7 +201,7 @@ export const ayatPilihan: AyatPilihan[] = [
     translation:
       "Ketika belenggu dan rantai dipasang di leher mereka, seraya mereka diseret ke dalam air yang sangat panas, kemudian mereka dibakar dalam api.",
     tadabbur:
-      "Gambaran yang sangat detail tentang azab neraka. Para salaf membacanya berulang-ulang dan menangis karena takut. Ramadan adalah waktu untuk memohon perlindungan dari neraka.",
+      "Gambaran yang sangat detail tentang azab neraka. Orang beriman yang membaca ayat ini berulang-ulang akan menangis karena takut.\n\nRamadan adalah waktu untuk memohon perlindungan dari neraka.",
     category: "penyesalan-neraka",
   },
 

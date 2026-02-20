@@ -7,11 +7,11 @@ import PanduanHub from "@/components/panduan/PanduanHub";
 export const metadata: Metadata = {
   title: "Panduan Ibadah Islam | Ramadan, Qurban, Umrah, Haji",
   description:
-    "Panduan ibadah Islam sesuai manhaj salafus shalih. Checklist harian, fikih praktis, dalil & doa shahih, dan keutamaan ibadah.",
+    "Panduan ibadah Islam berdasarkan Al-Qur'an dan Hadits Shahih. Checklist harian, fikih praktis, dalil terpercaya, dan keutamaan ibadah.",
   openGraph: {
     title: "Panduan Ibadah Islam | Ramadan, Qurban, Umrah, Haji",
     description:
-      "Panduan ibadah Islam sesuai manhaj salafus shalih. Checklist harian, fikih praktis, dalil & doa shahih.",
+      "Panduan ibadah Islam berdasarkan Al-Qur'an dan Hadits Shahih. Checklist harian, fikih praktis, dalil terpercaya.",
     url: appUrl + "/panduan",
     siteName: brandName,
     locale: appLocale,
@@ -32,7 +32,7 @@ export default function PanduanPage() {
     <MobilePage>
       <HeaderMobilePage
         title="Panduan Ibadah"
-        subtitle="Sesuai Manhaj Salafus Shalih"
+        subtitle="Berdasarkan Al-Qur'an & Hadits Shahih"
         backUrl="/"
       />
       <PanduanHub />

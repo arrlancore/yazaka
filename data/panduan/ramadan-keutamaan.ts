@@ -51,26 +51,26 @@ export const keutamaanItems: KeutamaanItem[] = [
     id: "salaf-sembunyikan-amal",
     type: "salaf-quote",
     translation:
-      "Para generasi salaf sangat antusias menyembunyikan amal ibadah mereka karena khawatir merusak keikhlasan.",
-    source: "Atsar dari berbagai ulama salaf",
+      "\"Setan akan terus menggoda hingga hamba yang semula menyembunyikan amal akhirnya suka dipuji — dan catatan amal salehnya berubah menjadi riya'.\"",
+    source: "Sufyan ats-Tsauri (atsar shahih)",
     commentary:
-      "Sufyan ats-Tsauri berkata: \"Setan akan terus menggoda hingga hamba yang semula menyembunyikan amal akhirnya suka dipuji — dan catatan amal salehnya berubah menjadi riya'.\"",
+      "Para generasi salaf sangat antusias menyembunyikan amal ibadah mereka karena khawatir merusak keikhlasan. Sufyan memberikan peringatan keras tentang bahaya riya' yang tersembunyi.",
   },
   {
     id: "salaf-doa-6-bulan",
     type: "salaf-quote",
     subject: "Mu'alla bin Al-Fadhal",
     translation:
-      "Mereka (para salaf) dahulunya berdoa kepada Allah selama 6 bulan untuk dipertemukan dengan Ramadan, dan 6 bulan selebihnya memohon agar diterima ibadah mereka.",
-    source: "Lathaif Ma'arif: 148",
+      "\"Mereka (para salaf) berdoa kepada Allah 6 bulan agar diberi umur hingga Ramadan, dan 6 bulan sesudahnya agar amal mereka diterima.\"",
+    source: "Ibnu Rajab — Lathaif Ma'arif: 148",
   },
   {
     id: "ibnu-rajab-puasa",
     type: "salaf-quote",
     subject: "Ibnu Rajab Al-Hanbali",
     translation:
-      "Ketahuilah bahwa puasa Ramadan memiliki dua tingkatan: (1) Meninggalkan makan, minum, dan syahwat. (2) Puasa seluruh anggota tubuh dari dosa.",
-    source: "Lathaif Ma'arif",
+      "\"Ketahuilah bahwa puasa Ramadan memiliki dua tingkatan: (1) Meninggalkan makan, minum, dan syahwat. (2) Puasa seluruh anggota tubuh dari dosa.\"",
+    source: "Ibnu Rajab — Lathaif Ma'arif",
   },
   {
     id: "ayub-sembunyikan-tahajjud",
@@ -96,9 +96,9 @@ export const keutamaanItems: KeutamaanItem[] = [
     id: "nasihat-salaf-ramadan",
     type: "salaf-quote",
     translation:
-      "Para salaf tidak membuang waktu Ramadan walau sedetik. Malam untuk qiyam, siang untuk puasa, tilawah, dan dzikir.",
-    source: "Dari berbagai riwayat ulama salaf",
+      "\"Para salaf tidak membuang waktu Ramadan walau sedetik. Malam untuk qiyam, siang untuk puasa, tilawah, dan dzikir.\"",
+    source: "Ibnu Rajab — Lathaif Ma'arif",
     commentary:
-      "Waspada: banyak pemuda yang menghabiskan malam-malam mulia Ramadan untuk hal sia-sia — ini adalah kerugian yang tidak bisa diganti.",
+      "Waspada: banyak pemuda masa kini yang menghabiskan malam-malam mulia Ramadan untuk hal sia-sia — ini adalah kerugian yang tidak bisa diganti.",
   },
 ];
