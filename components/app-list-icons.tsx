@@ -319,6 +319,77 @@ export const DuaIcon = ({
   </svg>
 );
 
+export const PanduanIcon = ({
+  size = 24,
+  primaryColor = "#34D399",
+  secondaryColor = "#00d1a0",
+}: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 100"
+    width={size}
+    height={size}
+    style={{ background: "transparent" }}
+  >
+    <defs>
+      <linearGradient
+        id="panduan-gradient"
+        x1="0%"
+        y1="0%"
+        x2="100%"
+        y2="100%"
+      >
+        <stop offset="0%" stopColor={primaryColor} />
+        <stop offset="100%" stopColor={secondaryColor} />
+      </linearGradient>
+    </defs>
+
+    {/* Background Circle */}
+    <circle cx={50} cy={50} r={45} fill="url(#panduan-gradient)" />
+
+    {/* Open Book */}
+    <g transform="translate(50 50)">
+      {/* Left page */}
+      <path
+        d="M-22,-14 L-2,-14 L-2,18 Q-12,14 -22,18 Z"
+        fill="#ffffff"
+        opacity={0.9}
+      />
+      {/* Right page */}
+      <path
+        d="M2,-14 L22,-14 L22,18 Q12,14 2,18 Z"
+        fill="#ffffff"
+        opacity={0.9}
+      />
+      {/* Spine */}
+      <line
+        x1={0}
+        y1={-14}
+        x2={0}
+        y2={18}
+        stroke={primaryColor}
+        strokeWidth={1.5}
+        opacity={0.6}
+      />
+      {/* Lines on left page */}
+      <line x1={-18} y1={-6} x2={-5} y2={-6} stroke={primaryColor} strokeWidth={1.2} opacity={0.45} />
+      <line x1={-18} y1={0} x2={-5} y2={0} stroke={primaryColor} strokeWidth={1.2} opacity={0.45} />
+      <line x1={-18} y1={6} x2={-5} y2={6} stroke={primaryColor} strokeWidth={1.2} opacity={0.45} />
+      {/* Lines on right page */}
+      <line x1={5} y1={-6} x2={18} y2={-6} stroke={primaryColor} strokeWidth={1.2} opacity={0.45} />
+      <line x1={5} y1={0} x2={18} y2={0} stroke={primaryColor} strokeWidth={1.2} opacity={0.45} />
+      <line x1={5} y1={6} x2={18} y2={6} stroke={primaryColor} strokeWidth={1.2} opacity={0.45} />
+    </g>
+
+    {/* Crescent moon top-right */}
+    <path
+      d="M68 22 A10 10 0 0 0 58 30 A14 14 0 0 1 68 22"
+      fill="#ffffff"
+      opacity={0.85}
+    />
+  </svg>
+);
+
 // memorization Icon Component (like a bulb)
 export const MemorizationIcon = ({
   size = 24,

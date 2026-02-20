@@ -1,10 +1,8 @@
-import { ReactElement } from "react";
-
 export interface Author {
   name: string;
   slug: string;
   summary: string;
-  bio: ReactElement;
+  bio: string; // MDX source string for next-mdx-remote v6
   avatar?: string;
   socialLinks?: {
     twitter?: string;
@@ -32,7 +30,7 @@ export interface PostMeta {
 }
 
 export interface Post extends PostMeta {
-  content: ReactElement;
+  content: string; // MDX source string for next-mdx-remote v6
   toc?: TableOfContents[];
 }
 

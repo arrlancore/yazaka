@@ -1,11 +1,8 @@
 import path from "path";
 import fs from "fs";
 import matter from "gray-matter";
-import { MDXRemote } from "next-mdx-remote/rsc";
 import readingTime from "reading-time";
 import { Post, PostMeta } from "@/types/blog";
-import { ReactElement } from "react";
-import components from "./mdx-components";
 import { getAuthorBySlug } from "../author-utils";
 
 const POSTS_PATH = path.join(process.cwd(), "content/posts");
@@ -91,16 +88,11 @@ export async function getPostBySlug(slug: string): Promise<Post> {
     };
   }
 
-  const mdxContent = await MDXRemote({
-    source: content,
-    components: components,
-  });
-
   const randomImageUrl =
     randomImage + data.tags ? randomImage + data.tags[0] : "";
 
   return {
-    content: mdxContent,
+    content: content,
     ...data,
     slug,
     author,
@@ -109,14 +101,3 @@ export async function getPostBySlug(slug: string): Promise<Post> {
   } as Post;
 }
 
-export async function convertMDToContent(
-  source: string,
-  components = {} as any
-): Promise<ReactElement> {
-  const mdxContent = await MDXRemote({
-    source,
-    components,
-  });
-
-  return mdxContent;
-}

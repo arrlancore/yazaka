@@ -26,6 +26,7 @@ function Header() {
     { href: "/quran", label: "Quran" },
     { href: "/doa", label: "Doa" },
     { href: "/arah-kiblat", label: "Arah Kiblat" },
+    { href: "/panduan", label: "Panduan" },
     { href: "/contact", label: "Kontak" },
   ];
 
