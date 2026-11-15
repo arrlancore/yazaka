@@ -23,6 +23,7 @@ export type AyatDetailProps = {
     translation: string;
     transliteration: string;
     audioUrl?: string;
+    audioFallbacks?: string[];
     tafsir?: string;
     meta: {
       juz: number;
@@ -88,6 +89,7 @@ const AyatDetail: React.FC<AyatDetailProps> = ({
             translation={verse.translation}
             number={verse.number}
             audioUrl={verse.audioUrl}
+            audioFallbacks={verse.audioFallbacks}
             tafsir={verse.tafsir}
             isLastRead={
               lastRead?.surahNumber === surahNumber &&

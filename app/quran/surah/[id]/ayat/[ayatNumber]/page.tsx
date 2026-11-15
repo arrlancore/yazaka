@@ -4,7 +4,6 @@ import { fetchQuranSuratByNumber } from "@/services/quranServices";
 import { appLocale, appUrl, brandName } from "@/config";
 import MobilePage from "@/components/ui/mobile-page";
 import HeaderMobilePage from "@/components/ui/header-mobile-page";
-import { quranMeta } from "@/content/quran/metadata";
 import { notFound } from "next/navigation";
 
 interface PageProps {
@@ -14,22 +13,14 @@ interface PageProps {
   }>;
 }
 
-// Generate static params for all ayats in all surahs for SEO optimization
+// Ayat pages are rendered on demand (and cached) rather than prerendered at build
+// time: prerendering all ~6,236 ayats means thousands of Quran API calls during
+// `next build`, which time out and fail the deploy build.
 export async function generateStaticParams() {
-  const params: { id: string; ayatNumber: string }[] = [];
-
-  // Generate params for all surahs and their ayats
-  for (const surah of quranMeta.surahs.references) {
-    for (let ayatNum = 1; ayatNum <= surah.numberOfAyahs; ayatNum++) {
-      params.push({
-        id: `${surah.number}_${surah.englishName}`,
-        ayatNumber: ayatNum.toString(),
-      });
-    }
-  }
-
-  return params;
+  return [] as { id: string; ayatNumber: string }[];
 }
+
+export const dynamicParams = true;
 
 // Generate metadata for SEO
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
@@ -127,6 +118,7 @@ async function AyatDetailPage(props: PageProps) {
         translation: verse.translation.id,
         transliteration: verse.text.transliteration.id,
         audioUrl: verse.audio.primary,
+      audioFallbacks: verse.audio.secondary,
         tafsir: verse.tafsir.id.long,
         meta: {
           juz: verse.meta.juz,

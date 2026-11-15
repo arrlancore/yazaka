@@ -37,6 +37,7 @@ interface VerseProps {
   translation?: string;
   tafsir?: string;
   audioUrl?: string;
+  audioFallbacks?: string[];
   onBookmark?: (verseNumber: number) => void;
   onSetLastRead?: (verseNumber: number) => void;
   isBookmarked?: boolean;
@@ -55,6 +56,7 @@ const Verse = ({
   transliteration,
   tafsir,
   audioUrl,
+  audioFallbacks,
   onBookmark,
   onSetLastRead,
   onPlaying,
@@ -70,7 +72,23 @@ const Verse = ({
 
   const loadAudio = useCallback(() => {
     if (audioUrl && !audio) {
-      const newAudio = new Audio(audioUrl);
+      // The primary CDN is sometimes down (503); fall back to the secondary
+      // sources the API provides when a source fails to load.
+      const sources = [audioUrl, ...(audioFallbacks ?? [])];
+      let sourceIndex = 0;
+      const newAudio = new Audio(sources[0]);
+      newAudio.addEventListener("error", () => {
+        if (sourceIndex < sources.length - 1) {
+          sourceIndex += 1;
+          newAudio.src = sources[sourceIndex];
+          newAudio.load();
+          // Audio is only created on the first play click, so retry playing.
+          newAudio.play().catch(() => {});
+        } else {
+          setIsPlaying(false);
+          if (onPlaying) onPlaying(false);
+        }
+      });
       newAudio.addEventListener("ended", () => {
         setIsPlaying(false);
         if (onPlaying) onPlaying(false);
@@ -79,7 +97,7 @@ const Verse = ({
       return newAudio;
     }
     return audio;
-  }, [audioUrl, audio, onPlaying]);
+  }, [audioUrl, audioFallbacks, audio, onPlaying]);
 
   useEffect(() => {
     return () => {
@@ -100,7 +118,9 @@ const Verse = ({
     if (isPlaying) {
       currentAudio.pause();
     } else {
-      currentAudio.play();
+      currentAudio.play().catch(() => {
+        // A failed source is handled by the "error" listener (fallback sources).
+      });
     }
     setIsPlaying(!isPlaying);
     if (onPlaying) onPlaying(!isPlaying);

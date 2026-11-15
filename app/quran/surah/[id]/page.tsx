@@ -33,6 +33,7 @@ const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
       translation: verse.translation.id,
       transliteration: verse.text.transliteration.id,
       audioUrl: verse.audio.primary,
+      audioFallbacks: verse.audio.secondary,
       meta: {
         juz: verse.meta.juz,
         page: verse.meta.page,
