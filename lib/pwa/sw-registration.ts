@@ -7,52 +7,63 @@
 
 export class ServiceWorkerManager {
   private registration: ServiceWorkerRegistration | null = null;
+  private initPromise: Promise<void> | null = null;
   private isUpdateAvailable = false;
-  private updateNotificationShown = false;
   private waitingWorker: ServiceWorker | null = null;
-  private processedWorkerScriptURL: string | null = null;
+  /** Version (CACHE_VERSION) of the waiting worker we already notified about */
+  private notifiedVersion: string | null = null;
+  private isApplyingUpdate = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
-      // Check if notification was already shown in this session
-      const shown = sessionStorage.getItem('sw-update-notification-shown');
-      this.updateNotificationShown = shown === 'true';
-
       this.init();
     }
   }
 
   /**
-   * Initialize service worker registration
+   * Initialize service worker registration (idempotent)
    */
-  async init() {
+  init(): Promise<void> {
+    if (!this.initPromise) {
+      this.initPromise = this.doInit();
+    }
+    return this.initPromise;
+  }
+
+  private async doInit() {
     if (!('serviceWorker' in navigator)) {
       console.log('Service Worker not supported');
       return;
     }
 
     try {
-      this.registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/'
-      });
+      // OneSignal registers this same /sw.js but with ?appId=...&sdkVersion=...
+      // query params. Re-registering it as plain '/sw.js' changes the script
+      // URL, which forces a new (identical) worker to install every time the
+      // two fight over it. Reuse an existing registration instead.
+      const existing = await navigator.serviceWorker.getRegistration('/');
+      const existingUrl =
+        existing?.active?.scriptURL || existing?.waiting?.scriptURL || existing?.installing?.scriptURL;
+      if (existing && existingUrl && new URL(existingUrl).pathname === '/sw.js') {
+        this.registration = existing;
+      } else {
+        this.registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      }
 
       console.log('Service Worker registered successfully');
 
-      // Listen for updates
       this.registration.addEventListener('updatefound', () => {
         this.handleUpdateFound();
       });
 
-      // Listen for controller changes (don't auto-reload)
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('Service Worker controller changed - ready for manual reload');
-      });
-
-      // Listen for messages from service worker
       navigator.serviceWorker.addEventListener('message', (event) => {
         this.handleMessage(event);
       });
 
+      // A worker may already be waiting from a previous visit
+      if (this.registration.waiting) {
+        void this.evaluateWaitingWorker(this.registration.waiting);
+      }
     } catch (error) {
       console.error('Service Worker registration failed:', error);
     }
@@ -62,74 +73,112 @@ export class ServiceWorkerManager {
    * Handle service worker update
    */
   private handleUpdateFound() {
-    if (!this.registration) return;
-
-    const newWorker = this.registration.installing;
+    const newWorker = this.registration?.installing;
     if (!newWorker) return;
 
     console.log('New service worker installing...');
 
     newWorker.addEventListener('statechange', () => {
-      if (newWorker.state === 'installed') {
-        if (navigator.serviceWorker.controller) {
-          // New service worker is available
-          console.log('New service worker available');
-          this.isUpdateAvailable = true;
-          this.waitingWorker = newWorker;
-          
-          // Only show notification once
-          if (!this.updateNotificationShown) {
-            this.showUpdateNotification();
-            this.updateNotificationShown = true;
-          }
-        }
+      if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+        void this.evaluateWaitingWorker(newWorker);
       }
     });
+  }
+
+  /**
+   * Ask a worker for its CACHE_VERSION. Resolves null if it doesn't answer
+   * (e.g. an older sw.js without the GET_VERSION handler).
+   */
+  private getWorkerVersion(worker: ServiceWorker, timeoutMs = 1500): Promise<string | null> {
+    return new Promise((resolve) => {
+      const channel = new MessageChannel();
+      const timer = setTimeout(() => resolve(null), timeoutMs);
+      channel.port1.onmessage = (event) => {
+        clearTimeout(timer);
+        resolve(event.data?.version ?? null);
+      };
+      try {
+        worker.postMessage({ type: 'GET_VERSION' }, [channel.port2]);
+      } catch {
+        clearTimeout(timer);
+        resolve(null);
+      }
+    });
+  }
+
+  /**
+   * Decide whether a waiting worker is a real new build (show toast) or the
+   * same build re-installed under a different URL (activate silently).
+   */
+  private async evaluateWaitingWorker(worker: ServiceWorker) {
+    if (this.isApplyingUpdate) return;
+
+    const active = this.registration?.active;
+    const [waitingVersion, activeVersion] = await Promise.all([
+      this.getWorkerVersion(worker),
+      active ? this.getWorkerVersion(active) : Promise.resolve(null),
+    ]);
+
+    if (waitingVersion && activeVersion && waitingVersion === activeVersion) {
+      console.log('SW Manager: Waiting worker is the same build, activating silently');
+      worker.postMessage({ type: 'SKIP_WAITING' });
+      return;
+    }
+
+    this.isUpdateAvailable = true;
+    this.waitingWorker = worker;
+
+    // Notify once per waiting build (falls back to scriptURL for old workers)
+    const key = waitingVersion ?? worker.scriptURL;
+    if (this.notifiedVersion === key) return;
+    this.notifiedVersion = key;
+
+    console.log('SW Manager: New version available', { activeVersion, waitingVersion });
+    this.showUpdateNotification();
   }
 
   /**
    * Show update notification to user
    */
   private showUpdateNotification() {
-    // Only show if not already shown for this session
-    if (this.updateNotificationShown) return;
-
-    // Dispatch custom event for toast notification
     window.dispatchEvent(new CustomEvent('pwa-update-available', {
       detail: {
         updateAvailable: true,
         applyUpdate: () => this.applyUpdate()
       }
     }));
-
-    this.updateNotificationShown = true;
-    sessionStorage.setItem('sw-update-notification-shown', 'true');
-
-    // Store the worker script URL to avoid re-showing for the same worker
-    if (this.waitingWorker) {
-      this.processedWorkerScriptURL = this.waitingWorker.scriptURL;
-    }
   }
-
 
   /**
-   * Apply update and reload app
+   * Activate the waiting worker, then reload once it has taken control
    */
   async applyUpdate() {
-    if (!this.waitingWorker) return;
+    if (this.isApplyingUpdate) return;
+    this.isApplyingUpdate = true;
+
+    const worker = this.registration?.waiting ?? this.waitingWorker;
+    if (!worker || !navigator.serviceWorker.controller) {
+      window.location.reload();
+      return;
+    }
 
     console.log('SW Manager: Applying update...');
-    this.waitingWorker.postMessage({ type: 'SKIP_WAITING' });
 
-    // Clear the notification flag so we can show it again for future updates
-    sessionStorage.removeItem('sw-update-notification-shown');
-
-    // Wait a moment for service worker to activate, then reload
-    setTimeout(() => {
+    let reloaded = false;
+    const reload = () => {
+      if (reloaded) return;
+      reloaded = true;
       window.location.reload();
-    }, 100);
-  }
+    };
 
+    // Reload only after the new worker is controlling the page; reloading
+    // earlier leaves it "waiting" and the toast comes straight back.
+    navigator.serviceWorker.addEventListener('controllerchange', reload, { once: true });
+    worker.postMessage({ type: 'SKIP_WAITING' });
+
+    // Safety net in case controllerchange never fires
+    setTimeout(reload, 4000);
+  }
 
   /**
    * Skip waiting and activate new service worker (legacy method)
@@ -297,44 +346,19 @@ export class ServiceWorkerManager {
 
   /**
    * Check for updates on homepage visit using service worker registration
-   * This works reliably on mobile PWAs without cache issues
    */
   async checkForHomepageUpdate(): Promise<void> {
+    await this.init();
     if (!this.registration) return;
 
     try {
       console.log('SW Manager: Checking for homepage updates...');
-
-      // Force check for updates using SW registration API
+      // Triggers updatefound -> evaluateWaitingWorker if a new sw.js exists
       await this.registration.update();
 
-      // Wait a moment for update detection
-      setTimeout(() => {
-        if (!this.registration) return;
-
-        // Check if there's a waiting worker (new version ready)
-        if (this.registration.waiting && !this.updateNotificationShown) {
-          const waitingWorkerURL = this.registration.waiting.scriptURL;
-
-          // Only show notification if this is a NEW waiting worker we haven't processed
-          if (waitingWorkerURL !== this.processedWorkerScriptURL) {
-            console.log('SW Manager: Update available via waiting worker');
-            this.waitingWorker = this.registration.waiting;
-            this.showUpdateNotification();
-          } else {
-            console.log('SW Manager: Waiting worker already processed, skipping notification');
-          }
-        }
-        // Check if there's an installing worker (new version downloading)
-        else if (this.registration.installing && !this.updateNotificationShown) {
-          console.log('SW Manager: Update installing, will show notification when ready');
-          // The handleUpdateFound will trigger when installation completes
-        }
-        else {
-          console.log('SW Manager: No updates available');
-        }
-      }, 1000);
-
+      if (this.registration.waiting) {
+        await this.evaluateWaitingWorker(this.registration.waiting);
+      }
     } catch (error) {
       console.error('Error checking homepage update:', error);
     }
@@ -346,7 +370,7 @@ export class ServiceWorkerManager {
   getUpdateStatus() {
     return {
       updateAvailable: this.isUpdateAvailable,
-      notificationShown: this.updateNotificationShown,
+      notifiedVersion: this.notifiedVersion,
       waitingWorker: !!this.waitingWorker,
       registration: !!this.registration
     };
