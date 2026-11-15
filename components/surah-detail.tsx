@@ -32,6 +32,7 @@ export type SurahDetailProps = {
     translation: string;
     transliteration: string;
     audioUrl?: string;
+    audioFallbacks?: string[];
     meta: {
       juz: number;
       page: number;
@@ -115,6 +116,7 @@ const SurahDetail: React.FC<SurahDetailProps> = (surah) => {
                     translation={verse.translation}
                     number={verse.number}
                     audioUrl={verse.audioUrl}
+                    audioFallbacks={verse.audioFallbacks}
                     isLastRead={
                       lastRead?.surahNumber === surah.number &&
                       lastRead?.ayatNumber === verse.number
