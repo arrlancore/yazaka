@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function PUT(req: NextRequest) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const body = await req.json();
     const { 
@@ -127,7 +127,7 @@ export async function PUT(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { searchParams } = new URL(req.url);
     const playerId = searchParams.get('playerId');

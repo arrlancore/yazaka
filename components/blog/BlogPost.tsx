@@ -17,7 +17,7 @@ import { Button } from "../ui/button";
 import { SeriesNavigation } from "./SeriesNavigation";
 import { SeriesHub } from "./SeriesHub";
 import { isSeriesHub } from "@/lib/mdx/series-utils";
-import { MDXRemote } from "next-mdx-remote/rsc";
+import { postsMdx, hasEntry } from "@/lib/content-source";
 import components from "@/lib/mdx/mdx-components";
 
 export default async function BlogPost(props: {
@@ -26,6 +26,9 @@ export default async function BlogPost(props: {
   allPosts?: PostMeta[] | null;
 }) {
   const { post, seriesNavigation, allPosts } = props;
+  const PostContent = hasEntry(postsMdx, post.slug)
+    ? (await postsMdx[post.slug]()).default
+    : null;
 
   return (
     <div>
@@ -78,7 +81,7 @@ export default async function BlogPost(props: {
       {/* Optimized reading container - no card wrapper for better flow */}
       <div className="reading-content">
         <div className="prose prose-reading dark:prose-invert max-w-none">
-          <MDXRemote source={post.content} components={components} />
+          {PostContent && <PostContent components={components} />}
         </div>
       </div>
 

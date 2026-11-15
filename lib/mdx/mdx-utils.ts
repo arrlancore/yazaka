@@ -1,24 +1,19 @@
-import path from "path";
-import fs from "fs";
-import matter from "gray-matter";
-import readingTime from "reading-time";
+import { notFound } from "next/navigation";
 import { Post, PostMeta } from "@/types/blog";
 import { getAuthorBySlug } from "../author-utils";
-
-const POSTS_PATH = path.join(process.cwd(), "content/posts");
+import { postEntries, hasEntry } from "../content-source";
 
 const randomImage = "https://unsplash.it/640/425?";
 
-function getPostFilePaths(): string[] {
-  return fs.readdirSync(POSTS_PATH).filter((path) => /\.mdx?$/.test(path));
+function getPostSlugs(): string[] {
+  return Object.keys(postEntries);
 }
 
 export async function getAllPosts(): Promise<PostMeta[]> {
   const currentDate = new Date();
 
-  const mapPost = async (filePath: string) => {
-    const source = fs.readFileSync(path.join(POSTS_PATH, filePath), "utf8");
-    const { data } = matter(source);
+  const mapPost = async (postSlug: string) => {
+    const { data, readingTimeList } = postEntries[postSlug];
 
     let author = await getAuthorBySlug(data.author);
 
@@ -41,13 +36,13 @@ export async function getAllPosts(): Promise<PostMeta[]> {
     return {
       ...data,
       author,
-      slug: filePath.replace(/\.mdx?$/, ""),
-      readingTime: readingTime(source).text,
+      slug: postSlug,
+      readingTime: readingTimeList,
       image: data.image || randomImageUrl,
     } as PostMeta;
   };
 
-  let posts = await Promise.all(getPostFilePaths().map(mapPost));
+  let posts = await Promise.all(getPostSlugs().map(mapPost));
 
   posts = posts
     .filter((post) => post.draft !== true)
@@ -69,10 +64,10 @@ export async function getPostsByAuthor(
 }
 
 export async function getPostBySlug(slug: string): Promise<Post> {
-  const postFilePath = path.join(POSTS_PATH, `${slug}.mdx`);
-  const source = fs.readFileSync(postFilePath, "utf8");
-
-  const { content, data } = matter(source);
+  if (!hasEntry(postEntries, slug)) {
+    notFound();
+  }
+  const { data, readingTimePost } = postEntries[slug];
   let author = await getAuthorBySlug(data.author);
 
   if (!author) {
@@ -92,11 +87,11 @@ export async function getPostBySlug(slug: string): Promise<Post> {
     randomImage + data.tags ? randomImage + data.tags[0] : "";
 
   return {
-    content: content,
+    content: "",
     ...data,
     slug,
     author,
-    readingTime: readingTime(content).text,
+    readingTime: readingTimePost,
     image: data.image || randomImageUrl,
   } as Post;
 }

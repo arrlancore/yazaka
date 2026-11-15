@@ -22,7 +22,7 @@ const DoaTabs: React.FC<DoaTabsProps> = ({ initialDoaByTabs }) => {
   
   // Simple approach: use local state for input, URL for persistence only
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || "");
-  const debounceTimeoutRef = useRef<NodeJS.Timeout>();
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   
   // Initialize from URL only once on mount
   useEffect(() => {

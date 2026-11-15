@@ -8,16 +8,17 @@ import BlogPost from "@/components/blog/BlogPost";
 import { getSeriesNavigation, isSeriesPost, isSeriesHub } from "@/lib/mdx/series-utils";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const post = await getPostBySlug(params.slug);
 
   if (!post) {
@@ -59,13 +60,14 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page(props: PageProps) {
+  const params = await props.params;
   const post = await getPostBySlug(params.slug);
-  
+
   // Get all posts for series functionality
   let allPosts = null;
   let seriesNavigation = null;
-  
+
   if (post && (isSeriesPost(post) || isSeriesHub(post))) {
     allPosts = await getAllPosts();
     if (isSeriesPost(post)) {

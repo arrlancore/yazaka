@@ -1,12 +1,12 @@
 import { fetchLocationName } from "@/services/prayerTimesServices";
 import { Location } from "@/types/prayerTypes";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const useFetchLocationName = (location: Location) =>
-  useQuery(
-    ["locationName", location],
-    () => fetchLocationName(location.latitude, location.longitude),
-    { enabled: !!location.latitude && !!location.longitude }
-  );
+  useQuery({
+    queryKey: ["locationName", location],
+    queryFn: () => fetchLocationName(location.latitude, location.longitude),
+    enabled: !!location.latitude && !!location.longitude,
+  });
 
 export default useFetchLocationName;

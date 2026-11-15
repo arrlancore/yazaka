@@ -1,9 +1,5 @@
-import path from "path";
-import fs from "fs";
-import matter from "gray-matter";
 import { DoaItem, DoaGroup } from "@/types/doa";
-
-const DOA_PATH = path.join(process.cwd(), "content/doa/sources");
+import { doaEntries, type DoaEntry } from "./content-source";
 
 // Helper function to create URL-friendly slug
 function createSlug(text: string): string {
@@ -15,62 +11,17 @@ function createSlug(text: string): string {
     .replace(/^-|-$/g, '');
 }
 
-// Get all MDX file paths recursively
-function getDoaFilePaths(): { filePath: string; groupSlug: string; fileName: string }[] {
-  const files: { filePath: string; groupSlug: string; fileName: string }[] = [];
-  
-  if (!fs.existsSync(DOA_PATH)) {
-    return files;
-  }
-  
-  const groupDirs = fs.readdirSync(DOA_PATH, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
-  
-  groupDirs.forEach(groupSlug => {
-    const groupPath = path.join(DOA_PATH, groupSlug);
-    const mdxFiles = fs.readdirSync(groupPath)
-      .filter(file => /\.mdx?$/.test(file));
-    
-    mdxFiles.forEach(fileName => {
-      files.push({
-        filePath: path.join(groupPath, fileName),
-        groupSlug,
-        fileName: fileName.replace(/\.mdx?$/, '')
-      });
-    });
-  });
-  
-  return files;
-}
-
-// Parse single MDX file
-function parseMDXFile(filePath: string): DoaItem | null {
-  try {
-    const source = fs.readFileSync(filePath, "utf8");
-    const { data, content } = matter(source);
-    
-    return {
-      ...data,
-      tentang: content.trim() || data.tentang || ''
-    } as DoaItem;
-  } catch (error) {
-    console.error(`Error parsing MDX file ${filePath}:`, error);
-    return null;
-  }
+// Parse a bundled doa entry
+function toDoaItem(entry: DoaEntry): DoaItem {
+  return {
+    ...entry.data,
+    tentang: entry.content.trim() || entry.data.tentang || "",
+  } as DoaItem;
 }
 
 // Get all doa from MDX files
 export async function getAllDoa(): Promise<DoaItem[]> {
-  const filePaths = getDoaFilePaths();
-  const doa: DoaItem[] = [];
-  
-  filePaths.forEach(({ filePath }) => {
-    const doaItem = parseMDXFile(filePath);
-    if (doaItem) {
-      doa.push(doaItem);
-    }
-  });
+  const doa: DoaItem[] = doaEntries.map(toDoaItem);
   
   // Sort by group, then by order within each group
   return doa.sort((a, b) => {
@@ -108,24 +59,9 @@ export async function getDoaByGroup(groupName: string): Promise<DoaItem[]> {
 
 // Get doa by group slug
 export async function getDoaByGroupSlug(groupSlug: string): Promise<DoaItem[]> {
-  const groupPath = path.join(DOA_PATH, groupSlug);
-  
-  if (!fs.existsSync(groupPath)) {
-    return [];
-  }
-  
-  const mdxFiles = fs.readdirSync(groupPath)
-    .filter(file => /\.mdx?$/.test(file));
-  
-  const doa: DoaItem[] = [];
-  
-  mdxFiles.forEach(fileName => {
-    const filePath = path.join(groupPath, fileName);
-    const doaItem = parseMDXFile(filePath);
-    if (doaItem) {
-      doa.push(doaItem);
-    }
-  });
+  const doa: DoaItem[] = doaEntries
+    .filter((entry) => entry.groupSlug === groupSlug)
+    .map(toDoaItem);
   
   // Sort by order within the group
   return doa.sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -193,13 +129,7 @@ export async function searchDoa(query: string): Promise<DoaItem[]> {
 
 // Get available group slugs (for dynamic routing)
 export async function getGroupSlugs(): Promise<string[]> {
-  if (!fs.existsSync(DOA_PATH)) {
-    return [];
-  }
-  
-  return fs.readdirSync(DOA_PATH, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
+  return [...new Set(doaEntries.map((entry) => entry.groupSlug))];
 }
 
 export { createSlug };

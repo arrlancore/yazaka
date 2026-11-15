@@ -8,10 +8,10 @@ import { quranMeta } from "@/content/quran/metadata";
 import { notFound } from "next/navigation";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
     ayatNumber: string;
-  };
+  }>;
 }
 
 // Generate static params for all ayats in all surahs for SEO optimization
@@ -32,9 +32,8 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const [number, name] = params?.id?.split("_");
   const ayatNumber = parseInt(params.ayatNumber);
 
@@ -84,7 +83,8 @@ export async function generateMetadata({
   }
 }
 
-async function AyatDetailPage({ params }: PageProps) {
+async function AyatDetailPage(props: PageProps) {
+  const params = await props.params;
   const [number, name] = params?.id?.split("_");
   const ayatNumber = parseInt(params.ayatNumber);
 
