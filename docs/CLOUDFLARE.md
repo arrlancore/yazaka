@@ -27,6 +27,7 @@ npx wrangler login               # only needed to deploy
 | --- | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | **Build time** | Inlined into the client bundle and required by `integrations/supabase/client.ts` (the build fails without them, on Vercel too). Export them in the shell / CI before `npm run deploy`. Also read at runtime by the API routes and middleware (Worker variables/secrets). |
 | `NEXT_PUBLIC_ONESIGNAL_APP_ID`, `NEXT_PUBLIC_ONESIGNAL_DEV_APP_ID`, `NEXT_PUBLIC_ONESIGNAL_SAFARI_WEB_ID`, `NEXT_PUBLIC_GA_ID` | Build time | Inlined into the client bundle. |
+| `QURAN_API_URL` | Worker variable (`vars` in `wrangler.jsonc`) | Base URL of the Quran API (the `arrlancore/quran-api` Worker). Read at runtime on the server; falls back to the default in `config.ts`. The service worker (`public/sw.js`) has its own hardcoded copy. |
 | `OPENROUTER_API_KEY` | Worker secret | `npx wrangler secret put OPENROUTER_API_KEY` |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME` | Worker secrets | Used by `/api/upload`. |
 

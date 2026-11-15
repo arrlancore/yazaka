@@ -4,3 +4,4 @@ NEXTJS_ENV=development
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 OPENROUTER_API_KEY=
+QURAN_API_URL=https://quran-api.arrlancore.workers.dev
