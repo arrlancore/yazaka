@@ -1,6 +1,10 @@
 import { Metadata } from "next";
 import AyatDetail, { AyatDetailProps } from "@/components/ayat-detail";
-import { fetchQuranSuratByNumber } from "@/services/quranServices";
+import {
+  fetchAllQuranSurahs,
+  fetchQuranSuratByNumber,
+} from "@/services/quranServices";
+import { surahsBahasa } from "@/content/quran/metadata";
 import { appLocale, appUrl, brandName } from "@/config";
 import MobilePage from "@/components/ui/mobile-page";
 import HeaderMobilePage from "@/components/ui/header-mobile-page";
@@ -13,14 +17,20 @@ interface PageProps {
   }>;
 }
 
-// Ayat pages are rendered on demand (and cached) rather than prerendered at build
-// time: prerendering all ~6,236 ayats means thousands of Quran API calls during
-// `next build`, which time out and fail the deploy build.
+// Every ayat of every surah is prerendered at build time (static export).
+// Surah JSON is fetched once per surah and cached (see services/quranServices.ts),
+// so this costs 114 API calls rather than one per ayat.
 export async function generateStaticParams() {
-  return [] as { id: string; ayatNumber: string }[];
+  await fetchAllQuranSurahs();
+  return surahsBahasa.flatMap((surah) =>
+    Array.from({ length: surah.totalVerses }, (_, i) => ({
+      id: `${surah.number}_${surah.name}`,
+      ayatNumber: String(i + 1),
+    }))
+  );
 }
 
-export const dynamicParams = true;
+export const dynamicParams = false;
 
 // Generate metadata for SEO
 export async function generateMetadata(props: PageProps): Promise<Metadata> {

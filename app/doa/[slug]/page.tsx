@@ -5,16 +5,11 @@ import { appLocale, appUrl, brandName } from "@/config";
 import { DoaItem } from "@/types/doa";
 import { getAllDoa, getDoaBySlug } from "@/lib/doa-utils";
 import MobilePage from "@/components/ui/mobile-page";
-import HeaderMobilePage from "@/components/ui/header-mobile-page";
-import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import DoaDetailHeader from "@/components/doa/DoaDetailHeader";
 
 interface PageProps {
   params: Promise<{
     slug: string;
-  }>;
-  searchParams: Promise<{
-    back_q?: string;
   }>;
 }
 
@@ -25,6 +20,8 @@ export async function generateStaticParams() {
     slug: doa.slug,
   }));
 }
+
+export const dynamicParams = false;
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
@@ -63,7 +60,6 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 }
 
 async function DoaDetailPage(props: PageProps) {
-  const searchParams = await props.searchParams;
   const params = await props.params;
   const doa = await getDoaBySlug(params.slug);
 
@@ -71,25 +67,9 @@ async function DoaDetailPage(props: PageProps) {
     notFound();
   }
 
-  // Generate backUrl with search params if available
-  const backQuery = searchParams.back_q;
-  const backUrl = backQuery ? `/doa?q=${encodeURIComponent(backQuery)}` : "/doa";
-
   return (
     <MobilePage>
-      <HeaderMobilePage
-        title={doa.nama}
-        backUrl={backUrl}
-        rightContent={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-white/20"
-          >
-            <Search size={20} />
-          </Button>
-        }
-      />
+      <DoaDetailHeader title={doa.nama} />
       <main className="flex flex-col pb-4">
         <div className="px-4 space-y-4 sm:container sm:px-0 sm:max-w-2xl sm:mx-auto">
           <DoaDetail doa={doa} />

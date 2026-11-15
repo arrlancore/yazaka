@@ -11,10 +11,16 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { BlogHeader } from "@/components/blog/blog-header";
 import { BlogFooter } from "@/components/blog/blog-footer";
-import { getAuthorBySlug } from "@/lib/author-utils";
+import { getAuthorBySlug, getAllAuthorSlugs } from "@/lib/author-utils";
 import { getPostsByAuthor } from "@/lib/mdx/mdx-utils";
 import { Metadata } from "next";
 import { appLocale, appUrl, brandName } from "@/config";
+
+export async function generateStaticParams() {
+  return getAllAuthorSlugs().map((slug) => ({ slug }));
+}
+
+export const dynamicParams = false;
 
 export async function generateMetadata(
   props: {

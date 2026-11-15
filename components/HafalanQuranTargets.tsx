@@ -60,7 +60,7 @@ export default function HafalanQuranTargets() {
                         <h3 className="text-lg font-semibold">{targetSurah}</h3>
                       </div>
                       <Button variant="ghost" size="icon" asChild>
-                        <Link href={`/hafalan-quran/target/${target.id}`}>
+                        <Link href={`/hafalan-quran/target?id=${target.id}`}>
                           <ChevronRight size={20} />
                         </Link>
                       </Button>

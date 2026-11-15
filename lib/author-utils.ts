@@ -19,3 +19,7 @@ export async function getAuthorBySlug(slug: string): Promise<Author | null> {
 
   return author;
 }
+
+export function getAllAuthorSlugs(): string[] {
+  return Object.keys(authorEntries);
+}

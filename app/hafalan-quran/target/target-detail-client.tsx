@@ -1,18 +1,15 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
 import TargetHafalanDetail from "@/components/TargetHafalanDetail";
 import MobilePage from "@/components/ui/mobile-page";
 import HeaderMobilePage from "@/components/ui/header-mobile-page";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
-interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
-export default async function TargetDetailPage(props: PageProps) {
-  const params = await props.params;
-  const targetId = params.id;
+export default function TargetDetailClient() {
+  const searchParams = useSearchParams();
+  const targetId = searchParams.get("id") ?? "";
 
   return (
     <>
