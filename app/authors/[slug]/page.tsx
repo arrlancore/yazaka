@@ -16,11 +16,12 @@ import { getPostsByAuthor } from "@/lib/mdx/mdx-utils";
 import { Metadata } from "next";
 import { appLocale, appUrl, brandName } from "@/config";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const author = await getAuthorBySlug(params.slug);
 
   if (!author) {
@@ -61,11 +62,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function AuthorPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function AuthorPage(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+) {
+  const params = await props.params;
   const author = await getAuthorBySlug(params.slug);
   const authorPosts = await getPostsByAuthor(params.slug);
 

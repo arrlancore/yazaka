@@ -41,14 +41,13 @@ const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
   };
 };
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const [number, name] = params?.id?.split("_");
   const surahDetail: SurahDetailResponse = await fetchQuranSuratByNumber(
     parseInt(number)
@@ -74,7 +73,8 @@ export async function generateMetadata({
     },
   };
 }
-async function SurahDetailPage({ params }: PageProps) {
+async function SurahDetailPage(props: PageProps) {
+  const params = await props.params;
   const [number, name] = params?.id?.split("_");
   const surahDetail: SurahDetailResponse = await fetchQuranSuratByNumber(
     parseInt(number)

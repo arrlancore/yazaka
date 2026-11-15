@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default async function TargetDetailPage({ params }: PageProps) {
+export default async function TargetDetailPage(props: PageProps) {
+  const params = await props.params;
   const targetId = params.id;
 
   return (

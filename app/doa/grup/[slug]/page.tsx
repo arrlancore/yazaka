@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 const getGroupBySlug = async (slug: string): Promise<DoaGroup | undefined> => {
@@ -34,11 +34,10 @@ export async function generateStaticParams() {
     }));
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const group = await getGroupBySlug(params.slug);
-  
+
   if (!group) {
     return {
       title: "Grup doa tidak ditemukan",
@@ -70,9 +69,10 @@ export async function generateMetadata({
   };
 }
 
-async function DoaGroupDetailPage({ params }: PageProps) {
+async function DoaGroupDetailPage(props: PageProps) {
+  const params = await props.params;
   const group = await getGroupBySlug(params.slug);
-  
+
   if (!group) {
     notFound();
   }

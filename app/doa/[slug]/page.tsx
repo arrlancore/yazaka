@@ -10,12 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     back_q?: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
@@ -26,11 +26,10 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const doa = await getDoaBySlug(params.slug);
-  
+
   if (!doa) {
     return {
       title: "Doa tidak ditemukan",
@@ -63,9 +62,11 @@ export async function generateMetadata({
   };
 }
 
-async function DoaDetailPage({ params, searchParams }: PageProps) {
+async function DoaDetailPage(props: PageProps) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const doa = await getDoaBySlug(params.slug);
-  
+
   if (!doa) {
     notFound();
   }

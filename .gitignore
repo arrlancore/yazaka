@@ -41,3 +41,11 @@ next-env.d.ts
 
 # dynamic public
 public/sitemap.xml
+# generated content bundle
+/lib/generated/
+
+# cloudflare / opennext
+/.open-next/
+/.wrangler/
+.dev.vars
+cloudflare-env.d.ts
