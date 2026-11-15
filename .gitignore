@@ -49,3 +49,9 @@ public/sitemap.xml
 /.wrangler/
 .dev.vars
 cloudflare-env.d.ts
+
+# static export build cache + generated sitemaps
+/.cache/
+public/sitemap-index.xml
+public/all-ayat-sitemap.xml
+public/_redirects
