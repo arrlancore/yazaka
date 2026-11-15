@@ -20,7 +20,13 @@ export const blogUrl = appUrl + "blog";
 export const defaultAuthor = "Tim Redaksi";
 
 export const URLS = {
-  quranApi: "https://quran-api-tau.vercel.app",
+  // Server-side only. Override with the QURAN_API_URL variable (wrangler.jsonc
+  // "vars" on Cloudflare); read lazily so the Worker runtime value is used.
+  get quranApi() {
+    return (
+      process.env.QURAN_API_URL || "https://quran-api.arrlancore.workers.dev"
+    ).replace(/\/+$/, "");
+  },
 };
 
 // Analytics

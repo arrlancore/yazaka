@@ -34,7 +34,7 @@ npm run lint               # Alternative with npm
 - **Styling**: Tailwind CSS + shadcn/ui components
 - **State Management**: Zustand with persistence for hafalan (memorization) data
 - **Content**: MDX for blog posts and documentation
-- **APIs**: External Quran API (`quran-api-tau.vercel.app`) and prayer times API
+- **APIs**: External Quran API (`quran-api.arrlancore.workers.dev`, source in `arrlancore/quran-api`) and prayer times API
 - **Fonts**: Custom Islamic fonts (UthmanicHafs for Arabic, Kitab-Regular)
 
 ### Key Directory Structure

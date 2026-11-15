@@ -17,6 +17,9 @@
       "service": "bekhair"
     }
   ],
+  "vars": {
+    "QURAN_API_URL": "https://quran-api.arrlancore.workers.dev"
+  },
   "observability": {
     "enabled": true
   }

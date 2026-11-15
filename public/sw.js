@@ -5,7 +5,7 @@
 importScripts('https://cdn.onesignal.com/sdks/OneSignalSDKWorker.js');
 
 // Dynamic cache versioning based on build timestamp
-const CACHE_VERSION = '0.1.0.1771558286'; // Update this with each deploy
+const CACHE_VERSION = '0.1.0.1794727698'; // Update this with each deploy
 const CACHE_NAME = `bekhair-v${CACHE_VERSION}`;
 const STATIC_CACHE_NAME = `bekhair-static-v${CACHE_VERSION}`;
 const DYNAMIC_CACHE_NAME = `bekhair-dynamic-v${CACHE_VERSION}`;
@@ -23,7 +23,7 @@ const STATIC_ASSETS = [
 ];
 
 // API endpoints to cache for offline access
-const QURAN_API_BASE = 'https://quran-api-tau.vercel.app';
+const QURAN_API_BASE = 'https://quran-api.arrlancore.workers.dev';
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
