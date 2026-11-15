@@ -20,8 +20,8 @@ export const blogUrl = appUrl + "blog";
 export const defaultAuthor = "Tim Redaksi";
 
 export const URLS = {
-  // Server-side only. Override with the QURAN_API_URL variable (wrangler.jsonc
-  // "vars" on Cloudflare); read lazily so the Worker runtime value is used.
+  // Build-time only (static export). Override with the QURAN_API_URL env var
+  // when running `npm run build`; defaults to the production Quran API Worker.
   get quranApi() {
     return (
       process.env.QURAN_API_URL || "https://quran-api.arrlancore.workers.dev"

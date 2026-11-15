@@ -1,6 +1,24 @@
 "use client";
 
 /**
+ * The /api/notifications/* routes were removed with the move to a static
+ * export (see _disabled/README.md). Until they are re-hosted (separate Worker
+ * or Supabase Edge Function), return a synthetic 503 instead of hitting a
+ * missing endpoint so callers take their existing "request failed" paths.
+ */
+export const NOTIFICATION_API_ENABLED = false;
+
+export async function notificationApiFetch(
+  input: string,
+  init?: RequestInit
+): Promise<Response> {
+  if (!NOTIFICATION_API_ENABLED) {
+    return new Response(null, { status: 503, statusText: 'Notifications API disabled' });
+  }
+  return fetch(input, init);
+}
+
+/**
  * Push Notifications Manager for Prayer Times
  * Handles permission requests, scheduling, and prayer time reminders
  */
@@ -338,7 +356,7 @@ export class PrayerNotificationManager {
     }
 
     try {
-      const response = await fetch(
+      const response = await notificationApiFetch(
         `/api/notifications/onesignal/preferences?playerId=${this.oneSignalPlayerId}`,
         { method: 'GET' }
       );
@@ -369,7 +387,7 @@ export class PrayerNotificationManager {
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       
-      const response = await fetch('/api/notifications/onesignal/preferences', {
+      const response = await notificationApiFetch('/api/notifications/onesignal/preferences', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -402,7 +420,7 @@ export class PrayerNotificationManager {
     }
 
     try {
-      const response = await fetch(
+      const response = await notificationApiFetch(
         `/api/notifications/onesignal/preferences?playerId=${this.oneSignalPlayerId}`,
         { method: 'GET' }
       );
@@ -451,7 +469,7 @@ export class PrayerNotificationManager {
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       
-      const response = await fetch('/api/notifications/onesignal/subscribe', {
+      const response = await notificationApiFetch('/api/notifications/onesignal/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -484,7 +502,7 @@ export class PrayerNotificationManager {
     }
 
     try {
-      const response = await fetch('/api/notifications/onesignal/unsubscribe', {
+      const response = await notificationApiFetch('/api/notifications/onesignal/unsubscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -3,10 +3,15 @@ import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
+const isDev = process.env.NODE_ENV === "development";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Fully static site: next build writes plain HTML/JS/CSS to out/, served by
+  // Cloudflare as static assets without invoking a Worker (no CPU limit).
+  ...(isDev ? {} : { output: "export" }),
+  staticPageGenerationTimeout: 180,
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   experimental: {
     mdxRs: true,
@@ -17,6 +22,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    // No image optimizer on a static host
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -34,8 +41,6 @@ const nextConfig = {
   },
 };
 
-// Enables Cloudflare bindings (getCloudflareContext) during `next dev`
-initOpenNextCloudflareForDev();
 
 const withMDX = createMDX({
   options: {

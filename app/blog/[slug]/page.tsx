@@ -13,6 +13,13 @@ interface PageProps {
   }>;
 }
 
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ slug: post.slug }));
+}
+
+export const dynamicParams = false;
+
 export async function generateMetadata(
   props: {
     params: Promise<{ slug: string }>;

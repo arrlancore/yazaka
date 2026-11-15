@@ -1,54 +1,29 @@
-# Deploying Bekhair to Cloudflare (Workers + OpenNext)
+# Deploying Bekhair to Cloudflare (static export)
 
-The app is built with [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare) and runs as a Cloudflare Worker with static assets (worker name `bekhair`). It stays Vercel-compatible (`next build` is unchanged).
+The site is a fully static export (`output: "export"`). `next build` writes plain HTML/JS/CSS to `out/`, and Cloudflare serves it as Workers static assets (`wrangler.jsonc` has no `main`, so no Worker script runs per request and the free-plan 10 ms CPU limit does not apply).
 
-## What changed to make this work
+Why: on the Workers Free plan, SSR through OpenNext hit `exceededCpu` on `/quran`, `/quran/surah/*` and the ayat pages (renders used 369-867 ms CPU, mostly from crawlers walking the 6,236 ayat URLs).
 
-| Area | Change |
-| --- | --- |
-| Next.js / React | Upgraded to Next 15.5.29 (OpenNext requires `>=15.5.29 <16`) and React 19. Route `params` are async (codemod applied; `lib/supabase/server.ts` `createClient()` is now async because `cookies()` is async). `framer-motion` -> 12, `cmdk` -> 1.1, `lucide-react` -> 0.577 for React 19 peers. `react-query` v3 -> `@tanstack/react-query` v5 (3 files). Unused `lottie-react`, `react-scroll-parallax`, `next-seo` removed. |
-| Filesystem | Workers have no runtime `fs`. `scripts/generate-content-bundle.ts` (runs on `prebuild`, `predev`, `prelint`, `pretype-check`) reads `content/` (posts, authors, doa) into `lib/generated/content/` (git-ignored). `lib/mdx/mdx-utils.ts`, `lib/author-utils.ts`, `lib/doa-utils.ts` read it through `lib/content-source.ts`. |
-| MDX | `next-mdx-remote` evaluates MDX with `new Function`, which Workers forbid. Blog posts are compiled to React modules at build time (same remark/rehype plugins) and loaded through a static registry. The inline intro texts on a few pages (`renderMd`) now use `react-markdown`. `next-mdx-remote` and the unused `MDXLayout` were removed. |
-| Images | `sharp` removed. `wrangler.jsonc` has an `IMAGES` binding so `next/image` (`/_next/image`, remotePatterns kept) is optimized by Cloudflare Images. |
-| Middleware | `middleware.ts` (Supabase session refresh) runs as OpenNext's edge middleware. It now skips the refresh when the Supabase env vars are missing instead of failing every request. |
-| Scripts | Build scripts run with `tsx` instead of `ts-node` loaders. `next build` no longer fails on pre-existing lint errors (`eslint.ignoreDuringBuilds`); run `npm run lint`. |
-
-## One-time setup
+## Build
 
 ```bash
-npm install
-cp .dev.vars.example .dev.vars   # local env for preview
-npx wrangler login               # only needed to deploy
+npm run build     # prebuild: content bundle, sw version, sitemaps, _redirects; then next build -> out/
+npm run deploy    # build + wrangler deploy (needs Cloudflare credentials)
+npx wrangler dev  # serve out/ locally
 ```
 
-## Environment variables and secrets
+- `QURAN_API_URL` (build-time env var, default `https://quran-api.arrlancore.workers.dev`) is where the build fetches Quran data. Surahs are fetched once each (114 calls) and cached in `.cache/quran/*.json` (git-ignored; delete to refetch). See `services/quranServices.ts`.
+- `NEXT_PUBLIC_*` variables (Supabase, OneSignal, GA) are inlined at build time and are optional; the build succeeds without them.
+- `public/` is copied into `out/` during `next build`, so sitemaps and `_redirects` are generated in `prebuild`.
+- Content changes (blog, doa) need a rebuild.
 
-| Name | Where | Notes |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | **Build time** | Inlined into the client bundle and required by `integrations/supabase/client.ts` (the build fails without them, on Vercel too). Export them in the shell / CI before `npm run deploy`. Also read at runtime by the API routes and middleware (Worker variables/secrets). |
-| `NEXT_PUBLIC_ONESIGNAL_APP_ID`, `NEXT_PUBLIC_ONESIGNAL_DEV_APP_ID`, `NEXT_PUBLIC_ONESIGNAL_SAFARI_WEB_ID`, `NEXT_PUBLIC_GA_ID` | Build time | Inlined into the client bundle. |
-| `QURAN_API_URL` | Worker variable (`vars` in `wrangler.jsonc`) | Base URL of the Quran API (the `arrlancore/quran-api` Worker). Read at runtime on the server; falls back to the default in `config.ts`. The service worker (`public/sw.js`) has its own hardcoded copy. |
-| `OPENROUTER_API_KEY` | Worker secret | `npx wrangler secret put OPENROUTER_API_KEY` |
-| `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME` | Worker secrets | Used by `/api/upload`. |
+## Limits
 
-## Commands
+Workers static assets: max 20,000 files per deploy and 25 MiB per file. The export is about 13.5k files (each page also emits a `.txt` RSC payload), so watch the file count if more pages are added.
 
-```bash
-npm run preview     # opennextjs-cloudflare build + local workerd preview
-npm run deploy      # build + deploy to Cloudflare (needs credentials)
-npm run upload      # build + upload a new version without deploying
-npm run cf-typegen  # generate cloudflare-env.d.ts from wrangler.jsonc
-npm run dev         # normal Next dev server
-```
+## What is not available on a static site
 
-## GitHub Actions (optional)
-
-`.github/workflows/cloudflare-deploy.yml` is `workflow_dispatch` only. Add repo secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` and the Supabase build variables, then run it manually.
-
-## Caveats
-
-- **Worker size**: about 20.7 MiB uncompressed / 2.6 MiB gzip, under the 3 MiB gzip free-plan limit but with little headroom (the bundled Quran pages and content are large).
-- **No ISR/revalidate cache** (`open-next.config.ts` uses defaults). Prerendered pages are rendered per request. Add an R2 incremental cache if you want them cached.
-- **Content changes need a rebuild** (content is bundled at build time).
-- `next build` regenerates `public/sw.js` version and sitemap files; those are build outputs.
-- Unknown routes return 404 from `not-found`; dynamic pages that call `notFound()` stream a 404 page with status 200 because of the root `loading.tsx` (same as on Vercel).
+- **API routes** (`/api/upload`, `/api/notifications/onesignal/*`) were moved to `_disabled/` (see `_disabled/README.md`). The notification setup UI is hidden. To bring them back, host them in a separate Worker or Supabase Edge Function.
+- **Middleware** was removed. `app/admin/layout.tsx` is a client-side guard that redirects to `/admin/auth` without a Supabase browser session (UX only; enforce access with Supabase RLS).
+- **Hafalan target detail** is `/hafalan-quran/target?id=<id>` (ids come from localStorage).
+- **Surah URL aliases**: only the canonical `/quran/surah/17_Al-Isra'` is prerendered; apostrophe-less spellings (`17_Al-Isra`) are 301-redirected via `public/_redirects` (generated by `scripts/generate-redirects.ts`).

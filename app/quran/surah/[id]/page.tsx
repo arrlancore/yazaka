@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import SurahDetail, { SurahDetailProps } from "@/components/surah-detail";
 import { fetchQuranSuratByNumber } from "@/services/quranServices";
+import { surahsBahasa } from "@/content/quran/metadata";
 import { appLocale, appUrl, brandName } from "@/config";
 import MobilePage from "@/components/ui/mobile-page";
 import HeaderMobilePage from "@/components/ui/header-mobile-page";
@@ -41,6 +42,15 @@ const mapToSurahDetail = (surah: Surah): SurahDetailProps => {
     })),
   };
 };
+// All 114 surahs are prerendered at build time (static export).
+export function generateStaticParams() {
+  return surahsBahasa.map((surah) => ({
+    id: `${surah.number}_${surah.name}`,
+  }));
+}
+
+export const dynamicParams = false;
+
 interface PageProps {
   params: Promise<{
     id: string;

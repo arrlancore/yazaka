@@ -23,16 +23,13 @@ const getGroupBySlug = async (slug: string): Promise<DoaGroup | undefined> => {
 export async function generateStaticParams() {
   const groups = await getAllGroups();
   
-  // Only generate params for dzikir groups (and other groups that have multiple items)
-  return groups
-    .filter(group => 
-      group.name.toLowerCase().includes('dzikir') || 
-      group.items.length > 3 // Groups with multiple doa
-    )
-    .map((group) => ({
-      slug: group.slug,
-    }));
+  // Static export: every group linked from the doa list must be prerendered.
+  return groups.map((group) => ({
+    slug: group.slug,
+  }));
 }
+
+export const dynamicParams = false;
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;

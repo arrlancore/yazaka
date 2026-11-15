@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Bell, BellOff, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import { notificationManager, NotificationPreferences } from '@/lib/pwa/notifications';
+import { notificationManager, NotificationPreferences, NOTIFICATION_API_ENABLED, notificationApiFetch } from '@/lib/pwa/notifications';
 import { useOneSignal } from './OneSignalProvider';
 import { cn } from '@/lib/utils';
 
@@ -15,7 +15,14 @@ interface NotificationSetupProps {
   onPermissionChanged?: (granted: boolean) => void;
 }
 
-export default function NotificationSetup({ onPermissionChanged }: NotificationSetupProps) {
+// Notification subscriptions need the (currently disabled) /api/notifications
+// endpoints, so the setup UI is hidden until they are re-hosted.
+export default function NotificationSetup(props: NotificationSetupProps) {
+  if (!NOTIFICATION_API_ENABLED) return null;
+  return <NotificationSetupInner {...props} />;
+}
+
+function NotificationSetupInner({ onPermissionChanged }: NotificationSetupProps) {
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
@@ -50,7 +57,7 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
           console.log('Found existing OneSignal subscription, checking database sync...');
           
           // Check if this subscription already exists in our database
-          const response = await fetch(`/api/notifications/onesignal/preferences?playerId=${playerId}`);
+          const response = await notificationApiFetch(`/api/notifications/onesignal/preferences?playerId=${playerId}`);
           
           if (response.status === 404) {
             // Subscription doesn't exist in database, sync it
@@ -176,7 +183,7 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
       }
       
       // Sync to server database with location
-      const response = await fetch('/api/notifications/onesignal/subscribe', {
+      const response = await notificationApiFetch('/api/notifications/onesignal/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -215,7 +222,7 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
   const updatePreferencesOnServer = async (oneSignalPlayerId: string, prefs: NotificationPreferences) => {
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const response = await fetch('/api/notifications/onesignal/preferences', {
+      const response = await notificationApiFetch('/api/notifications/onesignal/preferences', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -335,7 +342,7 @@ export default function NotificationSetup({ onPermissionChanged }: NotificationS
       await unsubscribeUser();
       
       // Notify server
-      await fetch('/api/notifications/onesignal/unsubscribe', {
+      await notificationApiFetch('/api/notifications/onesignal/unsubscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ playerId })

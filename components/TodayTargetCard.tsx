@@ -44,7 +44,7 @@ export const TodayTargetCard: React.FC<TodayTargetProps> = ({
 
   const handleNavigateToDetail = () => {
     if (todayTarget) {
-      router.push(`/hafalan-quran/target/${todayTarget.id}`);
+      router.push(`/hafalan-quran/target?id=${todayTarget.id}`);
     }
   };
   const targetSurah =

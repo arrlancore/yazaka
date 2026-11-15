@@ -1,24 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "bekhair",
-  "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-13",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // Assets-only deployment: no `main`, so no Worker script runs per request.
   "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
-  "images": {
-    "binding": "IMAGES"
-  },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "bekhair"
-    }
-  ],
-  "vars": {
-    "QURAN_API_URL": "https://quran-api.arrlancore.workers.dev"
+    "directory": "./out",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
   },
   "observability": {
     "enabled": true
